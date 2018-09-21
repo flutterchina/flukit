@@ -1,3 +1,4 @@
+import 'package:flukitdemo/routes/index_suspension.dart';
 import 'package:flutter/material.dart';
 
 class PageScaffold extends StatelessWidget {
@@ -36,6 +37,14 @@ class ListPage extends StatelessWidget {
   }
 
   void _openPage(BuildContext context,PageInfo page) {
+      if (page.title == "IndexBar & SuspensionWidget") {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) => new IndexSuspensionRoute(),
+      );
+      return;
+    }
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       if (!page.withScaffold) {
         return page.builder(context);
