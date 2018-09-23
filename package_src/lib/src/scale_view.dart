@@ -270,7 +270,13 @@ class _ScaleViewState extends State<ScaleView>
                 callback: (BuildContext ctx) {
                   _childContext = ctx;
                 },
-                child: widget.child,
+                child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                        minWidth: 10.0,
+                        minHeight: 10.0
+                    ),
+                    child: widget.child
+                ),
               ),
             ),
           ),
