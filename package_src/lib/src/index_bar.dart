@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'utils.dart';
 
 ///IndexBar touch callback IndexModel.
-typedef void IndexBarTouchCallback(IndexModel model);
+typedef void IndexBarTouchCallback(IndexBarDetails model);
 
 ///IndexModel.
-class IndexModel {
-  String currentTag; //current touch tag.
+class IndexBarDetails {
+  String tag; //current touch tag.
   int position; //current touch position.
   bool isTouchDown; //is touch down.
 
-  IndexModel({this.currentTag, this.position, this.isTouchDown});
+  IndexBarDetails({this.tag, this.position, this.isTouchDown});
 }
 
 ///Default Index data.
@@ -43,111 +44,124 @@ const List<String> INDEX_DATA_DEF = const [
   "#"
 ];
 
-/// a letter list IndexBar.
 class IndexBar extends StatefulWidget {
+  IndexBar({
+    Key key,
+    this.data: INDEX_DATA_DEF,
+    @required this.onTouch,
+    this.width: 30,
+    this.itemHeight: 16,
+    this.color=Colors.transparent,
+    this.textStyle=const TextStyle(fontSize: 12.0, color: Color(0xFF666666)),
+    this.touchDownColor= const Color(0xffeeeeee),
+    this.touchDownTextStyle=const TextStyle(fontSize: 12.0, color:Colors.black)
+  });
+
   ///index data.
-  final List<String> indexData;
+  final List<String> data;
 
   ///IndexBar width(def:30).
-  final int iBarWidth;
+  final int width;
 
   ///IndexBar item height(def:16).
-  final int iBarItemHeight;
+  final int itemHeight;
 
-  ///IndexBar text style.
-  final TextStyle textStyle;
+  /// Background color
+  final Color color;
 
   ///IndexBar touch down color.
   final Color touchDownColor;
 
-  ///Item touch callback.
-  final IndexBarTouchCallback onIBarTouchCallback;
+  ///IndexBar text style.
+  final TextStyle textStyle;
 
-  IndexBar(
-      {Key key,
-      this.indexData: INDEX_DATA_DEF,
-      this.iBarWidth: 30,
-      this.iBarItemHeight: 16,
-      this.textStyle,
-      this.touchDownColor: Colors.transparent,
-      @required this.onIBarTouchCallback})
-      : assert(onIBarTouchCallback != null),
-        super(key: key);
+  final TextStyle touchDownTextStyle;
+
+  ///Item touch callback.
+  final IndexBarTouchCallback onTouch;
 
   @override
-  State<StatefulWidget> createState() {
-    return new IndexBarState();
-  }
+  _SuspensionListViewIndexBarState createState() =>
+      _SuspensionListViewIndexBarState();
+
 }
 
-class IndexBarState extends State<IndexBar> {
+class _SuspensionListViewIndexBarState
+    extends State<IndexBar> {
   bool _isTouchDown = false;
-
-  void _onIBarTouchCallback(IndexModel model) {
-    _isTouchDown = model.isTouchDown;
-    if (widget.onIBarTouchCallback != null) widget.onIBarTouchCallback(model);
-  }
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
+    return Container(
       alignment: Alignment.center,
-      color: _isTouchDown ? widget.touchDownColor : Colors.transparent,
-      width: widget.iBarWidth.toDouble(),
-      height: double.infinity,
-      child: new BaseIndexBar(
-        indexData: widget.indexData,
-        iBarWidth: widget.iBarWidth,
-        iBarItemHeight: widget.iBarItemHeight,
+      color: _isTouchDown ? widget.touchDownColor : widget.color,
+      width: widget.width.toDouble(),
+      child: _IndexBar(
+        data: widget.data,
+        width: widget.width,
+        itemHeight: widget.itemHeight,
         textStyle: widget.textStyle,
-        onIBarTouchCallback: _onIBarTouchCallback,
+        touchDownTextStyle: widget.touchDownTextStyle,
+        onTouch: (details) {
+          if (widget.onTouch != null) {
+            if (_isTouchDown != details.isTouchDown) {
+              setState(() {
+                _isTouchDown = details.isTouchDown;
+              });
+            }
+            widget.onTouch(details);
+          }
+        },
       ),
     );
   }
 }
 
+
 /// Base IndexBar.
-class BaseIndexBar extends StatefulWidget {
+class _IndexBar extends StatefulWidget {
   ///index data.
-  final List<String> indexData;
+  final List<String> data;
 
   ///IndexBar width(def:30).
-  final int iBarWidth;
+  final int width;
 
   ///IndexBar item height(def:16).
-  final int iBarItemHeight;
+  final int itemHeight;
 
   ///IndexBar text style.
   final TextStyle textStyle;
 
-  ///Item touch callback.
-  final IndexBarTouchCallback onIBarTouchCallback;
+  final TextStyle touchDownTextStyle;
 
-  BaseIndexBar(
-      {Key key,
-      this.indexData: INDEX_DATA_DEF,
-      this.iBarWidth: 30,
-      this.iBarItemHeight: 16,
-      this.textStyle,
-      @required this.onIBarTouchCallback})
-      : assert(onIBarTouchCallback != null),
+  ///Item touch callback.
+  final IndexBarTouchCallback onTouch;
+
+  _IndexBar({
+    Key key,
+    this.data: INDEX_DATA_DEF,
+    @required this.onTouch,
+    this.width: 30,
+    this.itemHeight: 16,
+    this.textStyle,
+    this.touchDownTextStyle
+  })
+      : assert(onTouch != null),
         super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
-    return new BaseIndexBarState();
-  }
+  _IndexBarState createState() => _IndexBarState();
+
 }
 
-class BaseIndexBarState extends State<BaseIndexBar> {
-  List<String> _indexData = new List();
-  List<Widget> _indexWidgetList = new List();
+class _IndexBarState extends State<_IndexBar> {
   List<int> _indexSectionList = new List();
   int _widgetTop = -1;
   int _lastIndex = 0;
   bool _widgetTopChange = false;
+  bool _isTouchDown = false;
 
-  IndexModel _indexModel = new IndexModel();
+  IndexBarDetails _indexModel = new IndexBarDetails();
 
   ///get index.
   int _getIndex(int offset) {
@@ -161,51 +175,49 @@ class BaseIndexBarState extends State<BaseIndexBar> {
     return -1;
   }
 
-  ///two list is equal.
-  bool _twoListIsEqual(List listA, List listB) {
-    if (listA == listB) return true;
-    if (listA == null || listB == null) return false;
-    int length = listA.length;
-    if (length != listB.length) return false;
-    for (int i = 0; i < length; i++) {
-      if (!listA.contains(listB[i])) {
-        return false;
-      }
+
+  @override
+  void didUpdateWidget(_IndexBar oldWidget) {
+    if (isListEqual(oldWidget.data, widget.data)) {
+      _widgetTopChange = true;
+      _indexSectionList.clear();
+      _indexSectionList.add(0);
+      int tempHeight = 0;
+      widget.data?.forEach((value) {
+        tempHeight = tempHeight + widget.itemHeight;
+        _indexSectionList.add(tempHeight);
+      });
     }
-    return true;
+  }
+
+  _triggerTouchEvent() {
+    if (widget.onTouch != null) {
+      widget.onTouch(_indexModel);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_twoListIsEqual(_indexData, widget.indexData)) {
-      _widgetTopChange = true;
 
-      _indexData.clear();
-      if (widget.indexData != null) _indexData.addAll(widget.indexData);
-
-      _indexSectionList.clear();
-      _indexWidgetList.clear();
-
-      _indexSectionList.add(0);
-      int tempHeight = 0;
-      _indexData.forEach((value) {
-        tempHeight = tempHeight + widget.iBarItemHeight;
-        _indexSectionList.add(tempHeight);
-        _indexWidgetList.add(new SizedBox(
-          width: widget.iBarWidth.toDouble(),
-          height: widget.iBarItemHeight.toDouble(),
-          child: new Text(
-            value,
-            textAlign: TextAlign.center,
-            style: widget.textStyle == null
-                ? new TextStyle(fontSize: 10.0, color: Color(0xFF666666))
-                : widget.textStyle,
-          ),
-        ));
-      });
+    TextStyle _style=widget.textStyle;
+    if(_indexModel.isTouchDown==true){
+      _style=widget.touchDownTextStyle;
     }
 
-    return new GestureDetector(
+    List<Widget> children = new List();
+    widget.data.forEach((v){
+      children.add(new SizedBox(
+        width: widget.width.toDouble(),
+        height: widget.itemHeight.toDouble(),
+        child: new Text(
+            v,
+            textAlign: TextAlign.center,
+            style:_style
+        ),
+      ));
+    });
+
+    return GestureDetector(
       onVerticalDragDown: (DragDownDetails details) {
         if (_widgetTop == -1 || _widgetTopChange) {
           _widgetTopChange = false;
@@ -218,10 +230,9 @@ class BaseIndexBarState extends State<BaseIndexBar> {
         if (index != -1) {
           _lastIndex = index;
           _indexModel.position = index;
-          _indexModel.currentTag = _indexData[index];
+          _indexModel.tag = widget.data[index];
           _indexModel.isTouchDown = true;
-          if (widget.onIBarTouchCallback != null)
-            widget.onIBarTouchCallback(_indexModel);
+          _triggerTouchEvent();
         }
       },
       onVerticalDragUpdate: (DragUpdateDetails details) {
@@ -230,20 +241,18 @@ class BaseIndexBarState extends State<BaseIndexBar> {
         if (index != -1 && _lastIndex != index) {
           _lastIndex = index;
           _indexModel.position = index;
-          _indexModel.currentTag = _indexData[index];
+          _indexModel.tag = widget.data[index];
           _indexModel.isTouchDown = true;
-          if (widget.onIBarTouchCallback != null)
-            widget.onIBarTouchCallback(_indexModel);
+          _triggerTouchEvent();
         }
       },
       onVerticalDragEnd: (DragEndDetails details) {
         _indexModel.isTouchDown = false;
-        if (widget.onIBarTouchCallback != null)
-          widget.onIBarTouchCallback(_indexModel);
+        _triggerTouchEvent();
       },
       child: new Column(
         mainAxisSize: MainAxisSize.min,
-        children: _indexWidgetList,
+        children: children,
       ),
     );
   }

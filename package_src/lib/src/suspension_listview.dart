@@ -136,13 +136,6 @@ class _SuspensionWidgetState extends State<SuspensionListView> {
     }
   }
 
-  int getOffset(int index) {
-    index = index.clamp(0, widget.data.length - 1);
-    var item = widget.data[index];
-    int offset = _suspensionSectionMap[item.getSuspensionTag()];
-    return offset + (_getIndex(offset) - index) * widget.itemHeight;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Stack(
