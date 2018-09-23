@@ -29,7 +29,7 @@ class SwiperRoute extends StatelessWidget {
                 height: 200.0,
                 child: Swiper(
                   circular: true,
-                  reverse: true, //反向
+                  //reverse: true, //反向
                   indicator: RectangleSwiperIndicator(),
                   children: <Widget>[
                     Image.asset("images/sea.png",fit: BoxFit.fill,),

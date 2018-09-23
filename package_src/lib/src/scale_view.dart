@@ -37,7 +37,7 @@ class ScaleView extends StatefulWidget {
     this.behavior: HitTestBehavior.opaque,
     this.parentScrollableAxis = Axis.horizontal,
     this.child
-  }):super(key:key);
+  }) :super(key: key);
 
 
   /// Minimum scale multiplier
@@ -88,9 +88,8 @@ class _ScaleViewState extends State<ScaleView>
   //缓存子widget Size
   Size get childSize {
     if (_childSize == null) {
-      var constraints = BoxConstraints.loose(context.size);
-      _childSize = constraints.constrainSizeAndAttemptToPreserveAspectRatio(
-          _childContext.size);
+      _childSize = applyBoxFit(BoxFit.contain, _childContext.size, context.size)
+          .destination;
     }
     return _childSize;
   }

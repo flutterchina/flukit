@@ -204,17 +204,18 @@ class Swiper extends StatefulWidget {
     this.indicatorAlignment = AlignmentDirectional.bottomCenter,
     @required this.children,
   })
-      :assert(children.length > 0),
-        childCount=children.length {
+      :childCount=children.length,
+        super(key: key) {
+    assert(childCount > 0);
     if (circular && children.length > 1) {
       var _children = [children.last, children.first];
       _children.insertAll(1, children);
       children = _children;
     }
     _itemCount = children.length;
-    this.indicator ??= RectangleSwiperIndicator();
   }
 
+  // PageView
   Swiper.builder({
     Key key,
     this.direction = Axis.horizontal,
@@ -229,13 +230,10 @@ class Swiper extends StatefulWidget {
     this.reverse = false,
     this.indicatorAlignment = AlignmentDirectional.bottomCenter,
   })
-      :children=null,
-        super(key: key)
-  {
-    _itemCount += (circular && childCount > 1) ? 2 : 0;
-    this.indicator ??=
-        RectangleSwiperIndicator();
-  }
+      : children=null,
+        _itemCount =childCount + ((circular && childCount > 1) ? 2 : 0),
+        super(key: key);
+
 
   /// The axis along which the swiper scrolls.
   ///
@@ -349,15 +347,15 @@ class _SwiperState extends State<Swiper>
     _pageController.addListener(() {
       widget.controller?.notifyListeners();
       int current = _pageController.page.ceil();
-      if (current - _pageController.page > .01) {
+      if (current - _pageController.page > .001) {
         return;
       }
       if (_current != current) { //onPageChange
-        if (!_animating) { //手动滑动时提前更新
+        if (!_animating) { //手动滑动时调整
           _current = current;
-        }
-        if (_circular) {
-          _index = _adjustPage(current);
+          if (_circular) {
+            _index = _adjustPage(current);
+          }
         }
       }
     });
@@ -367,8 +365,7 @@ class _SwiperState extends State<Swiper>
   void _start() {
     if (_stopped || widget._itemCount < 2) return;
     _timer?.cancel();
-    _timer =
-    new Timer.periodic(widget.interval ?? Duration(seconds: 3), (timer) {
+    _timer = Timer.periodic(widget.interval ?? Duration(seconds: 3), (timer) {
       //换页前更新_index
       _index = ++_index % widget._itemCount;
       animateToPage(
@@ -398,6 +395,9 @@ class _SwiperState extends State<Swiper>
     _pageController.animateToPage(page, duration: duration, curve: curve)
         .then((e) {
       _animating = false;
+      if (_circular) {
+        _index = _adjustPage(_index);
+      }
       completer.complete();
     });
     return completer.future;
@@ -446,18 +446,18 @@ class _SwiperState extends State<Swiper>
 
   @override
   Widget build(BuildContext context) {
-    Widget pageView;
+    var children=<Widget>[];
     if (widget.itemBuilder == null) {
-      pageView = PageView(
+      children.add(PageView(
         key: ValueKey(_pageController.initialPage),
         scrollDirection: widget.direction,
         reverse: widget.reverse,
         onPageChanged: _onPageChanged,
         controller: _pageController,
         children: widget.children,
-      );
+      ));
     } else {
-      pageView = PageView.builder(
+      children.add(PageView.builder(
         key: ValueKey(_pageController.initialPage),
         scrollDirection: widget.direction,
         reverse: widget.reverse,
@@ -465,7 +465,16 @@ class _SwiperState extends State<Swiper>
         itemCount: widget._itemCount,
         controller: _pageController,
         itemBuilder: widget.itemBuilder,
-      );
+      ));
+    }
+    if(widget.indicator!=null){
+      children.add(Positioned(
+        child: widget.indicator.build(
+            context,
+            _getRealIndex(),
+            widget.childCount
+        ),
+      ));
     }
 
     return Listener(
@@ -475,16 +484,7 @@ class _SwiperState extends State<Swiper>
         child: Stack(
           alignment:
           widget.indicatorAlignment,
-          children: <Widget>[
-            pageView,
-            Positioned(
-              child: widget.indicator.build(
-                  context,
-                  _getRealIndex(),
-                  widget.childCount
-              ),
-            )
-          ],
+          children:children
         )
     );
   }

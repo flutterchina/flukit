@@ -7,7 +7,6 @@ class PhotoViewRoute extends StatelessWidget {
     return Swiper(
       autoStart: false,
       circular: true,
-      direction: Axis.vertical,
       indicator: CircleSwiperIndicator(
         padding: EdgeInsets.only(bottom: 30.0),
         itemColor: Colors.black26,
@@ -20,7 +19,7 @@ class PhotoViewRoute extends StatelessWidget {
         Image.asset("images/horse.jpg", fit: BoxFit.fill),
         Image.asset("images/road.jpg", fit: BoxFit.fill)
       ].map((v) {
-        return ScaleView(child: v, parentScrollableAxis: Axis.vertical);
+        return ScaleView(child: v);
       }).toList(),
     );
   }

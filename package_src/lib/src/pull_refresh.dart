@@ -88,10 +88,10 @@ class DefaultPullRefreshIndicator implements PullRefreshIndicator {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        AnimatedRotationBox(
-          turns: offset > 100 ? 0.5 : .0,
-          child: Padding(
-            padding: const EdgeInsets.only(right: 8.0),
+        Padding(
+          padding: const EdgeInsets.all(3.0),
+          child: AnimatedRotationBox(
+            turns: offset > 100 ? 0.5 : .0,
             child: Icon(Icons.arrow_upward, color: Colors.grey,),
           ),
         ),
