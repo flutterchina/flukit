@@ -132,7 +132,7 @@ class _SuspensionWidgetState extends State<SuspensionListView> {
     return Stack(children: <Widget>[
       widget.contentWidget,
       Positioned(
-        top: _suspensionTop.toDouble(),
+        top: _suspensionTop.toDouble() - 0.1,///-0.1修复部分手机丢失精度问题
         left: 0.0,
         right: 0.0,
         child: widget.suspensionWidget,
