@@ -124,7 +124,8 @@ class _GradientCircularProgressPainter extends CustomPainter {
       );
     }
 
-    // draw foreground arc
+    // draw foreground arc.
+    // apply gradient
     paint.shader = SweepGradient(
       startAngle: 0.0,
       endAngle: _value,
