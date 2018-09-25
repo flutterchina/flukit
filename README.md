@@ -39,7 +39,8 @@ If you add a new widget，please follow these rules:
 - ScaleView
 - Swiper
 - AnimatedRotationBox
+- GradientCircularProgressIndicator
 - IndexBar
-- SuspensionWidget
+- SuspensionListView
 
 
