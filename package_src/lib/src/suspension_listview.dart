@@ -132,7 +132,9 @@ class _SuspensionWidgetState extends State<SuspensionListView> {
     return Stack(children: <Widget>[
       widget.contentWidget,
       Positioned(
-        top: _suspensionTop.toDouble() - 0.1,///-0.1修复部分手机丢失精度问题
+        top: _suspensionTop.toDouble() - 0.1,
+
+        ///-0.1修复部分手机丢失精度问题
         left: 0.0,
         right: 0.0,
         child: widget.suspensionWidget,
@@ -155,7 +157,9 @@ class CitySelectListView extends StatefulWidget {
       this.itemHeight: 50,
       this.suspensionHeight: 40,
       this.onSusTagChanged})
-      : super(key: key);
+      : assert(itemBuilder != null),
+        assert(suspensionWidget != null),
+        super(key: key);
 
   ///with ISuspensionBean Data
   final List<ISuspensionBean> data;
