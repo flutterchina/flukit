@@ -51,10 +51,11 @@ class IndexBar extends StatefulWidget {
     @required this.onTouch,
     this.width: 30,
     this.itemHeight: 16,
-    this.color=Colors.transparent,
-    this.textStyle=const TextStyle(fontSize: 12.0, color: Color(0xFF666666)),
-    this.touchDownColor= const Color(0xffeeeeee),
-    this.touchDownTextStyle=const TextStyle(fontSize: 12.0, color:Colors.black)
+    this.color = Colors.transparent,
+    this.textStyle = const TextStyle(fontSize: 12.0, color: Color(0xFF666666)),
+    this.touchDownColor = const Color(0xffeeeeee),
+    this.touchDownTextStyle = const TextStyle(
+        fontSize: 12.0, color: Colors.black)
   });
 
   ///index data.
@@ -86,8 +87,7 @@ class IndexBar extends StatefulWidget {
 
 }
 
-class _SuspensionListViewIndexBarState
-    extends State<IndexBar> {
+class _SuspensionListViewIndexBarState extends State<IndexBar> {
   bool _isTouchDown = false;
 
   @override
@@ -160,8 +160,12 @@ class _IndexBarState extends State<_IndexBar> {
   int _lastIndex = 0;
   bool _widgetTopChange = false;
   bool _isTouchDown = false;
-
   IndexBarDetails _indexModel = new IndexBarDetails();
+
+  @override
+  void initState() {
+    _init();
+  }
 
   ///get index.
   int _getIndex(int offset) {
@@ -176,17 +180,21 @@ class _IndexBarState extends State<_IndexBar> {
   }
 
 
+  void _init() {
+    _widgetTopChange = true;
+    _indexSectionList.clear();
+    _indexSectionList.add(0);
+    int tempHeight = 0;
+    widget.data?.forEach((value) {
+      tempHeight = tempHeight + widget.itemHeight;
+      _indexSectionList.add(tempHeight);
+    });
+  }
+
   @override
   void didUpdateWidget(_IndexBar oldWidget) {
     if (isListEqual(oldWidget.data, widget.data)) {
-      _widgetTopChange = true;
-      _indexSectionList.clear();
-      _indexSectionList.add(0);
-      int tempHeight = 0;
-      widget.data?.forEach((value) {
-        tempHeight = tempHeight + widget.itemHeight;
-        _indexSectionList.add(tempHeight);
-      });
+      _init();
     }
   }
 
@@ -198,21 +206,20 @@ class _IndexBarState extends State<_IndexBar> {
 
   @override
   Widget build(BuildContext context) {
-
-    TextStyle _style=widget.textStyle;
-    if(_indexModel.isTouchDown==true){
-      _style=widget.touchDownTextStyle;
+    TextStyle _style = widget.textStyle;
+    if (_indexModel.isTouchDown == true) {
+      _style = widget.touchDownTextStyle;
     }
 
     List<Widget> children = new List();
-    widget.data.forEach((v){
+    widget.data.forEach((v) {
       children.add(new SizedBox(
         width: widget.width.toDouble(),
         height: widget.itemHeight.toDouble(),
         child: new Text(
             v,
             textAlign: TextAlign.center,
-            style:_style
+            style: _style
         ),
       ));
     });
