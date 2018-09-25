@@ -72,6 +72,7 @@ class _SuspensionWidgetState extends State<SuspensionListView> {
   @override
   void initState() {
     super.initState();
+    _init();
     widget.controller.addListener(() {
       int offset = widget.controller.offset.toInt();
       int _index = _getIndex(offset);
@@ -83,6 +84,7 @@ class _SuspensionWidgetState extends State<SuspensionListView> {
         }
       }
     });
+
   }
 
   int _getIndex(int offset) {
@@ -110,29 +112,33 @@ class _SuspensionWidgetState extends State<SuspensionListView> {
     return -1;
   }
 
+  void _init() {
+    _suspensionSectionMap.clear();
+    int offset = 0;
+    String tag;
+    widget.data?.forEach((v) {
+      if (tag != v.getSuspensionTag()) {
+        tag = v.getSuspensionTag();
+        _suspensionSectionMap.putIfAbsent(tag, () => offset);
+        offset = offset + widget.suspensionHeight + widget.itemHeight;
+      } else {
+        offset = offset + widget.itemHeight;
+      }
+    });
+    _suspensionSectionList
+      ..clear()
+      ..addAll(_suspensionSectionMap.values);
+    _suSectionListLength = _suspensionSectionList.length;
+    if (widget.onSusSectionInited != null) {
+      widget.onSusSectionInited(_suspensionSectionMap);
+    }
+  }
+
 
   @override
   void didUpdateWidget(SuspensionListView oldWidget) {
     if (isListEqual(oldWidget.data, widget.data)) {
-      _suspensionSectionMap.clear();
-      int offset = 0;
-      String tag;
-      widget.data?.forEach((v) {
-        if (tag != v.getSuspensionTag()) {
-          tag = v.getSuspensionTag();
-          _suspensionSectionMap.putIfAbsent(tag, () => offset);
-          offset = offset + widget.suspensionHeight + widget.itemHeight;
-        } else {
-          offset = offset + widget.itemHeight;
-        }
-      });
-      _suspensionSectionList
-        ..clear()
-        ..addAll(_suspensionSectionMap.values);
-      _suSectionListLength = _suspensionSectionList.length;
-      if (widget.onSusSectionInited != null) {
-        widget.onSusSectionInited(_suspensionSectionMap);
-      }
+      _init();
     }
   }
 

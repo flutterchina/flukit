@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'animated_rotation_box.dart';
+import 'turn_box.dart';
 
 enum PullRefreshIndicatorMode {
   ///Pointer is down(over scroll)
@@ -90,7 +90,7 @@ class DefaultPullRefreshIndicator implements PullRefreshIndicator {
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.all(3.0),
-          child: AnimatedRotationBox(
+          child: TurnBox(
             turns: offset > 100 ? 0.5 : .0,
             child: Icon(Icons.arrow_upward, color: Colors.grey,),
           ),

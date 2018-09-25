@@ -36,6 +36,7 @@ class _SwiperStyleRouteState extends State<SwiperStyleRoute> {
             controller: swiperController,
             autoStart: false,
             circular: _circular,
+            indicator: RectangleSwiperIndicator(),
             children: <Widget>[
               Image.asset("images/sea.png",fit: BoxFit.fill,),
               Image.asset("images/star.jpg", fit: BoxFit.fill),

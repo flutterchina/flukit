@@ -5,3 +5,4 @@ export 'swiper.dart';
 export 'photo_view.dart';
 export 'swiper_control.dart';
 export 'index_suspension.dart';
+export 'gradient_circular_progress.dart';
