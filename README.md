@@ -42,5 +42,6 @@ If you add a new widget，please follow these rules:
 - GradientCircularProgressIndicator
 - IndexBar
 - SuspensionListView
+- CitySelectListView
 
 

@@ -1,4 +1,3 @@
-import 'package:flukitdemo/routes/index_suspension.dart';
 import 'package:flutter/material.dart';
 
 class PageScaffold extends StatelessWidget {
