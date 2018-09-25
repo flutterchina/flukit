@@ -137,7 +137,7 @@ class _SuspensionWidgetState extends State<SuspensionListView> {
 
   @override
   void didUpdateWidget(SuspensionListView oldWidget) {
-    if (isListEqual(oldWidget.data, widget.data)) {
+    if (!isListEqual(oldWidget.data, widget.data)) {
       _init();
     }
   }
