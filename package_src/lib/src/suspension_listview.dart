@@ -72,7 +72,6 @@ class _SuspensionWidgetState extends State<SuspensionListView> {
   @override
   void initState() {
     super.initState();
-    _init();
     widget.controller.addListener(() {
       int offset = widget.controller.offset.toInt();
       int _index = _getIndex(offset);
@@ -136,14 +135,8 @@ class _SuspensionWidgetState extends State<SuspensionListView> {
 
 
   @override
-  void didUpdateWidget(SuspensionListView oldWidget) {
-    if (!isListEqual(oldWidget.data, widget.data)) {
-      _init();
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    _init();
     return Stack(
         children: <Widget>[
           widget.contentWidget,

@@ -87,7 +87,7 @@ class _IndexSuspensionRouteState extends State<IndexSuspensionRoute> {
     SuspensionUtil.sortListBySuspensionTag(list);
   }
 
-  void _addHotCityList() {
+  void _addHotCityList(){
     List<CityInfo> hotCityList = List();
     hotCityList.add(CityInfo(name: "北京市", tagIndex: "★"));
     hotCityList.add(CityInfo(name: "广州市", tagIndex: "★"));
@@ -148,6 +148,8 @@ class _IndexSuspensionRouteState extends State<IndexSuspensionRoute> {
     });
   }
 
+  void _onSusSectionInited(Map<String, int> map)=>_suspensionSectionMap = map;
+
 
   Widget _buildListItem(int index) {
     CityInfo model = _cityList[index];
@@ -171,7 +173,7 @@ class _IndexSuspensionRouteState extends State<IndexSuspensionRoute> {
           height: _itemHeight.toDouble(),
           child: ListTile(
             title: Text(model.name),
-            onTap: () {
+            onTap: (){
               print("OnItemClick: $model");
               Navigator.pop(context, model);
             },
@@ -220,7 +222,7 @@ class _IndexSuspensionRouteState extends State<IndexSuspensionRoute> {
                 suspensionHeight: _suspensionHeight,
                 itemHeight: _itemHeight,
                 onSusTagChanged: _onSusTagChanged,
-                onSusSectionInited:(Map<String, int> map) => _suspensionSectionMap = map,
+                onSusSectionInited: _onSusSectionInited,
               ),
               Align(
                 alignment: Alignment.centerRight,

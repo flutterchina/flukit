@@ -160,6 +160,7 @@ class _IndexBarState extends State<_IndexBar> {
   int _lastIndex = 0;
   bool _widgetTopChange = false;
   bool _isTouchDown = false;
+  int _dataLength;
   IndexBarDetails _indexModel = new IndexBarDetails();
 
   @override
@@ -191,12 +192,6 @@ class _IndexBarState extends State<_IndexBar> {
     });
   }
 
-  @override
-  void didUpdateWidget(_IndexBar oldWidget) {
-    if (isListEqual(oldWidget.data, widget.data)) {
-      _init();
-    }
-  }
 
   _triggerTouchEvent() {
     if (widget.onTouch != null) {
@@ -210,6 +205,7 @@ class _IndexBarState extends State<_IndexBar> {
     if (_indexModel.isTouchDown == true) {
       _style = widget.touchDownTextStyle;
     }
+    _init();
 
     List<Widget> children = new List();
     widget.data.forEach((v) {
