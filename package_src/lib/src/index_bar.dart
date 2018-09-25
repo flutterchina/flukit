@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'utils.dart';
 
 ///IndexBar touch callback IndexModel.
 typedef void IndexBarTouchCallback(IndexBarDetails model);

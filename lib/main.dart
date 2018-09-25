@@ -39,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
           PageInfo("Photo View", (ctx) => PhotoViewRoute()),
           PageInfo("GradientCircularProgressIndicator", (ctx) => GradientCircularProgressRoute()),
           PageInfo("IndexBar & SuspensionListView", (ctx) => IndexSuspensionRoute()),
-
+          PageInfo("CitySelectListView", (ctx) => CitySelectRoute()),
         ]));
   }
 }
