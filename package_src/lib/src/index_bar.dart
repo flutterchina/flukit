@@ -160,13 +160,8 @@ class _IndexBarState extends State<_IndexBar> {
   int _lastIndex = 0;
   bool _widgetTopChange = false;
   bool _isTouchDown = false;
-  int _dataLength;
   IndexBarDetails _indexModel = new IndexBarDetails();
 
-  @override
-  void initState() {
-    _init();
-  }
 
   ///get index.
   int _getIndex(int offset) {
