@@ -31,15 +31,14 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
         appBar: AppBar(title: Text(widget.title)),
         body: ListPage([
-          PageInfo("test", (ctx) => TestRoute()),
+          //PageInfo("test", (ctx) => TestRoute()),
           PageInfo("Quick Scrollbar", (ctx) => QuickScrollbarRoute()),
           PageInfo("Pull Refresh", (ctx) => PullRefreshRoute()),
           PageInfo("Swiper", (ctx) => SwiperRoute()),
           PageInfo("Swiper Style", (ctx) => SwiperStyleRoute()),
           PageInfo("Photo View", (ctx) => PhotoViewRoute()),
           PageInfo("GradientCircularProgressIndicator", (ctx) => GradientCircularProgressRoute()),
-          PageInfo("IndexBar & SuspensionListView", (ctx) => IndexSuspensionRoute()),
-          PageInfo("CitySelectListView", (ctx) => CitySelectRoute()),
+          PageInfo("QuickSelectListView", (ctx) => QuickSelectListViewRoute()),
         ]));
   }
 }

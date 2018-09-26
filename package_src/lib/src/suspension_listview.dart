@@ -8,6 +8,18 @@ abstract class ISuspensionBean {
   String getSuspensionTag(); //Suspension Tag
 }
 
+class QuickSelectListViewHeader {
+  QuickSelectListViewHeader({
+    @required this.height,
+    @required this.builder,
+    this.tag = "↑",
+  });
+
+  final int height;
+  final String tag;
+  final WidgetBuilder builder;
+}
+
 ///on all sus section callback(map: Used to scroll the list to the specified tag location).
 typedef void OnSusSectionCallBack(Map<String, int> map);
 
@@ -37,18 +49,21 @@ class SuspensionListView extends StatefulWidget {
   ///on sus section callback.
   final OnSusSectionCallBack onSusSectionInited;
 
-  SuspensionListView(
-      {Key key,
-      @required this.data,
-      @required this.contentWidget,
-      @required this.suspensionWidget,
-      @required this.controller,
-      this.suspensionHeight: 40,
-      this.itemHeight: 50,
-      this.onSusTagChanged,
-      this.onSusSectionInited})
+  final QuickSelectListViewHeader header;
+
+  SuspensionListView({
+    Key key,
+    @required this.data,
+    @required this.contentWidget,
+    @required this.suspensionWidget,
+    @required this.controller,
+    this.suspensionHeight: 40,
+    this.itemHeight: 50,
+    this.onSusTagChanged,
+    this.onSusSectionInited,
+    this.header,
+  })
       : assert(contentWidget != null),
-        assert(suspensionWidget != null),
         assert(controller != null),
         super(key: key);
 
@@ -67,6 +82,9 @@ class _SuspensionWidgetState extends State<SuspensionListView> {
   @override
   void initState() {
     super.initState();
+    if (widget.header != null) {
+      _suspensionTop = -widget.header.height;
+    }
     widget.controller.addListener(() {
       int offset = widget.controller.offset.toInt();
       int _index = _getIndex(offset);
@@ -80,6 +98,15 @@ class _SuspensionWidgetState extends State<SuspensionListView> {
   }
 
   int _getIndex(int offset) {
+    if (widget.header != null && offset < widget.header.height) {
+      if (_suspensionTop != -widget.header.height &&
+          widget.suspensionWidget != null) {
+        setState(() {
+          _suspensionTop = -widget.header.height;
+        });
+      }
+      return 0;
+    }
     for (int i = 0; i < _suSectionListLength - 1; i++) {
       int space = _suspensionSectionList[i + 1] - offset;
       if (space > 0 && space < widget.suspensionHeight) {
@@ -87,7 +114,7 @@ class _SuspensionWidgetState extends State<SuspensionListView> {
       } else {
         space = 0;
       }
-      if (_suspensionTop != space) {
+      if (_suspensionTop != space && widget.suspensionWidget != null) {
         setState(() {
           _suspensionTop = space;
         });
@@ -108,6 +135,10 @@ class _SuspensionWidgetState extends State<SuspensionListView> {
     _suspensionSectionMap.clear();
     int offset = 0;
     String tag;
+    if (widget.header != null) {
+      _suspensionSectionMap[widget.header.tag] = 0;
+      offset = widget.header.height;
+    }
     widget.data?.forEach((v) {
       if (tag != v.getSuspensionTag()) {
         tag = v.getSuspensionTag();
@@ -129,36 +160,47 @@ class _SuspensionWidgetState extends State<SuspensionListView> {
   @override
   Widget build(BuildContext context) {
     _init();
-    return Stack(children: <Widget>[
+    var children = <Widget>[
       widget.contentWidget,
-      Positioned(
+    ];
+    if (widget.suspensionWidget != null) {
+      children.add(Positioned(
         top: _suspensionTop.toDouble() - 0.1,
 
         ///-0.1修复部分手机丢失精度问题
         left: 0.0,
         right: 0.0,
         child: widget.suspensionWidget,
-      )
-    ]);
+      ));
+    }
+    return Stack(children: children);
   }
 }
 
 ///Called to build children for the listview.
 typedef Widget ItemWidgetBuilder(BuildContext context, ISuspensionBean model);
 
-class CitySelectListView extends StatefulWidget {
-  CitySelectListView(
-      {Key key,
-      this.data,
-      this.topData,
-      this.itemBuilder,
-      this.suspensionWidget,
-      this.isUseRealIndex: true,
-      this.itemHeight: 50,
-      this.suspensionHeight: 40,
-      this.onSusTagChanged})
+typedef Widget IndexBarBuilder(BuildContext context, List<String> tags,
+    IndexBarTouchCallback onTouch);
+typedef Widget IndexHintBuilder(BuildContext context, String hint);
+
+class QuickSelectListView extends StatefulWidget {
+  QuickSelectListView({
+    Key key,
+    this.data,
+    this.topData,
+    this.itemBuilder,
+    this.suspensionWidget,
+    this.isUseRealIndex: true,
+    this.itemHeight: 50,
+    this.suspensionHeight: 40,
+    this.onSusTagChanged,
+    this.header,
+    this.indexBarBuilder,
+    this.indexHintBuilder,
+    this.showIndexHint: true
+  })
       : assert(itemBuilder != null),
-        assert(suspensionWidget != null),
         super(key: key);
 
   ///with ISuspensionBean Data
@@ -184,13 +226,33 @@ class CitySelectListView extends StatefulWidget {
   ///on sus tag change callback.
   final ValueChanged<String> onSusTagChanged;
 
+  final QuickSelectListViewHeader header;
+
+  final IndexBarBuilder indexBarBuilder;
+
+  final IndexHintBuilder indexHintBuilder;
+
+  final bool showIndexHint;
+
+
   @override
   State<StatefulWidget> createState() {
-    return new _CitySelectListViewState();
+    return new _QuickSelectListViewState();
   }
 }
 
-class _CitySelectListViewState extends State<CitySelectListView> {
+class _Header extends ISuspensionBean {
+  String tag;
+
+  @override
+  String getSuspensionTag() => tag;
+
+  @override
+  bool get isShowSuspension => false;
+
+}
+
+class _QuickSelectListViewState extends State<QuickSelectListView> {
   Map<String, int> _suspensionSectionMap = Map();
   List<ISuspensionBean> _cityList = List();
   List<String> _indexTagList = List();
@@ -217,7 +279,9 @@ class _CitySelectListViewState extends State<CitySelectListView> {
       _isShowIndexBarHint = model.isTouchDown;
       int offset = _suspensionSectionMap[model.tag];
       if (offset != null) {
-        _scrollController.jumpTo(offset.toDouble());
+        _scrollController.jumpTo(offset.toDouble().clamp(
+            .0, _scrollController.position.maxScrollExtent)
+        );
       }
     });
   }
@@ -232,8 +296,13 @@ class _CitySelectListViewState extends State<CitySelectListView> {
       SuspensionUtil.sortListBySuspensionTag(list);
       _cityList.addAll(list);
     }
+
     SuspensionUtil.setShowSuspensionStatus(_cityList);
 
+    if (widget.header != null) {
+      _cityList.insert(0, _Header()
+        ..tag = widget.header.tag);
+    }
     _indexTagList.clear();
     if (widget.isUseRealIndex) {
       _indexTagList.addAll(SuspensionUtil.getTagIndexList(_cityList));
@@ -245,55 +314,82 @@ class _CitySelectListViewState extends State<CitySelectListView> {
   @override
   Widget build(BuildContext context) {
     _init();
-    return new Stack(
-      children: <Widget>[
-        SuspensionListView(
-          data: _cityList,
-          contentWidget: ListView.builder(
+    var children = <Widget>[
+      SuspensionListView(
+        data: widget.header == null ? _cityList : _cityList.sublist(1),
+        contentWidget: ListView.builder(
             controller: _scrollController,
             shrinkWrap: true,
             itemCount: _cityList.length,
-            itemBuilder: (BuildContext context, int index) =>
-                widget.itemBuilder(context, _cityList[index]),
-          ),
-          suspensionWidget: widget.suspensionWidget,
-          controller: _scrollController,
-          suspensionHeight: widget.suspensionHeight,
-          itemHeight: widget.itemHeight,
-          onSusTagChanged: widget.onSusTagChanged,
-          onSusSectionInited: (Map<String, int> map) =>
-              _suspensionSectionMap = map,
+            itemBuilder: (BuildContext context, int index) {
+              if (index == 0 && _cityList[index] is _Header) {
+                return SizedBox(
+                    height: widget.header.height.toDouble(),
+                    child: widget.header.builder(context)
+                );
+              }
+              return widget.itemBuilder(context, _cityList[index]);
+            }
         ),
+        suspensionWidget: widget.suspensionWidget,
+        controller: _scrollController,
+        suspensionHeight: widget.suspensionHeight,
+        itemHeight: widget.itemHeight,
+        onSusTagChanged: widget.onSusTagChanged,
+        header: widget.header,
+        onSusSectionInited: (Map<String, int> map) =>
+        _suspensionSectionMap = map,
+      )
+    ];
+
+    Widget indexBar;
+    if (widget.indexBarBuilder == null) {
+      indexBar = IndexBar(
+        data: _indexTagList,
+        width: 36,
+        onTouch: _onIndexBarTouch,
+      );
+    } else {
+      indexBar = widget.indexBarBuilder(
+        context,
+        _indexTagList,
+        _onIndexBarTouch,
+      );
+    }
+    children.add(
         Align(
           alignment: Alignment.centerRight,
-          child: IndexBar(
-            data: _indexTagList,
-            width: 36,
-            onTouch: _onIndexBarTouch,
-          ),
-        ),
-        Offstage(
-          offstage: !_isShowIndexBarHint,
-          child: Center(
-            child: Card(
-              color: Colors.black87,
-              child: Container(
-                alignment: Alignment.center,
-                width: 80.0,
-                height: 80.0,
-                child: Text(
-                  '$_indexBarHint',
-                  style: TextStyle(
-                    fontSize: 32.0,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+          child: indexBar,
+        )
+    );
+    Widget indexHint;
+    if (widget.indexHintBuilder != null) {
+      indexHint = widget.indexHintBuilder(context, '$_indexBarHint');
+    } else {
+      indexHint = Card(
+        color: Colors.black54,
+        child: Container(
+          alignment: Alignment.center,
+          width: 80.0,
+          height: 80.0,
+          child: Text(
+            '$_indexBarHint',
+            style: TextStyle(
+              fontSize: 32.0,
+              color: Colors.white,
             ),
           ),
-        )
-      ],
-    );
+        ),
+      );
+    }
+
+    if (_isShowIndexBarHint && widget.showIndexHint) {
+      children.add(Center(
+        child: indexHint,
+      ));
+    }
+
+    return new Stack(children: children);
   }
 }
 

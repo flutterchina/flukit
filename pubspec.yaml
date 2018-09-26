@@ -50,6 +50,7 @@ flutter:
    - images/road.jpg
 
    - assets/data/china.json
+   - assets/data/contacts.json
 
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
