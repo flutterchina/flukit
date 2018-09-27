@@ -5,9 +5,10 @@ class GradientCircularProgressIndicator extends StatelessWidget {
   GradientCircularProgressIndicator({
     this.stokeWidth = 2.0,
     @required this.radius,
+    @required this.colors,
     this.strokeCapRound = false,
     this.backgroundColor = const Color(0xFFEEEEEE),
-    this.colors,
+    this.stops,
     this.totalAngle = 2 * pi,
     this.value
   });
@@ -31,11 +32,34 @@ class GradientCircularProgressIndicator extends StatelessWidget {
   /// `Color(0xFFEEEEEE)` by default.
   final Color backgroundColor;
 
-  /// The colors the gradient should obtain at each of the stops.
-  final List<Color> colors;
-
   /// The total angle of the progress. Defaults to 2*pi (entire circle)
   final double totalAngle;
+
+  /// The colors the gradient should obtain at each of the stops.
+  ///
+  /// If [stops] is non-null, this list must have the same length as [stops].
+  ///
+  /// This list must have at least two colors in it (otherwise, it's not a
+  /// gradient!).
+  final List<Color> colors;
+
+  /// A list of values from 0.0 to 1.0 that denote fractions along the gradient.
+  ///
+  /// If non-null, this list must have the same length as [colors].
+  ///
+  /// If the first value is not 0.0, then a stop with position 0.0 and a color
+  /// equal to the first color in [colors] is implied.
+  ///
+  /// If the last value is not 1.0, then a stop with position 1.0 and a color
+  /// equal to the last color in [colors] is implied.
+  ///
+  /// The values in the [stops] list must be in ascending order. If a value in
+  /// the [stops] list is less than an earlier value in the list, then its value
+  /// is assumed to equal the previous value.
+  ///
+  /// If stops is null, then a set of uniformly distributed stops is implied,
+  /// with the first stop at 0.0 and the last stop at 1.0.
+  final List<double> stops;
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +101,7 @@ class _GradientCircularProgressPainter extends CustomPainter {
     this.radius,
     this.total = 2 * pi,
     @required this.colors,
+    this.stops,
     this.value
   });
 
@@ -87,6 +112,7 @@ class _GradientCircularProgressPainter extends CustomPainter {
   final List<Color> colors;
   final double total;
   final double radius;
+  final List<double> stops;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -94,7 +120,8 @@ class _GradientCircularProgressPainter extends CustomPainter {
       size = Size.fromRadius(radius);
     }
     double _offset = stokeWidth / 2.0;
-    double _value = (value ?? 1.0) * total;
+    double _value = (value ?? .0);
+    _value = _value.clamp(.0, 1.0) * total;
     double _start = .0;
 
     if (strokeCapRound) {
@@ -126,22 +153,25 @@ class _GradientCircularProgressPainter extends CustomPainter {
 
     // draw foreground arc.
     // apply gradient
-    paint.shader = SweepGradient(
-      startAngle: 0.0,
-      endAngle: _value,
-      colors: colors,
-    ).createShader(rect);
+    if (_value > 0) {
+      paint.shader = SweepGradient(
+        startAngle: 0.0,
+        endAngle: _value,
+        colors: colors,
+        stops: stops,
+      ).createShader(rect);
 
-    canvas.drawArc(
-        rect,
-        _start,
-        _value,
-        false,
-        paint
-    );
+      canvas.drawArc(
+          rect,
+          _start,
+          _value,
+          false,
+          paint
+      );
+    }
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
 
 }
