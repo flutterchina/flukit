@@ -18,6 +18,8 @@ class AnimatedRotationBoxRoute extends StatelessWidget {
         ),
         child: Wrap(
           spacing: 16.0,
+          alignment: WrapAlignment.center,
+          runSpacing: 16.0,
           children: <Widget>[
             AnimatedRotationBox(
               child: GradientCircularProgressIndicator(
