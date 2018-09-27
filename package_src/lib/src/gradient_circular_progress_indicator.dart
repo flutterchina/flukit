@@ -1,14 +1,15 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 
+/// A circular progress indicator with gradient effect.
 class GradientCircularProgressIndicator extends StatelessWidget {
   GradientCircularProgressIndicator({
     this.stokeWidth = 2.0,
     @required this.radius,
     @required this.colors,
+    this.stops,
     this.strokeCapRound = false,
     this.backgroundColor = const Color(0xFFEEEEEE),
-    this.stops,
     this.totalAngle = 2 * pi,
     this.value
   });
@@ -125,7 +126,7 @@ class _GradientCircularProgressPainter extends CustomPainter {
     double _start = .0;
 
     if (strokeCapRound) {
-      _start = asin(_offset / (size.width - stokeWidth) * 2);
+      _start = asin(stokeWidth/ (size.width - stokeWidth));
     }
 
     Rect rect = Offset(_offset, _offset) & Size(

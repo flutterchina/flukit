@@ -33,8 +33,9 @@ class _MyHomePageState extends State<MyHomePage> {
         body: ListPage([
           //PageInfo("test", (ctx) => TestRoute()),
           PageInfo("Quick Scrollbar", (ctx) => QuickScrollbarRoute()),
+          PageInfo("TurnBox", (ctx) => TurnBoxRoute()),
           PageInfo("AnimatedRotationBox", (ctx) => AnimatedRotationBoxRoute()),
-          PageInfo("Pull Refresh", (ctx) => PullRefreshRoute()),
+          PageInfo("Pull Refresh", (ctx) => PullRefreshBoxRoute()),
           PageInfo("Swiper", (ctx) => SwiperRoute()),
           PageInfo("Swiper Style", (ctx) => SwiperStyleRoute()),
           PageInfo("Photo View", (ctx) => PhotoViewRoute()),

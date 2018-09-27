@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'turn_box.dart';
@@ -75,7 +76,7 @@ class DefaultPullRefreshIndicator implements PullRefreshIndicator {
           progressIndicator ?? SizedBox(
             width: 20.0,
             height: 20.0,
-            child: CircularProgressIndicator(strokeWidth: 1.5,),
+            child: CircularProgressIndicator(strokeWidth: 2.0,),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
@@ -134,14 +135,16 @@ class PullRefreshBox extends StatefulWidget {
     Key key,
     this.child,
     @required this.onRefresh,
-    this.indicator
+    this.indicator,
+    this.overScrollEffect
   }) :super(key: key) {
     this.indicator ??= DefaultPullRefreshIndicator();
   }
 
-  PullRefreshCallback onRefresh;
+  final PullRefreshCallback onRefresh;
+  final Widget child;
+  final TargetPlatform overScrollEffect;
   PullRefreshIndicator indicator;
-  Widget child;
 
 
   @override
@@ -203,7 +206,7 @@ class PullRefreshBoxState extends State<PullRefreshBox>
       _controller.animateTo(_height, duration: Duration(milliseconds: 200));
       return widget.onRefresh().whenComplete(() {
         _mode = PullRefreshIndicatorMode.done;
-        _controller.animateTo(0.0, duration: Duration(milliseconds: 300));
+        _controller.animateTo(0.0, duration: Duration(milliseconds: 300), curve: Curves.easeOut);
         _dragOffset = 0.0;
         _refreshing = false;
         _mode = null;
@@ -242,13 +245,16 @@ class PullRefreshBoxState extends State<PullRefreshBox>
         //Header
         AnimatedBuilder(
           builder: (BuildContext context, Widget child) {
-            return Transform.translate(offset: Offset(
-                0.0, -_height + _controller.value),
+            return Transform.translate(
+                offset: Offset(0.0, -_height + _controller.value),
                 child: SizedBox(
                   height: _height,
                   width: double.infinity,
                   child: widget.indicator.build(
-                      context, _mode, _dragOffset, _direction
+                    context,
+                    _mode,
+                    _dragOffset,
+                    _direction,
                   ),
                 )
             );
@@ -259,15 +265,27 @@ class PullRefreshBoxState extends State<PullRefreshBox>
     );
   }
 
+  bool get _androidEffect =>
+      widget.overScrollEffect == TargetPlatform.android ||
+          (widget.overScrollEffect == null && defaultTargetPlatform == TargetPlatform.android);
+
   bool _handleScrollNotification(ScrollNotification notification) {
     if (_mode == PullRefreshIndicatorMode.refresh) {
       return true;
     }
     if (notification is OverscrollNotification) {
       if (_mode != PullRefreshIndicatorMode.refresh) {
-        _dragOffset -= notification.overscroll / 2.0;
+        double _temp=_dragOffset;
+        _dragOffset -= notification.overscroll / 3.0;
         _mode = PullRefreshIndicatorMode.drag;
-        _controller.value = _dragOffset;
+        if (_androidEffect) {
+          if (_dragOffset < .0) {
+            _dragOffset = .0;
+          }
+        }
+        if(_temp!=_dragOffset) {
+          _controller.value = _dragOffset;
+        }
       }
     } else if (notification is ScrollUpdateNotification) {
       if (_dragOffset > 0.0) {
@@ -283,7 +301,11 @@ class PullRefreshBoxState extends State<PullRefreshBox>
       if (_mode != PullRefreshIndicatorMode.refresh) {
         _mode = PullRefreshIndicatorMode.canceled;
         _dragOffset = .0;
-        _controller.animateTo(0.0, duration: Duration(milliseconds: 200));
+        _controller.animateTo(
+            0.0,
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+        );
       }
     } else if (notification is UserScrollNotification) {
       _direction = notification.direction;
@@ -293,7 +315,9 @@ class PullRefreshBoxState extends State<PullRefreshBox>
 
 
   bool _handleGlowNotification(OverscrollIndicatorNotification notification) {
-    notification.disallowGlow();
+    if(!_androidEffect||notification.leading) {
+      notification.disallowGlow();
+    }
     return true;
   }
 }

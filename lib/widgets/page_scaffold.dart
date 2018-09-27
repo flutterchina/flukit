@@ -51,6 +51,7 @@ class ListPage extends StatelessWidget {
     return children.map<Widget>((page) {
       return ListTile(
         title: Text(page.title),
+        trailing: Icon(Icons.keyboard_arrow_right),
         onTap: () => _openPage(context,page),
       );
     }).toList();

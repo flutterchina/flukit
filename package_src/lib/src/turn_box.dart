@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-/// Animates the rotation of a widget when [turns] value is changed.
+/// Animates the rotation of a widget when [turns]  is changed.
 
 class TurnBox extends StatefulWidget {
   const TurnBox({
@@ -33,7 +33,8 @@ class _AnimatedRotationBoxState extends State<TurnBox>
   void initState() {
     _controller = new AnimationController(
         vsync: this,
-        duration: Duration(milliseconds: widget.speed ?? 200)
+        lowerBound: -double.infinity,
+        upperBound: double.infinity
     );
     _controller.value = widget.turns;
   }
@@ -55,7 +56,11 @@ class _AnimatedRotationBoxState extends State<TurnBox>
   @override
   void didUpdateWidget(TurnBox oldWidget) {
     if (oldWidget.turns != widget.turns) {
-      _controller.animateTo(widget.turns);
+      _controller.animateTo(
+          widget.turns,
+          duration: Duration(milliseconds: widget.speed??200),
+          curve: Curves.easeOut,
+      );
     }
   }
 }
