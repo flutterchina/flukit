@@ -14,7 +14,7 @@ class PullRefreshWithCustomHeaderRoute extends StatelessWidget {
         /// Must set to `ClampingScrollPhysics()`
         physics:ClampingScrollPhysics(),
         itemCount: 100,
-        itemBuilder: (ctx, index) => ListTile(title: Text("$index")),
+        itemBuilder: (ctx, index) => ListTile(title: Text("$index"), onTap: (){},),
       ),
     );
   }

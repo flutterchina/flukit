@@ -36,8 +36,13 @@ typedef Future PullRefreshCallback();
 ///
 abstract class PullRefreshIndicator {
 
-  /// Indicator height, you must specify the header height.
-  @required double get height;
+  /// The distance from the child's top or bottom edge to where the refresh
+  /// indicator will settle. During the drag that exposes the refresh indicator,
+  /// its actual displacement may significantly exceed this value.
+  double get displacement;
+
+  /// Header height
+  double get height;
 
   Widget build(BuildContext context,
       PullRefreshIndicatorMode mode,
@@ -64,7 +69,10 @@ class DefaultPullRefreshIndicator implements PullRefreshIndicator {
   ProgressIndicator progressIndicator;
 
   @override
-  double get height => 100.0;
+  double get displacement => 100.0;
+
+  @override
+  double get height => displacement;
 
   @override
   Widget build(BuildContext context, PullRefreshIndicatorMode mode, offset,
@@ -101,6 +109,7 @@ class DefaultPullRefreshIndicator implements PullRefreshIndicator {
       ],
     );
   }
+
 }
 
 
@@ -157,13 +166,19 @@ class PullRefreshBox extends StatefulWidget {
 
 class PullRefreshBoxState extends State<PullRefreshBox>
     with TickerProviderStateMixin {
-  //double _height = 50.0;
   PullRefreshIndicatorMode _mode;
   AnimationController _controller;
   double _dragOffset = .0;
   ScrollDirection _direction;
-  double _height = 0.0;
   bool _refreshing = false;
+
+  bool get _androidEffect =>
+      widget.overScrollEffect == TargetPlatform.android ||
+          (widget.overScrollEffect == null &&
+              defaultTargetPlatform == TargetPlatform.android);
+
+  double get _indicatorHeight =>
+      widget.indicator.height ?? widget.indicator.displacement ?? 100.0;
 
   @override
   void initState() {
@@ -199,17 +214,28 @@ class PullRefreshBoxState extends State<PullRefreshBox>
     _checkIfNeedRefresh();
   }
 
+  _goBack(){
+    _dragOffset=.0;
+    if(mounted) {
+      _controller.animateTo(
+        0.0,
+        duration: Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+      ).then((e) {
+        _mode = PullRefreshIndicatorMode.done;
+      });
+    }
+  }
+
   Future _checkIfNeedRefresh() {
-    _height = widget.indicator.height;
     if (_mode == PullRefreshIndicatorMode.refresh && !_refreshing) {
       _refreshing = true;
-      _controller.animateTo(_height, duration: Duration(milliseconds: 200));
+      _controller.animateTo(widget.indicator.displacement ?? 100.0,
+          duration: Duration(milliseconds: 200));
       return widget.onRefresh().whenComplete(() {
         _mode = PullRefreshIndicatorMode.done;
-        _controller.animateTo(0.0, duration: Duration(milliseconds: 300), curve: Curves.easeOut);
-        _dragOffset = 0.0;
-        _refreshing = false;
-        _mode = null;
+        _goBack();
+        _refreshing=false;
       });
     }
     return Future.value(null);
@@ -231,10 +257,7 @@ class PullRefreshBoxState extends State<PullRefreshBox>
                     child: Theme(
                       data: Theme.of(context).copyWith(
                           platform: TargetPlatform.android),
-                      child: AbsorbPointer(
-                        absorbing: _dragOffset != 0.0,
-                        child: widget.child,
-                      ),
+                      child: widget.child,
                     )
                 ),
               ),
@@ -246,16 +269,16 @@ class PullRefreshBoxState extends State<PullRefreshBox>
         AnimatedBuilder(
           builder: (BuildContext context, Widget child) {
             return Transform.translate(
-                offset: Offset(0.0, -_height + _controller.value),
+                offset: Offset(0.0, -_indicatorHeight + _controller.value+1),
                 child: SizedBox(
-                  height: _height,
+                  height: _indicatorHeight,
                   width: double.infinity,
                   child: widget.indicator.build(
                     context,
                     _mode,
                     _dragOffset,
                     _direction,
-                  ),
+                  )
                 )
             );
           },
@@ -265,9 +288,6 @@ class PullRefreshBoxState extends State<PullRefreshBox>
     );
   }
 
-  bool get _androidEffect =>
-      widget.overScrollEffect == TargetPlatform.android ||
-          (widget.overScrollEffect == null && defaultTargetPlatform == TargetPlatform.android);
 
   bool _handleScrollNotification(ScrollNotification notification) {
     if (_mode == PullRefreshIndicatorMode.refresh) {
@@ -275,7 +295,7 @@ class PullRefreshBoxState extends State<PullRefreshBox>
     }
     if (notification is OverscrollNotification) {
       if (_mode != PullRefreshIndicatorMode.refresh) {
-        double _temp=_dragOffset;
+        double _temp = _dragOffset;
         _dragOffset -= notification.overscroll / 3.0;
         _mode = PullRefreshIndicatorMode.drag;
         if (_androidEffect) {
@@ -283,7 +303,7 @@ class PullRefreshBoxState extends State<PullRefreshBox>
             _dragOffset = .0;
           }
         }
-        if(_temp!=_dragOffset) {
+        if (_temp != _dragOffset) {
           _controller.value = _dragOffset;
         }
       }
@@ -293,19 +313,15 @@ class PullRefreshBoxState extends State<PullRefreshBox>
         _controller.value = _dragOffset;
       }
     } else if (notification is ScrollEndNotification) {
-      if (_dragOffset >= _height && _mode != PullRefreshIndicatorMode.refresh) {
+      if (_dragOffset >= (widget.indicator.displacement??100.0) &&
+          _mode != PullRefreshIndicatorMode.refresh) {
         setState(() {
           _mode = PullRefreshIndicatorMode.refresh;
         });
       }
       if (_mode != PullRefreshIndicatorMode.refresh) {
         _mode = PullRefreshIndicatorMode.canceled;
-        _dragOffset = .0;
-        _controller.animateTo(
-            0.0,
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeOut,
-        );
+        _goBack();
       }
     } else if (notification is UserScrollNotification) {
       _direction = notification.direction;
@@ -315,7 +331,7 @@ class PullRefreshBoxState extends State<PullRefreshBox>
 
 
   bool _handleGlowNotification(OverscrollIndicatorNotification notification) {
-    if(!_androidEffect||notification.leading) {
+    if (!_androidEffect || notification.leading) {
       notification.disallowGlow();
     }
     return true;

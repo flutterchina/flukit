@@ -48,6 +48,7 @@ class GradientCircularProgressRouteState
     return SingleChildScrollView(
       child: Center(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             AnimatedBuilder(
               animation: _animationController,
@@ -140,6 +141,30 @@ class GradientCircularProgressRouteState
                           stokeWidth: 20.0,
                           value: _animationController.value,
                           strokeCapRound: true,
+                        ),
+                      ),
+                      //剪裁半圆
+                      ClipRect(
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          heightFactor: .5,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: SizedBox(
+                              //width: 100.0,
+                              child: TurnBox(
+                                turns: .75,
+                                child: GradientCircularProgressIndicator(
+                                  colors: [Colors.teal, Colors.cyan[500]],
+                                  radius: 100.0,
+                                  stokeWidth: 8.0,
+                                  value: _animationController.value,
+                                  totalAngle: pi,
+                                  strokeCapRound: true,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                       SizedBox(
