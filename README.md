@@ -50,7 +50,7 @@ flutter run
 
 ## Demo部分截图
 
-<img src="./docs/images/quick_scroll_bar.png" width="320"/>
+<img src="./docs/images/quick_scroll_bar.gif" width="320"/>
 <img src="./docs/images/animated_rotation_box.gif" width="320"/>
 <img src="./docs/images/pull_refresh.gif" width="320"/>
 <img src="./docs/images/pull_refresh_with_custom_header.gif" width="320"/>
@@ -58,7 +58,6 @@ flutter run
 <img src="./docs/images/swiper.gif" width="320"/>
 <img src="./docs/images/photoview.gif" width="320"/>
 <img src="./docs/images/city_select.gif" width="320"/>
-<img src="./docs/images/city_select_custom_header.gif" width="320"/>
 <img src="./docs/images/quick_list.gif" width="320"/>
 
 
