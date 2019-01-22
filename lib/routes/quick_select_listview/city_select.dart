@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flukit/flukit.dart';
+import 'package:azlistview/azlistview.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'city_model.dart';
 
@@ -124,7 +124,7 @@ class _CitySelectRouteState extends State<CitySelectRoute> {
         ),
         Expanded(
             flex: 1,
-            child: QuickSelectListView(
+            child: AzListView(
               data: _cityList,
               topData: _hotCityList,
               itemBuilder: (context, model) => _buildListItem(model),

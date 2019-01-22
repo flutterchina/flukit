@@ -43,6 +43,7 @@ class _QuickScrollBarState extends State<QuickScrollbar>
 
   @override
   void initState() {
+    super.initState();
     _animationController =
     new AnimationController(vsync: this, duration: Duration(milliseconds: 200));
     _animation = Tween(begin: 1.0, end: 0.0).animate(_animationController);

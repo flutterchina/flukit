@@ -309,6 +309,7 @@ class _SwiperState extends State<Swiper>
 
   @override
   void initState() {
+    super.initState();
     _init();
     widget.controller?._attach(this);
   }

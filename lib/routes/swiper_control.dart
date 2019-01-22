@@ -12,6 +12,7 @@ class _SwiperStyleRouteState extends State<SwiperStyleRoute> {
 
   @override
   void initState() {
+    super.initState();
     swiperController=new SwiperController();
     swiperController.addListener((){
 //      print(swiperController.index);

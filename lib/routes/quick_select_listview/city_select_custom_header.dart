@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flukit/flukit.dart';
+import 'package:azlistview/azlistview.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'city_model.dart';
 
@@ -149,7 +149,7 @@ class _CitySelectCustomHeaderRouteState
         Divider(height: .0,),
         Expanded(
             flex: 1,
-            child: QuickSelectListView(
+            child: AzListView(
               data: _cityList,
               itemBuilder: (context, model) => _buildListItem(model),
               suspensionWidget: _buildSusWidget(_suspensionTag),
@@ -157,7 +157,7 @@ class _CitySelectCustomHeaderRouteState
               itemHeight: _itemHeight,
               suspensionHeight: _suspensionHeight,
               onSusTagChanged: _onSusTagChanged,
-              header: QuickSelectListViewHeader(
+              header: AzListViewHeader(
                   tag: "★",
                   height: 140,
                   builder: (context) {

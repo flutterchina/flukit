@@ -182,6 +182,7 @@ class PullRefreshBoxState extends State<PullRefreshBox>
 
   @override
   void initState() {
+    super.initState();
     _controller = AnimationController(vsync: this,
         duration: Duration(seconds: 2),
         lowerBound: -500.0,

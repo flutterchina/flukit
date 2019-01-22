@@ -24,6 +24,7 @@ class _AnimatedRotationBoxState
 
   @override
   void initState() {
+    super.initState();
     _animationController =
         AnimationController(vsync: this, duration: widget.duration);
     _animationController.repeat();

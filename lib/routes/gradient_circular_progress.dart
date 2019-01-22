@@ -16,6 +16,7 @@ class GradientCircularProgressRouteState
 
   @override
   void initState() {
+    super.initState();
     _animationController =
     new AnimationController(vsync: this, duration: Duration(seconds: 3));
     bool isForward = true;

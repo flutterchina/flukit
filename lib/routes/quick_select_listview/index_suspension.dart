@@ -1,12 +1,11 @@
 import 'dart:convert';
 
-import 'package:flukit/flukit.dart';
+import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'city_model.dart';
-
 
 class IndexSuspensionRoute extends StatefulWidget {
   @override
@@ -41,8 +40,7 @@ class _IndexSuspensionRouteState extends State<IndexSuspensionRoute> {
   void _handleList(List<CityInfo> list) {
     if (list == null || list.isEmpty) return;
     for (int i = 0, length = list.length; i < length; i++) {
-      String pinyin =
-          PinyinHelper.getPinyinE(list[i].name);
+      String pinyin = PinyinHelper.getPinyinE(list[i].name);
       String tag = pinyin.substring(0, 1).toUpperCase();
       list[i].namePinyin = pinyin;
       if (RegExp("[A-Z]").hasMatch(tag)) {
@@ -150,7 +148,7 @@ class _IndexSuspensionRouteState extends State<IndexSuspensionRoute> {
         Expanded(
           child: Stack(
             children: <Widget>[
-              SuspensionListView(
+              SuspensionView(
                 data: _cityList,
                 contentWidget: ListView.builder(
                   controller: _scrollController,
@@ -214,4 +212,3 @@ class _IndexSuspensionRouteState extends State<IndexSuspensionRoute> {
     );
   }
 }
-
