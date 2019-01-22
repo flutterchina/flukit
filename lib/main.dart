@@ -40,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
           PageInfo("Swiper Style", (ctx) => SwiperStyleRoute()),
           PageInfo("Photo View", (ctx) => PhotoViewRoute()),
           PageInfo("GradientCircularProgressIndicator", (ctx) => GradientCircularProgressRoute()),
-          PageInfo("QuickSelectListView", (ctx) => QuickSelectListViewRoute()),
+          PageInfo("AzListView", (ctx) => QuickSelectListViewRoute()),
         ]));
   }
 }
