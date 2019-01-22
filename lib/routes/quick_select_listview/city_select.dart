@@ -54,7 +54,7 @@ class _CitySelectRouteState extends State<CitySelectRoute> {
     if (list == null || list.isEmpty) return;
     for (int i = 0, length = list.length; i < length; i++) {
       String pinyin =
-      PinyinHelper.convertToPinyinStringWithoutException(list[i].name);
+      PinyinHelper.getPinyinE(list[i].name);
       String tag = pinyin.substring(0, 1).toUpperCase();
       list[i].namePinyin = pinyin;
       if (RegExp("[A-Z]").hasMatch(tag)) {
