@@ -27,7 +27,6 @@ class _CitySelectRouteState extends State<CitySelectRoute> {
   }
 
   void loadData() async {
-
     _hotCityList.add(CityInfo(name: "北京市", tagIndex: "★"));
     _hotCityList.add(CityInfo(name: "广州市", tagIndex: "★"));
     _hotCityList.add(CityInfo(name: "成都市", tagIndex: "★"));
@@ -53,8 +52,7 @@ class _CitySelectRouteState extends State<CitySelectRoute> {
   void _handleList(List<CityInfo> list) {
     if (list == null || list.isEmpty) return;
     for (int i = 0, length = list.length; i < length; i++) {
-      String pinyin =
-      PinyinHelper.getPinyinE(list[i].name);
+      String pinyin = PinyinHelper.getPinyinE(list[i].name);
       String tag = pinyin.substring(0, 1).toUpperCase();
       list[i].namePinyin = pinyin;
       if (RegExp("[A-Z]").hasMatch(tag)) {
@@ -63,6 +61,8 @@ class _CitySelectRouteState extends State<CitySelectRoute> {
         list[i].tagIndex = "#";
       }
     }
+    //根据A-Z排序
+    SuspensionUtil.sortListBySuspensionTag(list);
   }
 
   void _onSusTagChanged(String tag) {
@@ -72,7 +72,7 @@ class _CitySelectRouteState extends State<CitySelectRoute> {
   }
 
   Widget _buildSusWidget(String susTag) {
-    susTag=(susTag=="★"?"热门城市":susTag);
+    susTag = (susTag == "★" ? "热门城市" : susTag);
     return Container(
       height: _suspensionHeight.toDouble(),
       padding: const EdgeInsets.only(left: 15.0),
@@ -90,8 +90,8 @@ class _CitySelectRouteState extends State<CitySelectRoute> {
   }
 
   Widget _buildListItem(CityInfo model) {
-    String susTag=model.getSuspensionTag();
-    susTag=(susTag=="★"?"热门城市":susTag);
+    String susTag = model.getSuspensionTag();
+    susTag = (susTag == "★" ? "热门城市" : susTag);
     return Column(
       children: <Widget>[
         Offstage(
@@ -134,8 +134,7 @@ class _CitySelectRouteState extends State<CitySelectRoute> {
               suspensionHeight: _suspensionHeight,
               onSusTagChanged: _onSusTagChanged,
               //showCenterTip: false,
-            )
-        ),
+            )),
       ],
     );
   }
