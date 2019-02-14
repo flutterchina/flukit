@@ -43,6 +43,7 @@ class _QuickScrollBarState extends State<QuickScrollbar>
 
   @override
   void initState() {
+    super.initState();
     _animationController =
     new AnimationController(vsync: this, duration: Duration(milliseconds: 200));
     _animation = Tween(begin: 1.0, end: 0.0).animate(_animationController);
@@ -123,7 +124,7 @@ class _QuickScrollBarState extends State<QuickScrollbar>
     });
   }
 
-  bool _handleNotification(ScrollNotification notification) {
+  void _handleNotification(ScrollNotification notification) {
     if (notification is ScrollUpdateNotification) {
       if (notification.scrollDelta.abs() > widget.velocity &&
           notification.metrics.maxScrollExtent != double.infinity) {

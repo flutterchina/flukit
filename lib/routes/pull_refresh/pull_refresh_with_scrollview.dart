@@ -15,6 +15,7 @@ class PullRefreshWithScrollViewState extends State<PullRefreshWithScrollView> {
   int _navBgColorAlpha=0;
   @override
   void initState() {
+    super.initState();
     _controller.addListener((){
        setState(() {
          _navBgColorAlpha=(_controller.offset/100*255).toInt().clamp(0, 255);

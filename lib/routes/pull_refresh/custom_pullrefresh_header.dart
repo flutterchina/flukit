@@ -1,7 +1,6 @@
 import 'package:flukit/flukit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/rendering/viewport_offset.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/rendering.dart';
 
 class MyPullRefreshIndicator extends PullRefreshIndicator {
   MyPullRefreshIndicator({

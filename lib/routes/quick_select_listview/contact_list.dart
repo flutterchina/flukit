@@ -17,7 +17,6 @@ class _ContactListRouteState extends State<ContactListRoute> {
 
   int _suspensionHeight = 40;
   int _itemHeight = 60;
-  String _hitTag = "";
 
   @override
   void initState() {
