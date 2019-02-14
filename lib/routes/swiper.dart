@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 
 class SwiperRoute extends StatelessWidget {
+  final _images=["sea.png","star.jpg","cat.jpg","horse.jpg"];
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -47,12 +48,26 @@ class SwiperRoute extends StatelessWidget {
                 indicatorAlignment: AlignmentDirectional.topEnd,
                 circular: true,
                 indicator: NumberSwiperIndicator(),
+
                 children: <Widget>[
                   Image.asset("images/sea.png",fit: BoxFit.fill,),
                   Image.asset("images/star.jpg", fit: BoxFit.fill),
                   Image.asset("images/cat.jpg",fit: BoxFit.fill,),
                   Image.asset("images/horse.jpg", fit: BoxFit.fill),
                 ],
+              ),
+            ),
+            AspectRatio(
+              aspectRatio: 16.0 / 9.0,
+              child: Swiper.builder(
+                indicatorAlignment: AlignmentDirectional.topEnd,
+                circular: true,
+                childCount: _images.length,
+                indicator: NumberSwiperIndicator(),
+                itemBuilder: (context, index){
+                  //print(index);
+                  return Image.asset("images/${_images[index]}",fit: BoxFit.fill);
+                },
               ),
             ),
           ],

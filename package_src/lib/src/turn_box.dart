@@ -22,15 +22,16 @@ class TurnBox extends StatefulWidget {
   final Widget child;
 
   @override
-  _AnimatedRotationBoxState createState() => new _AnimatedRotationBoxState();
+  _TurnBoxState createState() => new _TurnBoxState();
 }
 
-class _AnimatedRotationBoxState extends State<TurnBox>
+class _TurnBoxState extends State<TurnBox>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
 
   @override
   void initState() {
+    super.initState();
     _controller = new AnimationController(
         vsync: this,
         lowerBound: -double.infinity,
@@ -55,11 +56,12 @@ class _AnimatedRotationBoxState extends State<TurnBox>
 
   @override
   void didUpdateWidget(TurnBox oldWidget) {
+    super.didUpdateWidget(oldWidget);
     if (oldWidget.turns != widget.turns) {
       _controller.animateTo(
-          widget.turns,
-          duration: Duration(milliseconds: widget.speed??200),
-          curve: Curves.easeOut,
+        widget.turns,
+        duration: Duration(milliseconds: widget.speed??200),
+        curve: Curves.easeOut,
       );
     }
   }

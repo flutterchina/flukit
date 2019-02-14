@@ -21,8 +21,8 @@ class AfterLayout extends StatelessWidget {
   ///when the main rendering pipeline has been flushed
   /// (we can consider layout phase is complete), the
   /// [callback] will be called.
-  AfterLayoutCallback callback;
-  Widget child;
+  final AfterLayoutCallback callback;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {

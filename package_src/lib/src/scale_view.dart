@@ -60,7 +60,7 @@ class ScaleView extends StatefulWidget {
   /// means the entire scale view room will respond to the user input.
   /// If you just expect the child self respond to the user input, set
   /// value as [HitTestBehavior.deferToChild].
-  HitTestBehavior behavior;
+  final HitTestBehavior behavior;
 
   final Widget child;
 

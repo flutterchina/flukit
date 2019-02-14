@@ -26,7 +26,6 @@ enum PullRefreshIndicatorMode {
 /// Used by [PullRefreshBox.onRefresh].
 typedef Future PullRefreshCallback();
 
-
 /// [PullRefreshBox] header builder interface. If you want to custom indicator,
 /// implement this interface.
 ///
@@ -35,7 +34,6 @@ typedef Future PullRefreshCallback();
 ///  * [DefaultPullRefreshIndicator], a default PullRefreshIndicator.
 ///
 abstract class PullRefreshIndicator {
-
   /// The distance from the child's top or bottom edge to where the refresh
   /// indicator will settle. During the drag that exposes the refresh indicator,
   /// its actual displacement may significantly exceed this value.
@@ -44,7 +42,8 @@ abstract class PullRefreshIndicator {
   /// Header height
   double get height;
 
-  Widget build(BuildContext context,
+  Widget build(
+      BuildContext context,
       PullRefreshIndicatorMode mode,
       double offset, //drag offset(over scroll)
       ScrollDirection direction);
@@ -52,14 +51,13 @@ abstract class PullRefreshIndicator {
 
 /// This is a default PullRefreshIndicator.
 class DefaultPullRefreshIndicator implements PullRefreshIndicator {
-  DefaultPullRefreshIndicator({
-    this.style = const TextStyle(color: Colors.grey),
-    this.arrowColor = Colors.grey,
-    this.loadingTip,
-    this.pullTip,
-    this.loosenTip,
-    this.progressIndicator
-  });
+  DefaultPullRefreshIndicator(
+      {this.style = const TextStyle(color: Colors.grey),
+      this.arrowColor = Colors.grey,
+      this.loadingTip,
+      this.pullTip,
+      this.loosenTip,
+      this.progressIndicator});
 
   final TextStyle style;
   final Color arrowColor;
@@ -81,11 +79,14 @@ class DefaultPullRefreshIndicator implements PullRefreshIndicator {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          progressIndicator ?? SizedBox(
-            width: 20.0,
-            height: 20.0,
-            child: CircularProgressIndicator(strokeWidth: 2.0,),
-          ),
+          progressIndicator ??
+              SizedBox(
+                width: 20.0,
+                height: 20.0,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.0,
+                ),
+              ),
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: Text(loadingTip ?? "正在刷新...", style: style),
@@ -101,7 +102,10 @@ class DefaultPullRefreshIndicator implements PullRefreshIndicator {
           padding: const EdgeInsets.all(3.0),
           child: TurnBox(
             turns: offset > 100 ? 0.5 : .0,
-            child: Icon(Icons.arrow_upward, color: Colors.grey,),
+            child: Icon(
+              Icons.arrow_upward,
+              color: Colors.grey,
+            ),
           ),
         ),
         Text(offset > 100 ? loosenTip ?? "松开刷新" : pullTip ?? "继续下拉",
@@ -109,9 +113,7 @@ class DefaultPullRefreshIndicator implements PullRefreshIndicator {
       ],
     );
   }
-
 }
-
 
 /// A widget that supports "swipe to refresh" idiom.
 ///
@@ -140,21 +142,19 @@ class DefaultPullRefreshIndicator implements PullRefreshIndicator {
 ///  * [PullRefreshBoxState], can be used to programmatically show the refresh indicator.
 ///
 class PullRefreshBox extends StatefulWidget {
-  PullRefreshBox({
-    Key key,
-    this.child,
-    @required this.onRefresh,
-    this.indicator,
-    this.overScrollEffect
-  }) :super(key: key) {
-    this.indicator ??= DefaultPullRefreshIndicator();
-  }
+  PullRefreshBox(
+      {Key key,
+      this.child,
+      @required this.onRefresh,
+      PullRefreshIndicator indicator,
+      this.overScrollEffect})
+      : this.indicator = indicator ?? DefaultPullRefreshIndicator(),
+        super(key: key);
 
   final PullRefreshCallback onRefresh;
   final Widget child;
   final TargetPlatform overScrollEffect;
-  PullRefreshIndicator indicator;
-
+  final PullRefreshIndicator indicator;
 
   @override
   PullRefreshBoxState createState() => new PullRefreshBoxState();
@@ -174,19 +174,20 @@ class PullRefreshBoxState extends State<PullRefreshBox>
 
   bool get _androidEffect =>
       widget.overScrollEffect == TargetPlatform.android ||
-          (widget.overScrollEffect == null &&
-              defaultTargetPlatform == TargetPlatform.android);
+      (widget.overScrollEffect == null &&
+          defaultTargetPlatform == TargetPlatform.android);
 
   double get _indicatorHeight =>
       widget.indicator.height ?? widget.indicator.displacement ?? 100.0;
 
   @override
   void initState() {
-    _controller = AnimationController(vsync: this,
+    super.initState();
+    _controller = AnimationController(
+        vsync: this,
         duration: Duration(seconds: 2),
         lowerBound: -500.0,
-        upperBound: 500.0
-    );
+        upperBound: 500.0);
     _controller.value = 0.0;
   }
 
@@ -209,19 +210,21 @@ class PullRefreshBoxState extends State<PullRefreshBox>
   /// If you await the future returned by this function from a [State], you
   /// should check that the state is still [mounted] before calling [setState].
 
-  Future show() {
+  Future<void> show() {
     _mode = PullRefreshIndicatorMode.refresh;
-    _checkIfNeedRefresh();
+    return _checkIfNeedRefresh();
   }
 
-  _goBack(){
-    _dragOffset=.0;
-    if(mounted) {
-      _controller.animateTo(
+  _goBack() {
+    _dragOffset = .0;
+    if (mounted) {
+      _controller
+          .animateTo(
         0.0,
         duration: Duration(milliseconds: 200),
         curve: Curves.easeOut,
-      ).then((e) {
+      )
+          .then((e) {
         _mode = PullRefreshIndicatorMode.done;
       });
     }
@@ -235,7 +238,7 @@ class PullRefreshBoxState extends State<PullRefreshBox>
       return widget.onRefresh().whenComplete(() {
         _mode = PullRefreshIndicatorMode.done;
         _goBack();
-        _refreshing=false;
+        _refreshing = false;
       });
     }
     return Future.value(null);
@@ -248,18 +251,18 @@ class PullRefreshBoxState extends State<PullRefreshBox>
       children: <Widget>[
         AnimatedBuilder(
           builder: (BuildContext context, Widget child) {
-            return Transform.translate(offset: Offset(0.0, _controller.value),
+            return Transform.translate(
+              offset: Offset(0.0, _controller.value),
               child: NotificationListener<ScrollNotification>(
                 onNotification: _handleScrollNotification,
-                child: new NotificationListener<
-                    OverscrollIndicatorNotification>(
-                    onNotification: _handleGlowNotification,
-                    child: Theme(
-                      data: Theme.of(context).copyWith(
-                          platform: TargetPlatform.android),
-                      child: widget.child,
-                    )
-                ),
+                child:
+                    new NotificationListener<OverscrollIndicatorNotification>(
+                        onNotification: _handleGlowNotification,
+                        child: Theme(
+                          data: Theme.of(context)
+                              .copyWith(platform: TargetPlatform.android),
+                          child: widget.child,
+                        )),
               ),
             );
           },
@@ -269,25 +272,22 @@ class PullRefreshBoxState extends State<PullRefreshBox>
         AnimatedBuilder(
           builder: (BuildContext context, Widget child) {
             return Transform.translate(
-                offset: Offset(0.0, -_indicatorHeight + _controller.value+1),
+                offset: Offset(0.0, -_indicatorHeight + _controller.value + 1),
                 child: SizedBox(
-                  height: _indicatorHeight,
-                  width: double.infinity,
-                  child: widget.indicator.build(
-                    context,
-                    _mode,
-                    _dragOffset,
-                    _direction,
-                  )
-                )
-            );
+                    height: _indicatorHeight,
+                    width: double.infinity,
+                    child: widget.indicator.build(
+                      context,
+                      _mode,
+                      _dragOffset,
+                      _direction,
+                    )));
           },
           animation: _controller,
         )
       ],
     );
   }
-
 
   bool _handleScrollNotification(ScrollNotification notification) {
     if (_mode == PullRefreshIndicatorMode.refresh) {
@@ -313,7 +313,7 @@ class PullRefreshBoxState extends State<PullRefreshBox>
         _controller.value = _dragOffset;
       }
     } else if (notification is ScrollEndNotification) {
-      if (_dragOffset >= (widget.indicator.displacement??100.0) &&
+      if (_dragOffset >= (widget.indicator.displacement ?? 100.0) &&
           _mode != PullRefreshIndicatorMode.refresh) {
         setState(() {
           _mode = PullRefreshIndicatorMode.refresh;
@@ -329,7 +329,6 @@ class PullRefreshBoxState extends State<PullRefreshBox>
     return false;
   }
 
-
   bool _handleGlowNotification(OverscrollIndicatorNotification notification) {
     if (!_androidEffect || notification.leading) {
       notification.disallowGlow();
@@ -337,4 +336,3 @@ class PullRefreshBoxState extends State<PullRefreshBox>
     return true;
   }
 }
-
