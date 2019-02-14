@@ -2,11 +2,10 @@ import 'package:flutter/widgets.dart';
 
 /// Rotates forever
 class AnimatedRotationBox extends StatefulWidget {
-  AnimatedRotationBox({
-    this.child,
-    this.duration=const Duration(seconds: 1),
-    this.curve=Curves.linear
-  });
+  AnimatedRotationBox(
+      {this.child,
+      this.duration = const Duration(seconds: 1),
+      this.curve = Curves.linear});
   final Widget child;
   final Duration duration;
   final Curve curve;
@@ -16,10 +15,8 @@ class AnimatedRotationBox extends StatefulWidget {
   }
 }
 
-class _AnimatedRotationBoxState
-    extends State<AnimatedRotationBox>
+class _AnimatedRotationBoxState extends State<AnimatedRotationBox>
     with SingleTickerProviderStateMixin {
-
   AnimationController _animationController;
 
   @override
@@ -33,10 +30,11 @@ class _AnimatedRotationBoxState
   @override
   Widget build(BuildContext context) {
     return RotationTransition(
-        turns: CurvedAnimation(parent: _animationController, curve: widget.curve) ,
-        child: widget.child
-    );
+        turns:
+            CurvedAnimation(parent: _animationController, curve: widget.curve),
+        child: widget.child);
   }
+
   @override
   void dispose() {
     _animationController.dispose();
@@ -47,9 +45,9 @@ class _AnimatedRotationBoxState
   void didUpdateWidget(AnimatedRotationBox oldWidget) {
     super.didUpdateWidget(oldWidget);
     //print(widget.duration);
-    if(oldWidget.duration!=widget.duration){
+    if (oldWidget.duration != widget.duration) {
       print(widget.duration);
-      _animationController.duration=widget.duration;
+      _animationController.duration = widget.duration;
       _animationController.stop();
       _animationController.repeat();
     }

@@ -460,8 +460,10 @@ class _SwiperState extends State<Swiper>
         controller: _pageController,
         itemBuilder: (context, index) {
           return widget.itemBuilder(
-              context,
-              widget._itemCount-2==widget.childCount?(index-1) % widget.childCount:index,
+            context,
+            widget._itemCount - 2 == widget.childCount
+                ? (index - 1) % widget.childCount
+                : index,
           );
         },
       ));

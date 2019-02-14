@@ -9,12 +9,9 @@ import 'package:flutter/material.dart';
 /// widget quickly.
 
 class QuickScrollbar extends StatefulWidget {
-  QuickScrollbar({
-    Key key,
-    this.controller,
-    this.velocity = 10,
-    @required this.child
-  }):super(key:key);
+  QuickScrollbar(
+      {Key key, this.controller, this.velocity = 10, @required this.child})
+      : super(key: key);
 
   final Widget child;
 
@@ -44,12 +41,11 @@ class _QuickScrollBarState extends State<QuickScrollbar>
   @override
   void initState() {
     super.initState();
-    _animationController =
-    new AnimationController(vsync: this, duration: Duration(milliseconds: 200));
+    _animationController = new AnimationController(
+        vsync: this, duration: Duration(milliseconds: 200));
     _animation = Tween(begin: 1.0, end: 0.0).animate(_animationController);
     _animationController.value = 1.0;
   }
-
 
   @override
   void dispose() {
@@ -60,10 +56,9 @@ class _QuickScrollBarState extends State<QuickScrollbar>
 
   @override
   Widget build(BuildContext context) {
-    ScrollController scrollController =
-        widget.controller
-            ?? PrimaryScrollController.of(context)
-            ?? ScrollController();
+    ScrollController scrollController = widget.controller ??
+        PrimaryScrollController.of(context) ??
+        ScrollController();
     Widget stack = Stack(
       children: <Widget>[
         widget.child,
@@ -84,8 +79,7 @@ class _QuickScrollBarState extends State<QuickScrollbar>
                           Icons.unfold_more,
                           color: Colors.grey[600],
                           size: 24.0,
-                        )
-                    ),
+                        )),
                   ),
                   opacity: _animation,
                 ),
@@ -97,16 +91,16 @@ class _QuickScrollBarState extends State<QuickScrollbar>
                 var position = scrollController.position;
 
                 double pixels = (position.extentBefore + position.extentAfter) *
-                    details.delta.dy / (position.extentInside - _barHeight);
+                    details.delta.dy /
+                    (position.extentInside - _barHeight);
                 pixels += position.pixels;
-                scrollController.jumpTo(
-                    pixels.clamp(0.0, position.maxScrollExtent));
+                scrollController
+                    .jumpTo(pixels.clamp(0.0, position.maxScrollExtent));
               },
               onVerticalDragEnd: (details) {
                 _fadeBar();
               },
-            )
-        )
+            ))
       ],
     );
     return NotificationListener<ScrollNotification>(
@@ -116,7 +110,7 @@ class _QuickScrollBarState extends State<QuickScrollbar>
   }
 
   void _fadeBar() {
-    if(_animationController.value==1.0) return;
+    if (_animationController.value == 1.0) return;
     _timer?.cancel();
     _timer = new Timer(Duration(seconds: 1), () {
       _animationController.animateTo(1.0);
@@ -132,9 +126,10 @@ class _QuickScrollBarState extends State<QuickScrollbar>
       }
     }
     setState(() {
-      double total = notification.metrics.extentBefore +
-          notification.metrics.extentAfter;
-      _offsetTop = notification.metrics.extentBefore / total *
+      double total =
+          notification.metrics.extentBefore + notification.metrics.extentAfter;
+      _offsetTop = notification.metrics.extentBefore /
+          total *
           (notification.metrics.extentInside - _barHeight);
       _fadeBar();
     });
