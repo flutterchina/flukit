@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flukit/flukit.dart';
+import 'package:azlistview/azlistview.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'city_model.dart';
 
@@ -54,7 +54,7 @@ class _CitySelectRouteState extends State<CitySelectRoute> {
     if (list == null || list.isEmpty) return;
     for (int i = 0, length = list.length; i < length; i++) {
       String pinyin =
-      PinyinHelper.convertToPinyinStringWithoutException(list[i].name);
+      PinyinHelper.getPinyinE(list[i].name);
       String tag = pinyin.substring(0, 1).toUpperCase();
       list[i].namePinyin = pinyin;
       if (RegExp("[A-Z]").hasMatch(tag)) {
@@ -124,7 +124,7 @@ class _CitySelectRouteState extends State<CitySelectRoute> {
         ),
         Expanded(
             flex: 1,
-            child: QuickSelectListView(
+            child: AzListView(
               data: _cityList,
               topData: _hotCityList,
               itemBuilder: (context, model) => _buildListItem(model),

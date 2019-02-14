@@ -12,7 +12,7 @@ class QuickSelectListViewRoute extends StatelessWidget {
       PageInfo("City Select", (ctx) => CitySelectRoute()),
       PageInfo("City Select(Custom header)", (ctx) => CitySelectCustomHeaderRoute()),
       PageInfo("Contacts List", (ctx) => ContactListRoute()),
-      PageInfo("IndexBar & SuspensionListView", (ctx) => IndexSuspensionRoute()),
+      PageInfo("IndexBar & SuspensionView", (ctx) => IndexSuspensionRoute()),
     ]);
   }
 }

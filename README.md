@@ -5,7 +5,11 @@
 
 ## 注意
 
-本项目正在开发中，目前没有稳定版，我们暂时不建议您在生产中使用，欢迎大家贡献代码。
+本项目正在开发中，目前没有稳定版，我们暂时不建议您在生产中使用，欢迎大家贡献代码。  
+  
+原QuickSelectListView迁移至[AzListView](https://github.com/flutterchina/azlistview)  
+QuickSelectListView 更改为 AzListView  
+SuspensionListView 更改为 SuspensionView  
 
 ## 贡献代码须知
 
@@ -46,7 +50,13 @@ flutter run
 - ScaleView
 - Swiper
 - GradientCircularProgressIndicator
-- QuickSelectListView(SuspensionListView、IndexBar)
+
+### APK:[点击下载 v0.1.0](https://raw.githubusercontent.com/Sky24n/LDocuments/master/flutterchina/flukit_release.apk)
+
+### APK QR:
+  ![AzListView](https://raw.githubusercontent.com/Sky24n/LDocuments/master/flutterchina/flukit_qrcode.png)
+
+### iOS：暂无，请自行clone项目代码运行。
 
 ## Demo部分截图
 

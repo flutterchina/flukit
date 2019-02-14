@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flukit/flukit.dart';
+import 'package:azlistview/azlistview.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'contact_model.dart';
 
@@ -43,7 +43,7 @@ class _ContactListRouteState extends State<ContactListRoute> {
     if (list == null || list.isEmpty) return;
     for (int i = 0, length = list.length; i < length; i++) {
       String pinyin =
-      PinyinHelper.convertToPinyinStringWithoutException(list[i].name);
+      PinyinHelper.getPinyinE(list[i].name);
       String tag = pinyin.substring(0, 1).toUpperCase();
       list[i].namePinyin = pinyin;
       if (RegExp("[A-Z]").hasMatch(tag)) {
@@ -113,13 +113,13 @@ class _ContactListRouteState extends State<ContactListRoute> {
 
   @override
   Widget build(BuildContext context) {
-    return QuickSelectListView(
+    return AzListView(
       data: _contacts,
       itemBuilder: (context, model) => _buildListItem(model),
       isUseRealIndex: true,
       itemHeight: _itemHeight,
       suspensionHeight: _suspensionHeight,
-      header: QuickSelectListViewHeader(
+      header: AzListViewHeader(
           height: 180,
           builder: (context) {
             return _buildHeader();
