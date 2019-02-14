@@ -1,4 +1,4 @@
-import 'package:flukit/flukit.dart';
+import 'package:azlistview/azlistview.dart';
 
 class ContactInfo extends ISuspensionBean {
   String name;
