@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'after_layout.dart';
 
-
 /// Control the scale of a child widget.
 ///
 /// ScaleView not only support scare and double click gesture,
@@ -28,17 +27,16 @@ import 'after_layout.dart';
 ///
 
 class ScaleView extends StatefulWidget {
-  ScaleView({
-    Key key,
-    this.minScale = 1.0,
-    this.maxScale = 10.0,
-    this.doubleClickScale = 3.0,
-    this.alignment: Alignment.center,
-    this.behavior: HitTestBehavior.opaque,
-    this.parentScrollableAxis = Axis.horizontal,
-    this.child
-  }) :super(key: key);
-
+  ScaleView(
+      {Key key,
+      this.minScale = 1.0,
+      this.maxScale = 10.0,
+      this.doubleClickScale = 3.0,
+      this.alignment: Alignment.center,
+      this.behavior: HitTestBehavior.opaque,
+      this.parentScrollableAxis = Axis.horizontal,
+      this.child})
+      : super(key: key);
 
   /// Minimum scale multiplier
   final double minScale;
@@ -102,12 +100,11 @@ class _ScaleViewState extends State<ScaleView>
     return _origin;
   }
 
-
   @override
   void initState() {
     super.initState();
-    _controller =
-    new AnimationController(vsync: this, duration: Duration(milliseconds: 150))
+    _controller = new AnimationController(
+        vsync: this, duration: Duration(milliseconds: 150))
       ..addListener(_handleFlingAnimation)
       ..addStatusListener((status) {
         if (_doubleClick && status == AnimationStatus.completed) {
@@ -122,21 +119,15 @@ class _ScaleViewState extends State<ScaleView>
     super.dispose();
   }
 
-
   Offset _clampOffset(Offset offset) {
-    final Offset minOffset = Offset(
-        childSize.width, childSize.height
-    ) * (1 - _scale);
+    final Offset minOffset =
+        Offset(childSize.width, childSize.height) * (1 - _scale);
     if (_scale >= 1.0) {
       return Offset(
-          offset.dx.clamp(minOffset.dx, .0),
-          offset.dy.clamp(minOffset.dy, .0)
-      );
+          offset.dx.clamp(minOffset.dx, .0), offset.dy.clamp(minOffset.dy, .0));
     } else {
-      return Offset(
-          offset.dx.clamp(0.0, _childSize.width * (1 - _scale)),
-          offset.dy.clamp(0.0, _childSize.height * (1 - _scale))
-      );
+      return Offset(offset.dx.clamp(0.0, _childSize.width * (1 - _scale)),
+          offset.dy.clamp(0.0, _childSize.height * (1 - _scale)));
     }
   }
 
@@ -169,8 +160,8 @@ class _ScaleViewState extends State<ScaleView>
       //放大或缩小
       if (details.scale != 1.0) {
         //放大倍数在widget.minScale-maxScale倍之间。
-        _scale = (_previousScale * details.scale).clamp(
-            widget.minScale, widget.maxScale);
+        _scale = (_previousScale * details.scale)
+            .clamp(widget.minScale, widget.maxScale);
         _offset = origin - _normalizedOffset * _scale;
       } else {
         //垂直方向拖动
@@ -194,14 +185,12 @@ class _ScaleViewState extends State<ScaleView>
     final Offset direction = details.velocity.pixelsPerSecond / magnitude;
     final double distance = (Offset.zero & context.size).shortestSide;
     _flingAnimation = new Tween<Offset>(
-        begin: _offset,
-        end: _clampOffset(_offset + direction * distance)
-    ).animate(_controller);
+            begin: _offset, end: _clampOffset(_offset + direction * distance))
+        .animate(_controller);
     _controller
       ..value = 0.0
       ..fling(velocity: magnitude / 1000.0);
   }
-
 
   void _handleOnDoubleTab() {
     _flingAnimation = null;
@@ -209,25 +198,19 @@ class _ScaleViewState extends State<ScaleView>
     _doubleClick = true;
     Size size = childSize ?? context.size;
     if (_scale != 1.0) {
-      _flingAnimation = new Tween<Offset>(
-          begin: _offset,
-          end: Offset.zero
-      ).animate(_controller);
-      _scaleAnimation = new Tween<double>(
-          begin: _scale,
-          end: 1.0
-      ).animate(_controller);
+      _flingAnimation = new Tween<Offset>(begin: _offset, end: Offset.zero)
+          .animate(_controller);
+      _scaleAnimation =
+          new Tween<double>(begin: _scale, end: 1.0).animate(_controller);
       _controller.forward();
     } else {
       size = size * (widget.doubleClickScale - 1);
       _flingAnimation = new Tween<Offset>(
-          begin: Offset.zero,
-          end: Offset(size.width, size.height) / -2.0
-      ).animate(_controller);
-      _scaleAnimation = new Tween<double>(
-          begin: _scale,
-          end: widget.doubleClickScale
-      ).animate(_controller);
+              begin: Offset.zero, end: Offset(size.width, size.height) / -2.0)
+          .animate(_controller);
+      _scaleAnimation =
+          new Tween<double>(begin: _scale, end: widget.doubleClickScale)
+              .animate(_controller);
       _controller.forward();
     }
   }
@@ -239,7 +222,6 @@ class _ScaleViewState extends State<ScaleView>
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     bool horizontal = widget.parentScrollableAxis == Axis.horizontal;
@@ -249,15 +231,12 @@ class _ScaleViewState extends State<ScaleView>
         onScaleEnd: _handleFling,
         onDoubleTap: _handleOnDoubleTab,
         onVerticalDragEnd: (_scale == 1.0 || horizontal) ? null : _handleFling,
-        onVerticalDragUpdate: (_scale == 1.0 || horizontal)
-            ? null
-            : _handleOnDragUpdate,
-        onHorizontalDragEnd: (_scale == 1.0 || !horizontal)
-            ? null
-            : _handleFling,
-        onHorizontalDragUpdate: (_scale == 1.0 || !horizontal)
-            ? null
-            : _handleOnDragUpdate,
+        onVerticalDragUpdate:
+            (_scale == 1.0 || horizontal) ? null : _handleOnDragUpdate,
+        onHorizontalDragEnd:
+            (_scale == 1.0 || !horizontal) ? null : _handleFling,
+        onHorizontalDragUpdate:
+            (_scale == 1.0 || !horizontal) ? null : _handleOnDragUpdate,
         behavior: widget.behavior,
         child: Align(
           alignment: widget.alignment,
@@ -271,20 +250,12 @@ class _ScaleViewState extends State<ScaleView>
                   _childContext = ctx;
                 },
                 child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                        minWidth: 10.0,
-                        minHeight: 10.0
-                    ),
-                    child: widget.child
-                ),
+                    constraints:
+                        BoxConstraints(minWidth: 10.0, minHeight: 10.0),
+                    child: widget.child),
               ),
             ),
           ),
-        )
-    );
+        ));
   }
 }
-
-
-
-
