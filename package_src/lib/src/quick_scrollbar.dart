@@ -61,10 +61,13 @@ class _QuickScrollBarState extends State<QuickScrollbar>
         ScrollController();
     Widget stack = Stack(
       children: <Widget>[
-        widget.child,
+        RepaintBoundary(
+          child: widget.child,
+        ),
         Positioned(
-            top: _offsetTop,
-            right: 0.0,
+          top: _offsetTop,
+          right: 0.0,
+          child: RepaintBoundary(
             child: GestureDetector(
               child: Padding(
                 padding: const EdgeInsets.only(right: 3.0),
@@ -100,7 +103,9 @@ class _QuickScrollBarState extends State<QuickScrollbar>
               onVerticalDragEnd: (details) {
                 _fadeBar();
               },
-            ))
+            ),
+          ),
+        )
       ],
     );
     return NotificationListener<ScrollNotification>(
@@ -118,7 +123,7 @@ class _QuickScrollBarState extends State<QuickScrollbar>
     });
   }
 
-  void _handleNotification(ScrollNotification notification) {
+  bool _handleNotification(ScrollNotification notification) {
     if (notification is ScrollUpdateNotification) {
       if (notification.scrollDelta.abs() > widget.velocity &&
           notification.metrics.maxScrollExtent != double.infinity) {
@@ -133,5 +138,6 @@ class _QuickScrollBarState extends State<QuickScrollbar>
           (notification.metrics.extentInside - _barHeight);
       _fadeBar();
     });
+    return true;
   }
 }
