@@ -49,6 +49,7 @@ class _IndexSuspensionRouteState extends State<IndexSuspensionRoute> {
         list[i].tagIndex = "#";
       }
     }
+    //根据A-Z排序
     SuspensionUtil.sortListBySuspensionTag(list);
   }
 
