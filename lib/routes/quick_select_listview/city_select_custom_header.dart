@@ -35,18 +35,14 @@ class _CitySelectCustomHeaderRouteState
         _cityList.add(CityInfo(name: value['name']));
       });
       _handleList(_cityList);
-      setState(() {
-
-      });
+      setState(() {});
     });
   }
-
 
   void _handleList(List<CityInfo> list) {
     if (list == null || list.isEmpty) return;
     for (int i = 0, length = list.length; i < length; i++) {
-      String pinyin =
-      PinyinHelper.getPinyinE(list[i].name);
+      String pinyin = PinyinHelper.getPinyinE(list[i].name);
       String tag = pinyin.substring(0, 1).toUpperCase();
       list[i].namePinyin = pinyin;
       if (RegExp("[A-Z]").hasMatch(tag)) {
@@ -55,6 +51,8 @@ class _CitySelectCustomHeaderRouteState
         list[i].tagIndex = "#";
       }
     }
+    //根据A-Z排序
+    SuspensionUtil.sortListBySuspensionTag(list);
   }
 
   void _onSusTagChanged(String tag) {
@@ -141,12 +139,16 @@ class _CitySelectCustomHeaderRouteState
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Icon(Icons.place, size: 20.0,),
+                Icon(
+                  Icons.place,
+                  size: 20.0,
+                ),
                 Text(" 成都市"),
               ],
-            )
+            )),
+        Divider(
+          height: .0,
         ),
-        Divider(height: .0,),
         Expanded(
             flex: 1,
             child: AzListView(
@@ -162,22 +164,19 @@ class _CitySelectCustomHeaderRouteState
                   height: 140,
                   builder: (context) {
                     return _buildHeader();
-                  }
-              ),
+                  }),
               indexHintBuilder: (context, hint) {
                 return Container(
                   alignment: Alignment.center,
                   width: 80.0,
                   height: 80.0,
                   decoration: BoxDecoration(
-                      color:Colors.black54,
-                      shape: BoxShape.circle
-                  ),
-                  child: Text(hint, style: TextStyle(color:Colors.white, fontSize: 30.0)),
+                      color: Colors.black54, shape: BoxShape.circle),
+                  child: Text(hint,
+                      style: TextStyle(color: Colors.white, fontSize: 30.0)),
                 );
               },
-            )
-        ),
+            )),
       ],
     );
   }

@@ -32,18 +32,14 @@ class _ContactListRouteState extends State<ContactListRoute> {
         _contacts.add(ContactInfo(name: value['name']));
       });
       _handleList(_contacts);
-      setState(() {
-
-      });
+      setState(() {});
     });
   }
-
 
   void _handleList(List<ContactInfo> list) {
     if (list == null || list.isEmpty) return;
     for (int i = 0, length = list.length; i < length; i++) {
-      String pinyin =
-      PinyinHelper.getPinyinE(list[i].name);
+      String pinyin = PinyinHelper.getPinyinE(list[i].name);
       String tag = pinyin.substring(0, 1).toUpperCase();
       list[i].namePinyin = pinyin;
       if (RegExp("[A-Z]").hasMatch(tag)) {
@@ -52,18 +48,26 @@ class _ContactListRouteState extends State<ContactListRoute> {
         list[i].tagIndex = "#";
       }
     }
+    //根据A-Z排序
+    SuspensionUtil.sortListBySuspensionTag(list);
   }
-
 
   Widget _buildHeader() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          ClipOval(child: Image.asset("./images/avatar.png", width: 80.0,)),
+          ClipOval(
+              child: Image.asset(
+            "./images/avatar.png",
+            width: 80.0,
+          )),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text("远行", textScaleFactor: 1.2,),
+            child: Text(
+              "远行",
+              textScaleFactor: 1.2,
+            ),
           ),
           Text("+86 182-286-44678"),
         ],
@@ -79,10 +83,15 @@ class _ContactListRouteState extends State<ContactListRoute> {
       alignment: Alignment.centerLeft,
       child: Row(
         children: <Widget>[
-          Text('$susTag',
+          Text(
+            '$susTag',
             textScaleFactor: 1.2,
           ),
-          Expanded(child: Divider(height: .0, indent: 10.0,))
+          Expanded(
+              child: Divider(
+            height: .0,
+            indent: 10.0,
+          ))
         ],
       ),
     );
@@ -99,7 +108,9 @@ class _ContactListRouteState extends State<ContactListRoute> {
         SizedBox(
           height: _itemHeight.toDouble(),
           child: ListTile(
-            leading: CircleAvatar(child: Text(model.name[0]),),
+            leading: CircleAvatar(
+              child: Text(model.name[0]),
+            ),
             title: Text(model.name),
             onTap: () {
               print("OnItemClick: $model");
@@ -123,9 +134,7 @@ class _ContactListRouteState extends State<ContactListRoute> {
           height: 180,
           builder: (context) {
             return _buildHeader();
-          }
-      ),
-
+          }),
       indexBarBuilder: (BuildContext context, List<String> tags,
           IndexBarTouchCallback onTouch) {
         return Container(
@@ -133,8 +142,7 @@ class _ContactListRouteState extends State<ContactListRoute> {
           decoration: BoxDecoration(
               color: Colors.grey[50],
               borderRadius: BorderRadius.circular(20.0),
-              border: Border.all(color: Colors.grey[300], width: .5)
-          ),
+              border: Border.all(color: Colors.grey[300], width: .5)),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20.0),
             child: IndexBar(
@@ -156,8 +164,8 @@ class _ContactListRouteState extends State<ContactListRoute> {
             color: Colors.blue[700].withAlpha(200),
             shape: BoxShape.circle,
           ),
-          child: Text(
-              hint, style: TextStyle(color: Colors.white, fontSize: 30.0)),
+          child:
+              Text(hint, style: TextStyle(color: Colors.white, fontSize: 30.0)),
         );
       },
     );
