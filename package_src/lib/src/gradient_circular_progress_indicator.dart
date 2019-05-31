@@ -3,15 +3,17 @@ import 'package:flutter/material.dart';
 
 /// A circular progress indicator with gradient effect.
 class GradientCircularProgressIndicator extends StatelessWidget {
-  GradientCircularProgressIndicator(
-      {this.stokeWidth = 2.0,
-      @required this.radius,
-      @required this.colors,
-      this.stops,
-      this.strokeCapRound = false,
-      this.backgroundColor = const Color(0xFFEEEEEE),
-      this.totalAngle = 2 * pi,
-      this.value});
+  GradientCircularProgressIndicator({
+    Key key,
+    this.stokeWidth = 2.0,
+    @required this.radius,
+    @required this.colors,
+    this.stops,
+    this.strokeCapRound = false,
+    this.backgroundColor = const Color(0xFFEEEEEE),
+    this.totalAngle = 2 * pi,
+    this.value,
+  }) :super(key: key);
 
   /// The width of the line used to draw the circle.
   final double stokeWidth;
@@ -69,7 +71,9 @@ class GradientCircularProgressIndicator extends StatelessWidget {
     }
     var _colors = colors;
     if (_colors == null) {
-      Color color = Theme.of(context).accentColor;
+      Color color = Theme
+          .of(context)
+          .accentColor;
       _colors = [color, color];
     }
     return Transform.rotate(
@@ -90,15 +94,14 @@ class GradientCircularProgressIndicator extends StatelessWidget {
 }
 
 class _GradientCircularProgressPainter extends CustomPainter {
-  _GradientCircularProgressPainter(
-      {this.stokeWidth: 10.0,
-      this.strokeCapRound: false,
-      this.backgroundColor = const Color(0xFFEEEEEE),
-      this.radius,
-      this.total = 2 * pi,
-      @required this.colors,
-      this.stops,
-      this.value});
+  _GradientCircularProgressPainter({this.stokeWidth: 10.0,
+    this.strokeCapRound: false,
+    this.backgroundColor = const Color(0xFFEEEEEE),
+    this.radius,
+    this.total = 2 * pi,
+    @required this.colors,
+    this.stops,
+    this.value});
 
   final double stokeWidth;
   final bool strokeCapRound;
@@ -124,7 +127,7 @@ class _GradientCircularProgressPainter extends CustomPainter {
     }
 
     Rect rect = Offset(_offset, _offset) &
-        Size(size.width - stokeWidth, size.height - stokeWidth);
+    Size(size.width - stokeWidth, size.height - stokeWidth);
 
     var paint = Paint()
       ..strokeCap = strokeCapRound ? StrokeCap.round : StrokeCap.butt

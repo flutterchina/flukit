@@ -27,15 +27,15 @@ import 'after_layout.dart';
 ///
 
 class ScaleView extends StatefulWidget {
-  ScaleView(
-      {Key key,
-      this.minScale = 1.0,
-      this.maxScale = 10.0,
-      this.doubleClickScale = 3.0,
-      this.alignment: Alignment.center,
-      this.behavior: HitTestBehavior.opaque,
-      this.parentScrollableAxis = Axis.horizontal,
-      this.child})
+  ScaleView({Key key,
+    this.minScale = 1.0,
+    this.maxScale = 10.0,
+    this.doubleClickScale = 3.0,
+    this.alignment: Alignment.center,
+    this.behavior: HitTestBehavior.opaque,
+    this.parentScrollableAxis = Axis.horizontal,
+    this.child,
+  })
       : super(key: key);
 
   /// Minimum scale multiplier
@@ -85,9 +85,16 @@ class _ScaleViewState extends State<ScaleView>
 
   //缓存子widget Size
   Size get childSize {
+    //if (_childContext.size.width == Size.zero) return Size(10, 10);
     if (_childSize == null) {
-      _childSize = applyBoxFit(BoxFit.contain, _childContext.size, context.size)
-          .destination;
+      if(_childContext.size.width<context.size.width&&_childContext.size.height<context.size.height){
+        _childSize=_childContext.size;
+      }else {
+        _childSize =
+            applyBoxFit(BoxFit.contain, _childContext.size, context.size)
+                .destination;
+      }
+      print("_childContext.size ${_childContext.size} context.size ${context.size} _childSize $_childSize", );
     }
     return _childSize;
   }
@@ -185,7 +192,7 @@ class _ScaleViewState extends State<ScaleView>
     final Offset direction = details.velocity.pixelsPerSecond / magnitude;
     final double distance = (Offset.zero & context.size).shortestSide;
     _flingAnimation = new Tween<Offset>(
-            begin: _offset, end: _clampOffset(_offset + direction * distance))
+        begin: _offset, end: _clampOffset(_offset + direction * distance))
         .animate(_controller);
     _controller
       ..value = 0.0
@@ -196,7 +203,7 @@ class _ScaleViewState extends State<ScaleView>
     _flingAnimation = null;
     _controller.reset();
     _doubleClick = true;
-    Size size = childSize ?? context.size;
+    Size size = childSize;
     if (_scale != 1.0) {
       _flingAnimation = new Tween<Offset>(begin: _offset, end: Offset.zero)
           .animate(_controller);
@@ -206,7 +213,7 @@ class _ScaleViewState extends State<ScaleView>
     } else {
       size = size * (widget.doubleClickScale - 1);
       _flingAnimation = new Tween<Offset>(
-              begin: Offset.zero, end: Offset(size.width, size.height) / -2.0)
+          begin: Offset.zero, end: Offset(size.width, size.height) / -2.0)
           .animate(_controller);
       _scaleAnimation =
           new Tween<double>(begin: _scale, end: widget.doubleClickScale)
@@ -226,36 +233,39 @@ class _ScaleViewState extends State<ScaleView>
   Widget build(BuildContext context) {
     bool horizontal = widget.parentScrollableAxis == Axis.horizontal;
     return GestureDetector(
-        onScaleStart: _handleOnScaleStart,
-        onScaleUpdate: _handleOnScaleUpdate,
-        onScaleEnd: _handleFling,
-        onDoubleTap: _handleOnDoubleTab,
-        onVerticalDragEnd: (_scale == 1.0 || horizontal) ? null : _handleFling,
-        onVerticalDragUpdate:
-            (_scale == 1.0 || horizontal) ? null : _handleOnDragUpdate,
-        onHorizontalDragEnd:
-            (_scale == 1.0 || !horizontal) ? null : _handleFling,
-        onHorizontalDragUpdate:
-            (_scale == 1.0 || !horizontal) ? null : _handleOnDragUpdate,
-        behavior: widget.behavior,
-        child: Align(
-          alignment: widget.alignment,
-          child: new Transform(
-            transform: new Matrix4.identity()
-              ..translate(_offset.dx, _offset.dy)
-              ..scale(_scale),
-            child: FittedBox(
-              child: AfterLayout(
-                callback: (BuildContext ctx) {
-                  _childContext = ctx;
-                },
-                child: ConstrainedBox(
-                    constraints:
-                        BoxConstraints(minWidth: 10.0, minHeight: 10.0),
-                    child: widget.child),
+      onScaleStart: _handleOnScaleStart,
+      onScaleUpdate: _handleOnScaleUpdate,
+      onScaleEnd: _handleFling,
+      onDoubleTap: _handleOnDoubleTab,
+      onVerticalDragEnd: (_scale == 1.0 || horizontal) ? null : _handleFling,
+      onVerticalDragUpdate:
+      (_scale == 1.0 || horizontal) ? null : _handleOnDragUpdate,
+      onHorizontalDragEnd:
+      (_scale == 1.0 || !horizontal) ? null : _handleFling,
+      onHorizontalDragUpdate:
+      (_scale == 1.0 || !horizontal) ? null : _handleOnDragUpdate,
+      behavior: widget.behavior,
+      child: Align(
+        alignment: widget.alignment,
+        child: new Transform(
+          transform: new Matrix4.identity()
+            ..translate(_offset.dx, _offset.dy)
+            ..scale(_scale),
+          child: FittedBox(
+            fit: BoxFit.contain,
+            child: AfterLayout(
+              callback: (BuildContext ctx) {
+                _childContext = ctx;
+              },
+              child: ConstrainedBox(
+                constraints:
+                BoxConstraints(minWidth: 10.0, minHeight: 10.0),
+                child: widget.child,
               ),
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
