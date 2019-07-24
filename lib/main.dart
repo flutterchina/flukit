@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
     return new MaterialApp(
       title: 'Flukit',
       theme: new ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.blue, //设置为蓝色
       ),
       home: new MyHomePage(title: 'Flukit demo'),
     );
