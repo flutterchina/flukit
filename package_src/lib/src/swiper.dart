@@ -193,6 +193,7 @@ class Swiper extends StatefulWidget {
     this.circular = false,
     this.reverse = false,
     this.indicatorAlignment = AlignmentDirectional.bottomCenter,
+    this.viewportFraction = 1.0,
     @required this.children,
   })  : childCount = children.length,
         super(key: key) {
@@ -219,9 +220,17 @@ class Swiper extends StatefulWidget {
     this.circular = false,
     this.reverse = false,
     this.indicatorAlignment = AlignmentDirectional.bottomCenter,
+    this.viewportFraction = 1.0,
   })  : children = null,
         _itemCount = childCount + ((circular && childCount > 1) ? 2 : 0),
         super(key: key);
+
+
+  /// The fraction of the viewport that each page should occupy.
+  ///
+  /// Defaults to 1.0, which means each page fills the viewport in the scrolling
+  /// direction.
+  final double viewportFraction;
 
   /// The axis along which the swiper scrolls.
   ///
@@ -332,7 +341,7 @@ class _SwiperState extends State<Swiper>
           (widget.controller?.initialPage ?? 0).clamp(0, widget.childCount) + 1;
     }
     _current = _index;
-    _pageController = new PageController(initialPage: _index);
+    _pageController = new PageController(initialPage: _index, viewportFraction: widget.viewportFraction);
     _pageController.addListener(() {
       widget.controller?.notifyListeners();
       int current = _pageController.page.ceil();
