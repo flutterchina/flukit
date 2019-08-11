@@ -1,12 +1,14 @@
 [English](README-EN.md)|中文简体
-# flukit
+
+# Flukit [![Pub](https://img.shields.io/pub/v/flukit.svg?style=flat-square)](https://pub.dartlang.org/packages/flukit)
+
 
 *flukit* （Flutter UI Kit）是一个Flutter Widget库。
 
 ## 注意
 
-本项目正在开发中，目前没有稳定版，我们暂时不建议您在生产中使用，欢迎大家贡献代码。  
-  
+本项目正在持续迭代中，欢迎大家贡献代码。  
+
 原QuickSelectListView迁移至[AzListView](https://github.com/flutterchina/azlistview)  
 QuickSelectListView 更改为 AzListView  
 SuspensionListView 更改为 SuspensionView  
@@ -43,31 +45,32 @@ flutter run
 
 ## Widgets
 
-- QuickScrollbar
-- TurnBox
-- AnimatedRotationBox
-- PullRefreshBox
-- ScaleView
-- Swiper
-- GradientCircularProgressIndicator
+| Widget名称                        | 介绍                                       |
+| --------------------------------- | ------------------------------------------ |
+| QuickScrollbar                    | 可拖动的滚动条                             |
+| TurnBox                           | 可按任意角度旋转子组件                     |
+| AnimatedRotationBox               | 可对子组件执行旋转动画                     |
+| ScaleView                         | 可以对子组件进行缩放（双指伸缩）           |
+| Swiper                            | 一个轮播组件                               |
+| GradientButton                    | 背景色渐变按钮                             |
+| RaisedGradientButton              | 背景色渐变按钮(Raised)                     |
+| GradientCircularProgressIndicator | 一个支持颜色渐变的圆形进度指示器           |
+| InfiniteListView                  | 支持下拉刷新的无限加载列表组件             |
+| PullRefreshBox（betal）           | 下拉刷新（该组件并未成熟，将来可能会删掉） |
 
-### APK:[点击下载 v0.1.0](https://raw.githubusercontent.com/Sky24n/LDocuments/master/flutterchina/flukit_release.apk)
 
-### APK QR:
-  ![AzListView](https://raw.githubusercontent.com/Sky24n/LDocuments/master/flutterchina/flukit_qrcode.png)
-
-### iOS：暂无，请自行clone项目代码运行。
 
 ## Demo部分截图
 
 <img src="./docs/images/quick_scroll_bar.gif" width="320"/>
 <img src="./docs/images/animated_rotation_box.gif" width="320"/>
-<img src="./docs/images/pull_refresh.gif" width="320"/>
-<img src="./docs/images/pull_refresh_with_custom_header.gif" width="320"/>
 <img src="./docs/images/gradient_circular_progress_indicator.gif" width="320"/>
 <img src="./docs/images/swiper.gif" width="320"/>
 <img src="./docs/images/photoview.gif" width="320"/>
 <img src="./docs/images/city_select.gif" width="320"/>
 <img src="./docs/images/quick_list.gif" width="320"/>
-
+<img src="./docs/images/raised_button.png" width="320"/>
+<img src="./docs/images/infinite_listview.png" width="320"/>
+<img src="./docs/images/pull_refresh.gif" width="320"/>
+<img src="./docs/images/pull_refresh_with_custom_header.gif" width="320"/>
 

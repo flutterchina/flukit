@@ -103,12 +103,14 @@ class RectangleSwiperIndicator extends _SwiperIndicator {
     Color itemColor = Colors.white70,
     Color itemActiveColor,
   }) : super(
-            spacing: spacing,
-            itemColor: itemColor,
-            itemWidth: itemWidth,
-            itemHeight: itemHeight,
-            itemActiveColor: itemActiveColor,
-            itemShape: BoxShape.rectangle);
+          padding: padding,
+          spacing: spacing,
+          itemColor: itemColor,
+          itemWidth: itemWidth,
+          itemHeight: itemHeight,
+          itemActiveColor: itemActiveColor,
+          itemShape: BoxShape.rectangle,
+        );
 }
 
 /// Circular style indicator
@@ -161,22 +163,23 @@ class _SwiperIndicator implements SwiperIndicator {
   Widget build(BuildContext context, int index, int itemCount) {
     if (itemCount == 1) return SizedBox(width: .0, height: .0);
     return Padding(
-        padding: padding ?? const EdgeInsets.all(10.0),
-        child: Wrap(
-          runSpacing: spacing,
-          spacing: spacing,
-          children: List.generate(itemCount, (_index) {
-            Color color = itemColor;
-            if (_index == index) {
-              color = itemActiveColor ?? Theme.of(context).accentColor;
-            }
-            return Container(
-              width: itemWidth,
-              height: itemHeight,
-              decoration: BoxDecoration(color: color, shape: itemShape),
-            );
-          }),
-        ));
+      padding: padding ?? const EdgeInsets.all(10.0),
+      child: Wrap(
+        runSpacing: spacing,
+        spacing: spacing,
+        children: List.generate(itemCount, (_index) {
+          Color color = itemColor;
+          if (_index == index) {
+            color = itemActiveColor ?? Theme.of(context).accentColor;
+          }
+          return Container(
+            width: itemWidth,
+            height: itemHeight,
+            decoration: BoxDecoration(color: color, shape: itemShape),
+          );
+        }),
+      ),
+    );
   }
 }
 
@@ -193,7 +196,9 @@ class Swiper extends StatefulWidget {
     this.circular = false,
     this.reverse = false,
     this.indicatorAlignment = AlignmentDirectional.bottomCenter,
+    this.viewportFraction,
     @required this.children,
+
   })  : childCount = children.length,
         super(key: key) {
     assert(childCount > 0);
@@ -219,6 +224,7 @@ class Swiper extends StatefulWidget {
     this.circular = false,
     this.reverse = false,
     this.indicatorAlignment = AlignmentDirectional.bottomCenter,
+    this.viewportFraction,
   })  : children = null,
         _itemCount = childCount + ((circular && childCount > 1) ? 2 : 0),
         super(key: key);
@@ -277,6 +283,12 @@ class Swiper extends StatefulWidget {
   /// Switching interval between two pages.
   final Duration interval;
 
+  /// The fraction of the viewport that each page should occupy.
+  ///
+  /// Defaults to 1.0, which means each page fills the viewport in the scrolling
+  /// direction.
+  final double viewportFraction;
+
   List<Widget> children;
   int _itemCount;
 
@@ -332,7 +344,7 @@ class _SwiperState extends State<Swiper>
           (widget.controller?.initialPage ?? 0).clamp(0, widget.childCount) + 1;
     }
     _current = _index;
-    _pageController = new PageController(initialPage: _index);
+    _pageController = PageController(initialPage: _index, viewportFraction: widget.viewportFraction);
     _pageController.addListener(() {
       widget.controller?.notifyListeners();
       int current = _pageController.page.ceil();

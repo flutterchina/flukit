@@ -29,18 +29,22 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(widget.title)),
-        body: ListPage([
-          //PageInfo("test", (ctx) => TestRoute()),
-          PageInfo("Quick Scrollbar", (ctx) => QuickScrollbarRoute()),
-          PageInfo("TurnBox", (ctx) => TurnBoxRoute()),
-          PageInfo("AnimatedRotationBox", (ctx) => AnimatedRotationBoxRoute()),
-          PageInfo("Pull Refresh", (ctx) => PullRefreshBoxRoute()),
-          PageInfo("Swiper", (ctx) => SwiperRoute()),
-          PageInfo("Swiper Style", (ctx) => SwiperStyleRoute()),
-          PageInfo("Photo View", (ctx) => PhotoViewRoute()),
-          PageInfo("GradientCircularProgressIndicator", (ctx) => GradientCircularProgressRoute()),
-          PageInfo("AzListView", (ctx) => QuickSelectListViewRoute()),
-        ]));
+      appBar: AppBar(title: Text(widget.title)),
+      body: ListPage([
+        //PageInfo("test", (ctx) => TestRoute()),
+        PageInfo("Quick Scrollbar", (ctx) => QuickScrollbarRoute()),
+        PageInfo("TurnBox", (ctx) => TurnBoxRoute()),
+        PageInfo("AnimatedRotationBox", (ctx) => AnimatedRotationBoxRoute()),
+        PageInfo("Pull Refresh", (ctx) => PullRefreshBoxRoute()),
+        PageInfo("Swiper", (ctx) => SwiperRoute()),
+        PageInfo("Swiper Style", (ctx) => SwiperStyleRoute()),
+        PageInfo("Photo View", (ctx) => PhotoViewRoute()),
+        PageInfo("InfiniteListView", (ctx) => InfiniteListViewRoute()),
+        PageInfo("(Raised)GradientButton", (ctx) => GradientButtonRoute()),
+        PageInfo("GradientCircularProgressIndicator",
+            (ctx) => GradientCircularProgressRoute()),
+        PageInfo("AzListView", (ctx) => QuickSelectListViewRoute()),
+      ]),
+    );
   }
 }

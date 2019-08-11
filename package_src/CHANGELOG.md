@@ -1,3 +1,7 @@
-## [0.0.1] - TODO: Add release date.
+## [1.0.1]
 
-* TODO: Describe initial release.
+- Add InfiniteListView、GradientButton
+
+## [0.0.4]
+
+- fix some bug

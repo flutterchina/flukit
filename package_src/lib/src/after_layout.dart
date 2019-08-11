@@ -12,7 +12,11 @@ typedef void AfterLayoutCallback(BuildContext context);
 ///
 
 class AfterLayout extends StatelessWidget {
-  AfterLayout({Key key, @required this.callback, this.child}) : super(key: key);
+  AfterLayout({
+    Key key,
+    @required this.callback,
+    this.child,
+  }) : super(key: key);
 
   ///when the main rendering pipeline has been flushed
   /// (we can consider layout phase is complete), the

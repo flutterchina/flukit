@@ -43,21 +43,23 @@ abstract class PullRefreshIndicator {
   double get height;
 
   Widget build(
-      BuildContext context,
-      PullRefreshIndicatorMode mode,
-      double offset, //drag offset(over scroll)
-      ScrollDirection direction);
+    BuildContext context,
+    PullRefreshIndicatorMode mode,
+    double offset, //drag offset(over scroll)
+    ScrollDirection direction,
+  );
 }
 
 /// This is a default PullRefreshIndicator.
 class DefaultPullRefreshIndicator implements PullRefreshIndicator {
-  DefaultPullRefreshIndicator(
-      {this.style = const TextStyle(color: Colors.grey),
-      this.arrowColor = Colors.grey,
-      this.loadingTip,
-      this.pullTip,
-      this.loosenTip,
-      this.progressIndicator});
+  DefaultPullRefreshIndicator({
+    this.style = const TextStyle(color: Colors.grey),
+    this.arrowColor = Colors.grey,
+    this.loadingTip,
+    this.pullTip,
+    this.loosenTip,
+    this.progressIndicator,
+  });
 
   final TextStyle style;
   final Color arrowColor;
@@ -142,13 +144,13 @@ class DefaultPullRefreshIndicator implements PullRefreshIndicator {
 ///  * [PullRefreshBoxState], can be used to programmatically show the refresh indicator.
 ///
 class PullRefreshBox extends StatefulWidget {
-  PullRefreshBox(
-      {Key key,
-      this.child,
-      @required this.onRefresh,
-      PullRefreshIndicator indicator,
-      this.overScrollEffect})
-      : this.indicator = indicator ?? DefaultPullRefreshIndicator(),
+  PullRefreshBox({
+    Key key,
+    this.child,
+    @required this.onRefresh,
+    PullRefreshIndicator indicator,
+    this.overScrollEffect,
+  })  : this.indicator = indicator ?? DefaultPullRefreshIndicator(),
         super(key: key);
 
   final PullRefreshCallback onRefresh;
