@@ -1,6 +1,6 @@
 name: flukit
 description: flukit(Flutter UI Kit), a flutter  widgets library which contains ScaleView, Swiper, GradientCircularProgressIndicator...
-version: 1.0.1
+version: 1.0.2
 authors:
  - "wendux<824783146@qq.com>"
 homepage: https://github.com/flutterchina/flukit

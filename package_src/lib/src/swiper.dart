@@ -196,7 +196,7 @@ class Swiper extends StatefulWidget {
     this.circular = false,
     this.reverse = false,
     this.indicatorAlignment = AlignmentDirectional.bottomCenter,
-    this.viewportFraction,
+    this.viewportFraction=1.0,
     @required this.children,
 
   })  : childCount = children.length,
@@ -224,7 +224,7 @@ class Swiper extends StatefulWidget {
     this.circular = false,
     this.reverse = false,
     this.indicatorAlignment = AlignmentDirectional.bottomCenter,
-    this.viewportFraction,
+    this.viewportFraction=1.0,
   })  : children = null,
         _itemCount = childCount + ((circular && childCount > 1) ? 2 : 0),
         super(key: key);
