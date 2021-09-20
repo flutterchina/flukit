@@ -1,18 +1,41 @@
+import 'package:flukit/flukit.dart';
 import 'package:flutter/material.dart';
-import '../widgets/index.dart';
-import 'pull_refresh/pull_refresh.dart';
-import 'pull_refresh/pull_refresh_with_custom_header.dart';
-import 'pull_refresh/pull_refresh_with_scrollview.dart';
 
-class PullRefreshBoxRoute extends StatelessWidget {
+class PullRefreshRoute extends StatefulWidget {
+  PullRefreshRoute({Key? key}) : super(key: key);
+
   @override
-  Widget build(BuildContext context) {
-    return ListPage([
-      PageInfo("PullRefresh",(ctx)=>PullRefreshRoute()),
-      PageInfo("PullRefresh(Custom header)",(ctx)=>PullRefreshWithCustomHeaderRoute()),
-      PageInfo("PullRefreshWithScrollView(Custom header)",(ctx)=>PullRefreshWithScrollView(), false),
-    ]);
-  }
+  State<PullRefreshRoute> createState() => _PullRefreshRouteState();
 }
 
+class _PullRefreshRouteState extends State<PullRefreshRoute> {
+  int _itemCount = 5;
 
+  @override
+  Widget build(BuildContext context) {
+    return PullRefreshScope(
+      child: CustomScrollView(
+        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        slivers: <Widget>[
+          SliverPullRefreshIndicator(
+            refreshTriggerPullDistance: 100.0,
+            refreshIndicatorExtent: 60.0,
+            onRefresh: () async {
+              await Future<void>.delayed(const Duration(seconds: 2));
+              setState(()=>_itemCount += 10);
+            },
+          ),
+          SliverFixedExtentList(
+            itemExtent: 50,
+            delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                return ListTile(title: Text('$index'), onTap: () => print(index));
+              },
+              childCount: _itemCount,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

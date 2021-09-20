@@ -1,13 +1,11 @@
 name: flukit
-description: flukit(Flutter UI Kit), a flutter  widgets library which contains ScaleView, Swiper, GradientCircularProgressIndicator...
-version: 1.0.2
-authors:
- - "wendux<824783146@qq.com>"
+description: flukit(Flutter UI Kit), a flutter  common library which contains ScaleView, Swiper, GradientCircularProgressIndicator...
+version: 2.0.0-beta1
 homepage: https://github.com/flutterchina/flukit
 
 
 environment:
-  sdk: ">=2.0.0 <3.0.0"
+  sdk: ">=2.14.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -17,6 +15,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  flutter_lints: ^1.0.0
+
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
 
@@ -25,8 +25,8 @@ flutter:
 
   # To add assets to your package, add an assets section, like this:
   # assets:
-  #  - images/a_dot_burr.jpeg
-  #  - images/a_dot_ham.jpeg
+  #  - imgs/a_dot_burr.jpeg
+  #  - imgs/a_dot_ham.jpeg
   #
   # For details regarding assets in packages, see
   # https://flutter.io/assets-and-images/#from-packages

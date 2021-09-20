@@ -11,7 +11,7 @@ class GradientButtonRoute extends StatelessWidget {
           child: Text("Submit"),
           onPressed: onTap,
         ),
-        RaisedGradientButton(
+        ElevatedGradientButton(
           colors: [Colors.orange, Colors.red],
           child: Text("Submit"),
           onPressed: onTap,
@@ -21,7 +21,7 @@ class GradientButtonRoute extends StatelessWidget {
           onPressed: onTap,
           borderRadius: BorderRadius.circular(30),
         ),
-        RaisedGradientButton(
+        ElevatedGradientButton(
           child: Text("Submit"),
           onPressed: onTap,
           borderRadius: BorderRadius.circular(30),
@@ -30,7 +30,7 @@ class GradientButtonRoute extends StatelessWidget {
           width: double.infinity,
           height: 48,
           child:  GradientButton(
-            colors: [Colors.lightGreen, Colors.green[700]],
+            colors: [Colors.lightGreen, Colors.green.shade700],
             child: Text("Submit"),
             onPressed: onTap,
           ),
@@ -38,13 +38,13 @@ class GradientButtonRoute extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           height: 48,
-          child:  RaisedGradientButton(
-            colors: [Colors.lightGreen, Colors.green[700]],
+          child:  ElevatedGradientButton(
+            colors: [Colors.lightGreen, Colors.green.shade700],
             child: Text("Submit"),
             onPressed: onTap,
           ),
         ),
-        RaisedGradientButton(
+        ElevatedGradientButton(
           child: Text("Submit"),
           //onPressed: onTap,
         ),

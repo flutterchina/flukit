@@ -7,17 +7,19 @@ import 'package:flutter/material.dart';
 ///
 /// Quick scrollbar support the drag gesture to scroll the [Scrollable]
 /// widget quickly.
-
 class QuickScrollbar extends StatefulWidget {
-  QuickScrollbar(
-      {Key key, this.controller, this.velocity = 10, @required this.child})
-      : super(key: key);
+  QuickScrollbar({
+    Key? key,
+    this.controller,
+    this.velocity = 10,
+    required this.child,
+  }) : super(key: key);
 
   final Widget child;
 
   /// The [Scrollable] widget's Controller, by which quick scrollbar
   /// will control the scroll position of [Scrollable] widget.
-  final ScrollController controller;
+  final ScrollController? controller;
 
   /// Critical value that determine to show [QuickScrollbar].
   /// If the scroll delta offset greater than [velocity], the
@@ -34,9 +36,9 @@ class _QuickScrollBarState extends State<QuickScrollbar>
   double _barHeight = 35.0;
 
   // Animation controller for show/hide bar .
-  AnimationController _animationController;
-  Animation _animation;
-  Timer _timer;
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -125,7 +127,8 @@ class _QuickScrollBarState extends State<QuickScrollbar>
 
   bool _handleNotification(ScrollNotification notification) {
     if (notification is ScrollUpdateNotification) {
-      if (notification.scrollDelta.abs() > widget.velocity &&
+      if (notification.scrollDelta != null &&
+          notification.scrollDelta!.abs() > widget.velocity &&
           notification.metrics.maxScrollExtent != double.infinity) {
         _animationController.value = 0.0;
       }

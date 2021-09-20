@@ -1,36 +1,58 @@
+import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-typedef void AfterLayoutCallback(BuildContext context);
+typedef AfterLayoutCallback = Function(RenderAfterLayout ral);
 
-/// Sometimes we need to do something after the build phase is
-/// complete, for example, most of [BuildContext] methods and attributes, such as
-/// `context.findRenderObject()`、`context.size` only can be used after build.
+/// A widget can retrieve its render object after layout.
 ///
-/// Does *not* request a new frame in [AfterLayout.callback], that is to say
-/// you mustn't call `setState()` in [AfterLayout.callback] which will lead to
-/// circular call.
+/// Sometimes we need to do something after the build phase is complete,
+/// for example, most of [RenderObject] methods and attributes, such as
+/// `renderObject.size`、`renderObject.localToGlobal(...)` only can be used
+/// after build.
 ///
-
-class AfterLayout extends StatelessWidget {
+/// Call `setState` in callback is **allowed**, it is safe!
+class AfterLayout extends SingleChildRenderObjectWidget {
   AfterLayout({
-    Key key,
-    @required this.callback,
-    this.child,
-  }) : super(key: key);
-
-  ///when the main rendering pipeline has been flushed
-  /// (we can consider layout phase is complete), the
-  /// [callback] will be called.
-  final AfterLayoutCallback callback;
-  final Widget child;
+    Key? key,
+    required this.callback,
+    Widget? child,
+  }) : super(key: key, child: child);
 
   @override
-  Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (callback != null) {
-        callback(context);
-      }
-    });
-    return child;
+  RenderObject createRenderObject(BuildContext context) {
+    return RenderAfterLayout(callback);
   }
+
+  @override
+  void updateRenderObject(
+      BuildContext context, RenderAfterLayout renderObject) {
+    renderObject..callback = callback;
+  }
+
+  /// [callback] will be triggered after the layout phase ends.
+  final AfterLayoutCallback callback;
+}
+
+class RenderAfterLayout extends RenderProxyBox {
+  RenderAfterLayout(this.callback);
+
+  ValueSetter<RenderAfterLayout> callback;
+
+  @override
+  void performLayout() {
+    super.performLayout();
+    // 不能直接回调callback，原因是当前组件布局完成后可能还有其它组件未完成布局,
+    // 如果callback中又触发了UI更新（比如调用了 setState）则会报错。因此，我们
+    // 在 frame 结束的时候再去触发回调。
+    // callback(this);
+    SchedulerBinding.instance!
+        .addPostFrameCallback((timeStamp) => callback(this));
+  }
+
+  /// 组件在在屏幕坐标中的起始偏移坐标
+  Offset get offset => localToGlobal(Offset.zero);
+
+  /// 组件在屏幕上占有的矩形空间区域
+  Rect get rect => offset & size;
 }

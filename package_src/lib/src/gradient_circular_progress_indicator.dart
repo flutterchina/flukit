@@ -3,17 +3,18 @@ import 'package:flutter/material.dart';
 
 /// A circular progress indicator with gradient effect.
 class GradientCircularProgressIndicator extends StatelessWidget {
-  GradientCircularProgressIndicator({
-    Key key,
+  const GradientCircularProgressIndicator({
+    Key? key,
+    required this.radius,
     this.stokeWidth = 2.0,
-    @required this.radius,
-    @required this.colors,
+    this.colors,
     this.stops,
     this.strokeCapRound = false,
     this.backgroundColor = const Color(0xFFEEEEEE),
     this.totalAngle = 2 * pi,
+    this.fullColor,
     this.value,
-  }) :super(key: key);
+  }) : super(key: key);
 
   /// The width of the line used to draw the circle.
   final double stokeWidth;
@@ -28,7 +29,10 @@ class GradientCircularProgressIndicator extends StatelessWidget {
   /// The value of this progress indicator with 0.0 corresponding
   /// to no progress having been made and 1.0 corresponding to all the progress
   /// having been made.
-  final double value;
+  final double? value;
+
+  /// The progress color when value is 1.
+  final Color? fullColor;
 
   /// The progress indicator's background color. The current theme's
   /// `Color(0xFFEEEEEE)` by default.
@@ -43,7 +47,7 @@ class GradientCircularProgressIndicator extends StatelessWidget {
   ///
   /// This list must have at least two colors in it (otherwise, it's not a
   /// gradient!).
-  final List<Color> colors;
+  final List<Color>? colors;
 
   /// A list of values from 0.0 to 1.0 that denote fractions along the gradient.
   ///
@@ -61,61 +65,65 @@ class GradientCircularProgressIndicator extends StatelessWidget {
   ///
   /// If stops is null, then a set of uniformly distributed stops is implied,
   /// with the first stop at 0.0 and the last stop at 1.0.
-  final List<double> stops;
+  final List<double>? stops;
 
   @override
   Widget build(BuildContext context) {
     double _offset = .0;
-    if (strokeCapRound) {
+    if (strokeCapRound && totalAngle != 2 * pi) {
       _offset = asin(stokeWidth / (radius * 2 - stokeWidth));
     }
     var _colors = colors;
     if (_colors == null) {
-      Color color = Theme
-          .of(context)
-          .accentColor;
+      Color color = Theme.of(context).colorScheme.secondary;
       _colors = [color, color];
     }
     return Transform.rotate(
       angle: -pi / 2.0 - _offset,
       child: CustomPaint(
-          size: Size.fromRadius(radius),
-          painter: _GradientCircularProgressPainter(
-            stokeWidth: stokeWidth,
-            strokeCapRound: strokeCapRound,
-            backgroundColor: backgroundColor,
-            value: value,
-            total: totalAngle,
-            radius: radius,
-            colors: _colors,
-          )),
+        size: Size.fromRadius(radius),
+        painter: _GradientCircularProgressPainter(
+          stokeWidth: stokeWidth,
+          strokeCapRound: strokeCapRound,
+          backgroundColor: backgroundColor,
+          value: value,
+          fullColor: fullColor,
+          total: totalAngle,
+          radius: radius,
+          colors: _colors,
+        ),
+      ),
     );
   }
 }
 
 class _GradientCircularProgressPainter extends CustomPainter {
-  _GradientCircularProgressPainter({this.stokeWidth: 10.0,
+  const _GradientCircularProgressPainter({
+    this.stokeWidth: 10.0,
     this.strokeCapRound: false,
     this.backgroundColor = const Color(0xFFEEEEEE),
     this.radius,
     this.total = 2 * pi,
-    @required this.colors,
+    required this.colors,
     this.stops,
-    this.value});
+    this.value,
+    this.fullColor,
+  });
 
   final double stokeWidth;
   final bool strokeCapRound;
-  final double value;
+  final double? value;
   final Color backgroundColor;
   final List<Color> colors;
   final double total;
-  final double radius;
-  final List<double> stops;
+  final double? radius;
+  final List<double>? stops;
+  final Color? fullColor;
 
   @override
   void paint(Canvas canvas, Size size) {
     if (radius != null) {
-      size = Size.fromRadius(radius);
+      size = Size.fromRadius(radius!);
     }
     double _offset = stokeWidth / 2.0;
     double _value = (value ?? .0);
@@ -127,7 +135,7 @@ class _GradientCircularProgressPainter extends CustomPainter {
     }
 
     Rect rect = Offset(_offset, _offset) &
-    Size(size.width - stokeWidth, size.height - stokeWidth);
+        Size(size.width - stokeWidth, size.height - stokeWidth);
 
     var paint = Paint()
       ..strokeCap = strokeCapRound ? StrokeCap.round : StrokeCap.butt
@@ -141,20 +149,30 @@ class _GradientCircularProgressPainter extends CustomPainter {
       canvas.drawArc(rect, _start, total, false, paint);
     }
 
-    // draw foreground arc.
-    // apply gradient
-    if (_value > 0) {
+    if (value == 1 && fullColor != null) {
+      paint.color = fullColor!;
+      canvas.drawArc(rect, _start, _value, false, paint);
+    } else if (_value > 0) {
+      // draw foreground arc and apply gradient
       paint.shader = SweepGradient(
         startAngle: 0.0,
         endAngle: _value,
         colors: colors,
         stops: stops,
       ).createShader(rect);
-
       canvas.drawArc(rect, _start, _value, false, paint);
     }
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
+  bool shouldRepaint(_GradientCircularProgressPainter old) {
+    return old.stokeWidth != stokeWidth ||
+        old.strokeCapRound != strokeCapRound ||
+        old.backgroundColor != backgroundColor ||
+        old.radius != radius ||
+        old.value != value ||
+        old.fullColor != fullColor ||
+        old.colors.toString() != colors.toString() ||
+        old.stops.toString() != stops.toString();
+  }
 }

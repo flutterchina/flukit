@@ -1,340 +1,238 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'dart:math';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' hide RefreshCallback;
 import 'package:flutter/rendering.dart';
-import 'turn_box.dart';
+import 'package:flutter/scheduler.dart';
+import 'sliver_flexible_header.dart';
 
-enum PullRefreshIndicatorMode {
-  ///Pointer is down(over scroll)
-  drag,
+/// A widget provides pull refresh scope. Typically, the child is a [CustomScrollView].
+class PullRefreshScope extends StatefulWidget {
+  const PullRefreshScope({Key? key, this.child}) : super(key: key);
 
-  /// Running the refresh callback.
-  refresh,
+  final Widget? child;
 
-  /// Animating the indicator's fade-out after refreshing.
-  done,
-
-  /// Animating the indicator's fade-out after not arming.
-  canceled,
+  @override
+  State<PullRefreshScope> createState() => _PullRefreshScopeState();
 }
 
-/// The signature for a function that's called when the user has dragged a
-/// [PullRefreshBox] far enough to demonstrate that they want the app to
-/// refresh. The returned [Future] must complete when the refresh operation is
-/// finished.
-///
-/// Used by [PullRefreshBox.onRefresh].
-typedef Future PullRefreshCallback();
-
-/// [PullRefreshBox] header builder interface. If you want to custom indicator,
-/// implement this interface.
-///
-/// See also:
-///
-///  * [DefaultPullRefreshIndicator], a default PullRefreshIndicator.
-///
-abstract class PullRefreshIndicator {
-  /// The distance from the child's top or bottom edge to where the refresh
-  /// indicator will settle. During the drag that exposes the refresh indicator,
-  /// its actual displacement may significantly exceed this value.
-  double get displacement;
-
-  /// Header height
-  double get height;
-
-  Widget build(
-    BuildContext context,
-    PullRefreshIndicatorMode mode,
-    double offset, //drag offset(over scroll)
-    ScrollDirection direction,
-  );
-}
-
-/// This is a default PullRefreshIndicator.
-class DefaultPullRefreshIndicator implements PullRefreshIndicator {
-  DefaultPullRefreshIndicator({
-    this.style = const TextStyle(color: Colors.grey),
-    this.arrowColor = Colors.grey,
-    this.loadingTip,
-    this.pullTip,
-    this.loosenTip,
-    this.progressIndicator,
-  });
-
-  final TextStyle style;
-  final Color arrowColor;
-  final String loadingTip;
-  final String pullTip;
-  final String loosenTip;
-  ProgressIndicator progressIndicator;
+class _PullRefreshScopeState extends State<PullRefreshScope> {
+  // set by SliverPullRefreshIndicator
+  ValueChanged<bool>? _pointerStateSetter;
 
   @override
-  double get displacement => 100.0;
-
-  @override
-  double get height => displacement;
-
-  @override
-  Widget build(BuildContext context, PullRefreshIndicatorMode mode, offset,
-      ScrollDirection direction) {
-    if (mode == PullRefreshIndicatorMode.refresh) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          progressIndicator ??
-              SizedBox(
-                width: 20.0,
-                height: 20.0,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.0,
-                ),
-              ),
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Text(loadingTip ?? "正在刷新...", style: style),
-          )
-        ],
-      );
-    }
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(3.0),
-          child: TurnBox(
-            turns: offset > 100 ? 0.5 : .0,
-            child: Icon(
-              Icons.arrow_upward,
-              color: Colors.grey,
-            ),
-          ),
-        ),
-        Text(offset > 100 ? loosenTip ?? "松开刷新" : pullTip ?? "继续下拉",
-            style: style)
-      ],
+  Widget build(BuildContext context) {
+    return Listener(
+      child: widget.child,
+      onPointerDown: (e) => _pointerStateSetter?.call(false),
+      onPointerUp: (e) => _pointerStateSetter?.call(true),
     );
   }
 }
 
-/// A widget that supports "swipe to refresh" idiom.
-///
-/// When the child's [Scrollable] descendant overscrolls, an indicator is
-/// faded into view. When the scroll ends, if the
-/// indicator has been dragged far enough for it to become completely visible,
-/// the [onRefresh] callback is called. The callback is expected to update the
-/// scrollable's contents and then complete the [Future] it returns. The refresh
-/// indicator disappears after the callback's [Future] has completed.
-///
-/// If the [Scrollable] might not have enough content to overscroll, consider
-/// settings its `physics` property to [AlwaysScrollableScrollPhysics]:
-///
-/// ```dart
-/// new ListView(
-///   physics: const AlwaysScrollableScrollPhysics(),
-///   children: ...
-//  )
-/// ```
-///
-/// Using [AlwaysScrollableScrollPhysics] will ensure that the scroll view is
-/// always scrollable and, therefore, can trigger the [PullRefreshBox].
-///
-/// See also:
-///
-///  * [PullRefreshBoxState], can be used to programmatically show the refresh indicator.
-///
-class PullRefreshBox extends StatefulWidget {
-  PullRefreshBox({
-    Key key,
-    this.child,
-    @required this.onRefresh,
-    PullRefreshIndicator indicator,
-    this.overScrollEffect,
-  })  : this.indicator = indicator ?? DefaultPullRefreshIndicator(),
+/// A indicator for PullRefreshScope.
+class SliverPullRefreshIndicator extends StatefulWidget {
+  /// Create a new refresh indicator for inserting into a list of slivers.
+  ///
+  /// The [refreshTriggerPullDistance] and [refreshIndicatorExtent] arguments
+  /// must not be null and must be >= 0.
+  ///
+  /// The [builder] argument may be null, in which case no indicator UI will be
+  /// shown but the [onRefresh] will still be invoked. By default, [builder]
+  /// shows a [CircularProgressIndicator].
+  ///
+  /// The [onRefresh] argument will be called when pulled far enough to trigger
+  /// a refresh.
+  const SliverPullRefreshIndicator({
+    Key? key,
+    this.refreshTriggerPullDistance = 100,
+    this.refreshIndicatorExtent = 60,
+    this.duration = const Duration(milliseconds: 200),
+    this.builder = buildRefreshIndicator,
+    this.onRefresh,
+  })  : assert(refreshTriggerPullDistance > 0.0),
+        assert(refreshIndicatorExtent >= 0.0),
+        assert(
+          refreshTriggerPullDistance >= refreshIndicatorExtent,
+          'The refresh indicator cannot take more space in its final state '
+          'than the amount initially created by overscrolling.',
+        ),
         super(key: key);
 
-  final PullRefreshCallback onRefresh;
-  final Widget child;
-  final TargetPlatform overScrollEffect;
-  final PullRefreshIndicator indicator;
+  /// duration for up to header
+  final Duration duration;
+
+  /// The amount of overscroll the scrollable must be dragged to trigger a reload.
+  ///
+  /// Must not be null, must be larger than 0.0 and larger than
+  /// [refreshIndicatorExtent]. Defaults to 100px when not specified.
+  ///
+  /// When overscrolled past this distance and **pointer up** , [onRefresh] will be called
+  /// if not null and the [builder] will build in the [RefreshIndicatorMode.refresh] state.
+  final double refreshTriggerPullDistance;
+
+  /// The amount of space the refresh indicator sliver will keep holding while
+  /// [onRefresh]'s [Future] is still running.
+  ///
+  /// Must not be null and must be positive, but can be 0.0, in which case the
+  /// sliver will start retracting back to 0.0 as soon as the refresh is started.
+  /// Defaults to 60px when not specified.
+  ///
+  /// Must be smaller than [refreshTriggerPullDistance], since the sliver
+  /// shouldn't grow further after triggering the refresh.
+  final double refreshIndicatorExtent;
+
+  /// A builder that's called as this sliver's size changes, and as the state
+  /// changes.
+  ///
+  /// Can be set to null, in which case nothing will be drawn in the overscrolled
+  /// space.
+  ///
+  /// Will not be called when the available space is zero such as before any
+  /// overscroll.
+  final RefreshControlIndicatorBuilder? builder;
+
+  /// Callback invoked when pulled by [refreshTriggerPullDistance].
+  ///
+  /// If provided, must return a [Future] which will keep the indicator in the
+  /// [RefreshIndicatorMode.refresh] state until the [Future] completes.
+  ///
+  /// Can be null, in which case a single frame of [RefreshIndicatorMode.armed]
+  /// state will be drawn before going immediately to the [RefreshIndicatorMode.done]
+  /// where the sliver will start retracting.
+  final RefreshCallback? onRefresh;
+
+  static Widget buildRefreshIndicator(
+    BuildContext context,
+    RefreshIndicatorMode refreshState,
+    double pulledExtent,
+    double refreshTriggerPullDistance,
+    double refreshIndicatorExtent,
+  ) {
+    Widget widget;
+    double width = min(22, pulledExtent);
+    if (refreshState == RefreshIndicatorMode.refresh) {
+      widget = SizedBox(
+        child: CircularProgressIndicator(strokeWidth: 2),
+        width: width,
+        height: width,
+      );
+    } else {
+      widget = Transform.rotate(
+        angle: pulledExtent / 80 * 6.28,
+        child: CircularProgressIndicator(
+          value: .85,
+          strokeWidth: 2,
+        ),
+      );
+    }
+    return Center(
+      child: SizedBox(
+        width: width,
+        height: width,
+        child: Padding(padding: const EdgeInsets.all(2.0), child: widget),
+      ),
+    );
+  }
 
   @override
-  PullRefreshBoxState createState() => new PullRefreshBoxState();
+  SliverPullRefreshIndicatorState createState() =>
+      SliverPullRefreshIndicatorState();
 }
 
-/// Contains the state for a [PullRefreshBox]. This class can be used to
-/// programmatically show the refresh indicator, see the [show] method.
-/// [RefreshIndicatorState], can be used to programmatically show the refresh indicator.
-
-class PullRefreshBoxState extends State<PullRefreshBox>
-    with TickerProviderStateMixin {
-  PullRefreshIndicatorMode _mode;
-  AnimationController _controller;
-  double _dragOffset = .0;
-  ScrollDirection _direction;
+class SliverPullRefreshIndicatorState
+    extends State<SliverPullRefreshIndicator> {
+  double _height = 0;
+  late RefreshIndicatorMode refreshState;
   bool _refreshing = false;
-
-  bool get _androidEffect =>
-      widget.overScrollEffect == TargetPlatform.android ||
-      (widget.overScrollEffect == null &&
-          defaultTargetPlatform == TargetPlatform.android);
-
-  double get _indicatorHeight =>
-      widget.indicator.height ?? widget.indicator.displacement ?? 100.0;
+  bool _pointerUp = false;
+  bool _needAnimate = false;
+  bool _visible = true;
+  bool _done = false;
 
   @override
   void initState() {
+    refreshState = RefreshIndicatorMode.inactive;
+    var state = context.findAncestorStateOfType<_PullRefreshScopeState>();
+    assert(
+      state != null,
+      'PullRefreshBox missed for SliverPullRefreshIndicator',
+    );
+    state!._pointerStateSetter = (bool value) {
+      _pointerUp = value;
+      if (_pointerUp && _needAnimate) {
+        _needAnimate = false;
+        goBack();
+      }
+    };
     super.initState();
-    _controller = AnimationController(
-        vsync: this,
-        duration: Duration(seconds: 2),
-        lowerBound: -500.0,
-        upperBound: 500.0);
-    _controller.value = 0.0;
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  double get _visibleExtent => _height;
+
+  set _visibleExtent(double value) {
+    if (value == _height) return;
+    _height = value;
+    // build/layout 过程中不能调用 setState
+    SchedulerBinding.instance!.addPostFrameCallback((_) => setState(() => {}));
   }
 
-  /// Show the refresh indicator and run the refresh callback as if it had
-  /// been started interactively. If this method is called while the refresh
-  /// callback is running, it quietly does nothing.
-  ///
-  /// Creating the [PullRefreshBox] with a [GlobalKey<PullRefreshBoxState>]
-  /// makes it possible to refer to the [PullRefreshBoxState].
-  ///
-  /// The future returned from this method completes when the
-  /// [PullRefreshBox.onRefresh] callback's future completes.
-  ///
-  /// If you await the future returned by this function from a [State], you
-  /// should check that the state is still [mounted] before calling [setState].
-
-  Future<void> show() {
-    _mode = PullRefreshIndicatorMode.refresh;
-    return _checkIfNeedRefresh();
-  }
-
-  _goBack() {
-    _dragOffset = .0;
-    if (mounted) {
-      _controller
-          .animateTo(
-        0.0,
-        duration: Duration(milliseconds: 200),
-        curve: Curves.easeOut,
-      )
-          .then((e) {
-        _mode = PullRefreshIndicatorMode.done;
-      });
+  void goBack() {
+    _done = true;
+    if (!mounted) return;
+    if (!_visible) {
+      _refreshing = false;
+      return;
     }
-  }
-
-  Future _checkIfNeedRefresh() {
-    if (_mode == PullRefreshIndicatorMode.refresh && !_refreshing) {
-      _refreshing = true;
-      _controller.animateTo(widget.indicator.displacement ?? 100.0,
-          duration: Duration(milliseconds: 200));
-      return widget.onRefresh().whenComplete(() {
-        _mode = PullRefreshIndicatorMode.done;
-        _goBack();
-        _refreshing = false;
+    if (!_pointerUp) {
+      // 手指还在屏幕上延迟执行动画
+      setState(() {
+        _needAnimate = true;
       });
+      return;
     }
-    return Future.value(null);
+    _refreshing = false;
+    _visibleExtent = 0;
   }
 
   @override
   Widget build(BuildContext context) {
-    _checkIfNeedRefresh();
-    return Stack(
-      children: <Widget>[
-        AnimatedBuilder(
-          builder: (BuildContext context, Widget child) {
-            return Transform.translate(
-              offset: Offset(0.0, _controller.value),
-              child: NotificationListener<ScrollNotification>(
-                onNotification: _handleScrollNotification,
-                child:
-                    new NotificationListener<OverscrollIndicatorNotification>(
-                        onNotification: _handleGlowNotification,
-                        child: Theme(
-                          data: Theme.of(context)
-                              .copyWith(platform: TargetPlatform.android),
-                          child: widget.child,
-                        )),
-              ),
-            );
-          },
-          animation: _controller,
-        ),
-        //Header
-        AnimatedBuilder(
-          builder: (BuildContext context, Widget child) {
-            return Transform.translate(
-                offset: Offset(0.0, -_indicatorHeight + _controller.value + 1),
-                child: SizedBox(
-                    height: _indicatorHeight,
-                    width: double.infinity,
-                    child: widget.indicator.build(
-                      context,
-                      _mode,
-                      _dragOffset,
-                      _direction,
-                    )));
-          },
-          animation: _controller,
-        )
-      ],
-    );
-  }
-
-  bool _handleScrollNotification(ScrollNotification notification) {
-    if (_mode == PullRefreshIndicatorMode.refresh) {
-      return true;
-    }
-    if (notification is OverscrollNotification) {
-      if (_mode != PullRefreshIndicatorMode.refresh) {
-        double _temp = _dragOffset;
-        _dragOffset -= notification.overscroll / 3.0;
-        _mode = PullRefreshIndicatorMode.drag;
-        if (_androidEffect) {
-          if (_dragOffset < .0) {
-            _dragOffset = .0;
+    return SliverFlexibleHeader(
+      visibleExtent: _visibleExtent,
+      builder: (_, double availableExtent, ScrollDirection direction) {
+        _visible = availableExtent > 0;
+        if (!_visible) {
+          refreshState = RefreshIndicatorMode.inactive;
+          _visibleExtent = 0;
+          _done = false;
+        } else {
+          if (direction == ScrollDirection.reverse &&
+              !_refreshing &&
+              _pointerUp &&
+              availableExtent > widget.refreshTriggerPullDistance) {
+            _refreshing = true;
+            _visibleExtent = widget.refreshIndicatorExtent;
+            widget.onRefresh?.call().whenComplete(goBack);
+          }
+          if (_refreshing) {
+            refreshState = RefreshIndicatorMode.refresh;
+          } else if (_done) {
+            refreshState = RefreshIndicatorMode.done;
+          } else if (availableExtent > widget.refreshTriggerPullDistance) {
+            refreshState = RefreshIndicatorMode.armed;
+          } else {
+            refreshState = RefreshIndicatorMode.drag;
           }
         }
-        if (_temp != _dragOffset) {
-          _controller.value = _dragOffset;
-        }
-      }
-    } else if (notification is ScrollUpdateNotification) {
-      if (_dragOffset > 0.0) {
-        _dragOffset -= notification.scrollDelta;
-        _controller.value = _dragOffset;
-      }
-    } else if (notification is ScrollEndNotification) {
-      if (_dragOffset >= (widget.indicator.displacement ?? 100.0) &&
-          _mode != PullRefreshIndicatorMode.refresh) {
-        setState(() {
-          _mode = PullRefreshIndicatorMode.refresh;
-        });
-      }
-      if (_mode != PullRefreshIndicatorMode.refresh) {
-        _mode = PullRefreshIndicatorMode.canceled;
-        _goBack();
-      }
-    } else if (notification is UserScrollNotification) {
-      _direction = notification.direction;
-    }
-    return false;
-  }
-
-  bool _handleGlowNotification(OverscrollIndicatorNotification notification) {
-    if (!_androidEffect || notification.leading) {
-      notification.disallowGlow();
-    }
-    return true;
+        return (widget.builder ??
+            SliverPullRefreshIndicator.buildRefreshIndicator)(
+          context,
+          refreshState,
+          availableExtent,
+          widget.refreshTriggerPullDistance,
+          widget.refreshIndicatorExtent,
+        );
+      },
+    );
   }
 }

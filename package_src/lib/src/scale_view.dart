@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'after_layout.dart';
 
-/// Control the scale of a child widget.
+/// Scale the child from [minScale] to  [maxScale].
 ///
-/// ScaleView not only support scare and double click gesture,
+/// ScaleView not only support scale and double click gesture,
 /// but also support move widget in horizontal and vertical direction
 /// when its child widget is scaled.
 ///
@@ -16,7 +16,7 @@ import 'after_layout.dart';
 /// ```dart
 ///   ClipRect(
 ///    child: ScaleView(
-///       child: Image.asset("images/xx.png")
+///       child: Image.asset("imgs/xx.png")
 ///     )
 ///  )
 /// ```
@@ -25,18 +25,16 @@ import 'after_layout.dart';
 /// such as [ListView], in this scenario, you can specify the [parentScrollableAxis]
 /// explicitly.
 ///
-
 class ScaleView extends StatefulWidget {
-  ScaleView({Key key,
+  ScaleView({
+    Key? key,
     this.minScale = 1.0,
     this.maxScale = 10.0,
     this.doubleClickScale = 3.0,
     this.alignment: Alignment.center,
-    this.behavior: HitTestBehavior.opaque,
     this.parentScrollableAxis = Axis.horizontal,
-    this.child,
-  })
-      : super(key: key);
+    required this.child,
+  }) : super(key: key);
 
   /// Minimum scale multiplier
   final double minScale;
@@ -50,15 +48,9 @@ class ScaleView extends StatefulWidget {
   /// Child widget alignment in scale view.
   final Alignment alignment;
 
-  /// It must be the same width as the scroll direction of
-  /// parent [Scrollable] widget when it exists.
+  /// If there is an ancestor scrollview, the [parentScrollableAxis]
+  /// must be same as the scroll direction of the ancestor scrollview.
   final Axis parentScrollableAxis;
-
-  /// Gesture hit test room, defaults to [HitTestBehavior.opaque],
-  /// means the entire scale view room will respond to the user input.
-  /// If you just expect the child self respond to the user input, set
-  /// value as [HitTestBehavior.deferToChild].
-  final HitTestBehavior behavior;
 
   final Widget child;
 
@@ -70,54 +62,41 @@ const double _kMinFlingVelocity = 800.0;
 
 class _ScaleViewState extends State<ScaleView>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-  Animation<Offset> _flingAnimation;
-  Animation<double> _scaleAnimation;
+  late AnimationController _controller;
+  Animation<Offset>? _flingAnimation;
+  late Animation<double> _scaleAnimation;
   Offset _offset = Offset.zero;
   double _scale = 1.0;
-  Offset _normalizedOffset;
-  double _previousScale;
+  late Offset _normalizedOffset;
+  late double _previousScale;
   bool _doubleClick = true;
-  BuildContext _childContext;
-  Size _childSize;
-  Offset _origin;
-  Offset _focalPoint;
-
-  //缓存子widget Size
-  Size get childSize {
-    //if (_childContext.size.width == Size.zero) return Size(10, 10);
-    if (_childSize == null) {
-      if(_childContext.size.width<context.size.width&&_childContext.size.height<context.size.height){
-        _childSize=_childContext.size;
-      }else {
-        _childSize =
-            applyBoxFit(BoxFit.contain, _childContext.size, context.size)
-                .destination;
-      }
-      print("_childContext.size ${_childContext.size} context.size ${context.size} _childSize $_childSize", );
-    }
-    return _childSize;
-  }
+  late Size _childSize;
+  Offset? _origin;
+  late Offset _focalPoint;
 
   //缓存子Widget中心点
   Offset get origin {
     if (_origin == null) {
-      _origin = Offset(childSize.width / 2.0, childSize.height / 2.0);
+      _origin = Offset(_childSize.width / 2.0, _childSize.height / 2.0);
     }
-    return _origin;
+    return _origin!;
   }
 
   @override
   void initState() {
     super.initState();
     _controller = new AnimationController(
-        vsync: this, duration: Duration(milliseconds: 150))
+      vsync: this,
+      duration: Duration(milliseconds: 150),
+    )
       ..addListener(_handleFlingAnimation)
-      ..addStatusListener((status) {
-        if (_doubleClick && status == AnimationStatus.completed) {
-          _doubleClick = false;
-        }
-      });
+      ..addStatusListener(
+        (status) {
+          if (_doubleClick && status == AnimationStatus.completed) {
+            _doubleClick = false;
+          }
+        },
+      );
   }
 
   @override
@@ -128,13 +107,17 @@ class _ScaleViewState extends State<ScaleView>
 
   Offset _clampOffset(Offset offset) {
     final Offset minOffset =
-        Offset(childSize.width, childSize.height) * (1 - _scale);
+        Offset(_childSize.width, _childSize.height) * (1 - _scale);
     if (_scale >= 1.0) {
       return Offset(
-          offset.dx.clamp(minOffset.dx, .0), offset.dy.clamp(minOffset.dy, .0));
+        offset.dx.clamp(minOffset.dx, .0),
+        offset.dy.clamp(minOffset.dy, .0),
+      );
     } else {
-      return Offset(offset.dx.clamp(0.0, _childSize.width * (1 - _scale)),
-          offset.dy.clamp(0.0, _childSize.height * (1 - _scale)));
+      return Offset(
+        offset.dx.clamp(0.0, _childSize.width * (1 - _scale)),
+        offset.dy.clamp(0.0, _childSize.height * (1 - _scale)),
+      );
     }
   }
 
@@ -143,10 +126,10 @@ class _ScaleViewState extends State<ScaleView>
     if (_flingAnimation == null) return;
     setState(() {
       if (_doubleClick) {
-        _offset = _flingAnimation.value;
+        _offset = _flingAnimation!.value;
         _scale = _scaleAnimation.value;
       } else {
-        _offset = _flingAnimation.value;
+        _offset = _flingAnimation!.value;
       }
     });
   }
@@ -190,9 +173,9 @@ class _ScaleViewState extends State<ScaleView>
     }
 
     final Offset direction = details.velocity.pixelsPerSecond / magnitude;
-    final double distance = (Offset.zero & context.size).shortestSide;
+    final double distance = (Offset.zero & context.size!).shortestSide;
     _flingAnimation = new Tween<Offset>(
-        begin: _offset, end: _clampOffset(_offset + direction * distance))
+            begin: _offset, end: _clampOffset(_offset + direction * distance))
         .animate(_controller);
     _controller
       ..value = 0.0
@@ -203,20 +186,21 @@ class _ScaleViewState extends State<ScaleView>
     _flingAnimation = null;
     _controller.reset();
     _doubleClick = true;
-    Size size = childSize;
+    Size size = _childSize;
     if (_scale != 1.0) {
-      _flingAnimation = new Tween<Offset>(begin: _offset, end: Offset.zero)
-          .animate(_controller);
+      _flingAnimation =
+          Tween<Offset>(begin: _offset, end: Offset.zero).animate(_controller);
       _scaleAnimation =
-          new Tween<double>(begin: _scale, end: 1.0).animate(_controller);
+          Tween<double>(begin: _scale, end: 1.0).animate(_controller);
       _controller.forward();
     } else {
+      //计算多出来的部分
       size = size * (widget.doubleClickScale - 1);
-      _flingAnimation = new Tween<Offset>(
-          begin: Offset.zero, end: Offset(size.width, size.height) / -2.0)
+      _flingAnimation = Tween<Offset>(
+              begin: Offset.zero, end: Offset(size.width, size.height) / -2.0)
           .animate(_controller);
       _scaleAnimation =
-          new Tween<double>(begin: _scale, end: widget.doubleClickScale)
+          Tween<double>(begin: _scale, end: widget.doubleClickScale)
               .animate(_controller);
       _controller.forward();
     }
@@ -232,38 +216,43 @@ class _ScaleViewState extends State<ScaleView>
   @override
   Widget build(BuildContext context) {
     bool horizontal = widget.parentScrollableAxis == Axis.horizontal;
+    // 如果已经缩放，且父可滚动组件可以沿水平方向滚动，则需要拦截水平拖拽手势，
+    // 防止水平方向滑动而导致父可滚动组件滚动。
+    bool hookHorizon = (_scale != 1.0 && horizontal);
+    // 垂直方向同理
+    bool hookVertical = (_scale != 1.0 && !horizontal);
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onScaleStart: _handleOnScaleStart,
       onScaleUpdate: _handleOnScaleUpdate,
       onScaleEnd: _handleFling,
       onDoubleTap: _handleOnDoubleTab,
-      onVerticalDragEnd: (_scale == 1.0 || horizontal) ? null : _handleFling,
-      onVerticalDragUpdate:
-      (_scale == 1.0 || horizontal) ? null : _handleOnDragUpdate,
-      onHorizontalDragEnd:
-      (_scale == 1.0 || !horizontal) ? null : _handleFling,
-      onHorizontalDragUpdate:
-      (_scale == 1.0 || !horizontal) ? null : _handleOnDragUpdate,
-      behavior: widget.behavior,
+      onVerticalDragEnd: hookVertical ? _handleFling : null,
+      onVerticalDragUpdate: hookVertical ? _handleOnDragUpdate : null,
+      onHorizontalDragEnd: hookHorizon ? _handleFling : null,
+      onHorizontalDragUpdate: hookHorizon ? _handleOnDragUpdate : null,
       child: Align(
         alignment: widget.alignment,
-        child: new Transform(
-          transform: new Matrix4.identity()
+        child: Transform(
+          transform: Matrix4.identity()
             ..translate(_offset.dx, _offset.dy)
             ..scale(_scale),
-          child: FittedBox(
-            fit: BoxFit.contain,
-            child: AfterLayout(
-              callback: (BuildContext ctx) {
-                _childContext = ctx;
-              },
-              child: ConstrainedBox(
-                constraints:
-                BoxConstraints(minWidth: 10.0, minHeight: 10.0),
-                child: widget.child,
+          child: Builder(builder: (context) {
+            return FittedBox(
+              fit: BoxFit.contain,
+              child: AfterLayout(
+                callback: (ral) {
+                  // fit 为 BoxFit.contain 时，FittedBox 的大小等于最终图片在屏幕上的显示大小
+                  _childSize = context.size!;
+                },
+                child: ConstrainedBox(
+                  //至少size(1,1)，防止context.size为null
+                  constraints: BoxConstraints(minWidth: 1, minHeight: 1),
+                  child: widget.child,
+                ),
               ),
-            ),
-          ),
+            );
+          }),
         ),
       ),
     );

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 
 class SwiperRoute extends StatelessWidget {
-  final _images=["sea.png","star.jpg","cat.jpg","horse.jpg"];
+  final _imgs=["sea.png","star.jpg","cat.jpg","horse.jpg"];
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -16,12 +16,15 @@ class SwiperRoute extends StatelessWidget {
               child: Swiper(
                 indicatorAlignment: AlignmentDirectional.bottomEnd,
                 speed: 400,
+                controller: SwiperController(initialPage: 1),
+                viewportFraction: .95,
                 indicator: CircleSwiperIndicator(),
+                onChanged: (index)=>print(index),
                 children: <Widget>[
-                  Image.asset("images/sea.png",fit: BoxFit.fill,),
-                  Image.asset("images/star.jpg", fit: BoxFit.fill),
-                  Image.asset("images/cat.jpg",fit: BoxFit.fill,),
-                ],
+                  Image.asset("imgs/sea.png",fit: BoxFit.fill,),
+                  Image.asset("imgs/star.jpg", fit: BoxFit.fill),
+                  Image.asset("imgs/cat.jpg",fit: BoxFit.fill,),
+                ].map((e) => Padding(child: e,padding: EdgeInsets.symmetric(horizontal: 1))).toList(),
               ),
             ),
             Padding(
@@ -33,11 +36,11 @@ class SwiperRoute extends StatelessWidget {
                   //reverse: true, //反向
                   indicator: RectangleSwiperIndicator(),
                   children: <Widget>[
-                    Image.asset("images/sea.png",fit: BoxFit.fill,),
-                    Image.asset("images/star.jpg", fit: BoxFit.fill),
-                    Image.asset("images/cat.jpg",fit: BoxFit.fill,),
-                    Image.asset("images/horse.jpg", fit: BoxFit.fill),
-                    Image.asset("images/road.jpg",fit: BoxFit.fill,),
+                    Image.asset("imgs/sea.png",fit: BoxFit.fill,),
+                    Image.asset("imgs/star.jpg", fit: BoxFit.fill),
+                    Image.asset("imgs/cat.jpg",fit: BoxFit.fill,),
+                    Image.asset("imgs/horse.jpg", fit: BoxFit.fill),
+                    Image.asset("imgs/road.jpg",fit: BoxFit.fill,),
                   ],
                 ),
               ),
@@ -48,12 +51,11 @@ class SwiperRoute extends StatelessWidget {
                 indicatorAlignment: AlignmentDirectional.topEnd,
                 circular: true,
                 indicator: NumberSwiperIndicator(),
-
                 children: <Widget>[
-                  Image.asset("images/sea.png",fit: BoxFit.fill,),
-                  Image.asset("images/star.jpg", fit: BoxFit.fill),
-                  Image.asset("images/cat.jpg",fit: BoxFit.fill,),
-                  Image.asset("images/horse.jpg", fit: BoxFit.fill),
+                  Image.asset("imgs/sea.png",fit: BoxFit.fill),
+                  Image.asset("imgs/star.jpg", fit: BoxFit.fill),
+                  Image.asset("imgs/cat.jpg",fit: BoxFit.fill),
+                  Image.asset("imgs/horse.jpg", fit: BoxFit.fill),
                 ],
               ),
             ),
@@ -62,11 +64,10 @@ class SwiperRoute extends StatelessWidget {
               child: Swiper.builder(
                 indicatorAlignment: AlignmentDirectional.topEnd,
                 circular: true,
-                childCount: _images.length,
+                childCount: _imgs.length,
                 indicator: NumberSwiperIndicator(),
                 itemBuilder: (context, index){
-                  //print(index);
-                  return Image.asset("images/${_images[index]}",fit: BoxFit.fill);
+                  return Image.asset("imgs/${_imgs[index]}",fit: BoxFit.fill);
                 },
               ),
             ),

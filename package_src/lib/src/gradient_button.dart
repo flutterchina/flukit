@@ -1,58 +1,57 @@
 import 'package:flutter/material.dart';
 
 class GradientButton extends StatelessWidget {
-  GradientButton({
-    Key key,
+  const GradientButton({
+    Key? key,
     this.colors,
-    this.onPressed,
+    required this.onPressed,
+    required this.child,
     this.padding,
-    this.borderRadius,
+    this.borderRadius = const BorderRadius.all(Radius.circular(2)),
     this.textColor,
     this.splashColor,
     this.disabledColor,
     this.disabledTextColor,
     this.onHighlightChanged,
-    @required this.child,
-  }):super(key:key);
+  }) : super(key: key);
 
   // 渐变色数组
-  final List<Color> colors;
-  final Color textColor;
-  final Color splashColor;
-  final Color disabledTextColor;
-  final Color disabledColor;
-  final EdgeInsetsGeometry padding;
+  final List<Color>? colors;
+  final Color? textColor;
+  final Color? splashColor;
+  final Color? disabledTextColor;
+  final Color? disabledColor;
+  final EdgeInsetsGeometry? padding;
 
   final Widget child;
-  final BorderRadius borderRadius;
+  final BorderRadius? borderRadius;
 
-  final GestureTapCallback onPressed;
-  final ValueChanged<bool> onHighlightChanged;
+  final GestureTapCallback? onPressed;
+  final ValueChanged<bool>? onHighlightChanged;
 
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
     //确保colors数组不空
-    List<Color> _colors = colors ??
-        [theme.primaryColor, theme.primaryColorDark ?? theme.primaryColor];
-    var radius = borderRadius ?? BorderRadius.circular(2);
+    List<Color> _colors =
+        colors ?? [theme.primaryColor, theme.primaryColorDark];
+    final radius = borderRadius;
     bool disabled = onPressed == null;
     return DecoratedBox(
       decoration: BoxDecoration(
         gradient: disabled ? null : LinearGradient(colors: _colors),
-        color: disabled
-            ? disabledColor ?? disabledColor ?? theme.disabledColor
-            : null,
+        color: disabled ? disabledColor ?? theme.disabledColor : null,
         borderRadius: radius,
       ),
       child: Material(
         type: MaterialType.transparency,
+        borderRadius: radius,
+        clipBehavior: Clip.hardEdge,
         child: ConstrainedBox(
           constraints: const BoxConstraints(minWidth: 88.0, minHeight: 36.0),
           child: InkWell(
             splashColor: splashColor ?? _colors.last,
             highlightColor: Colors.transparent,
-            borderRadius: borderRadius ?? BorderRadius.circular(5),
             onHighlightChanged: onHighlightChanged,
             onTap: onPressed,
             child: Padding(
@@ -61,10 +60,11 @@ class GradientButton extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold),
                 child: Center(
                   child: DefaultTextStyle(
-                    style: theme.textTheme.button.copyWith(
-                        color: disabled
-                            ? disabledTextColor ?? Colors.black38
-                            : textColor ?? Colors.white),
+                    style: theme.textTheme.button!.copyWith(
+                      color: disabled
+                          ? disabledTextColor ?? Colors.black38
+                          : textColor ?? Colors.white,
+                    ),
                     child: child,
                   ),
                   widthFactor: 1,
@@ -79,42 +79,42 @@ class GradientButton extends StatelessWidget {
   }
 }
 
-class RaisedGradientButton extends StatefulWidget {
-  RaisedGradientButton({
-    Key key,
+class ElevatedGradientButton extends StatefulWidget {
+  const ElevatedGradientButton({
+    Key? key,
     this.colors,
     this.onPressed,
     this.padding,
-    this.borderRadius,
+    this.borderRadius = const BorderRadius.all(Radius.circular(2)),
     this.textColor,
     this.splashColor,
     this.disabledColor,
     this.disabledTextColor,
     this.onHighlightChanged,
     this.shadowColor,
-    @required this.child,
-  }):super(key:key);
+    required this.child,
+  }) : super(key: key);
 
   // 渐变色数组
-  final List<Color> colors;
-  final Color textColor;
-  final Color splashColor;
-  final Color disabledTextColor;
-  final Color disabledColor;
-  final Color shadowColor;
-  final EdgeInsetsGeometry padding;
+  final List<Color>? colors;
+  final Color? textColor;
+  final Color? splashColor;
+  final Color? disabledTextColor;
+  final Color? disabledColor;
+  final Color? shadowColor;
+  final EdgeInsetsGeometry? padding;
 
   final Widget child;
-  final BorderRadius borderRadius;
+  final BorderRadius? borderRadius;
 
-  final GestureTapCallback onPressed;
-  final ValueChanged<bool> onHighlightChanged;
+  final GestureTapCallback? onPressed;
+  final ValueChanged<bool>? onHighlightChanged;
 
   @override
-  _RaisedGradientButtonState createState() => _RaisedGradientButtonState();
+  _ElevatedGradientButtonState createState() => _ElevatedGradientButtonState();
 }
 
-class _RaisedGradientButtonState extends State<RaisedGradientButton> {
+class _ElevatedGradientButtonState extends State<ElevatedGradientButton> {
   bool _tapDown = false;
 
   @override
@@ -123,7 +123,7 @@ class _RaisedGradientButtonState extends State<RaisedGradientButton> {
     return AnimatedContainer(
       duration: Duration(milliseconds: 100),
       decoration: BoxDecoration(
-        borderRadius: widget.borderRadius ?? BorderRadius.circular(2),
+        borderRadius: widget.borderRadius,
         boxShadow: disabled
             ? null
             : [
@@ -157,7 +157,7 @@ class _RaisedGradientButtonState extends State<RaisedGradientButton> {
             _tapDown = v;
           });
           if (widget.onHighlightChanged != null) {
-            widget.onHighlightChanged(v);
+            widget.onHighlightChanged!(v);
           }
         },
       ),

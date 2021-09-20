@@ -1,3 +1,3 @@
-void main(){
+void main() {
   // examples in flukit/lib
 }

@@ -8,12 +8,12 @@ class SwiperStyleRoute extends StatefulWidget {
 
 class _SwiperStyleRouteState extends State<SwiperStyleRoute> {
   bool _circular = false;
-  SwiperController swiperController;
+  late SwiperController swiperController;
 
   @override
   void initState() {
     super.initState();
-    swiperController=new SwiperController();
+    swiperController= SwiperController();
     swiperController.addListener((){
 //      print(swiperController.index);
 //      print(swiperController.page);
@@ -38,15 +38,16 @@ class _SwiperStyleRouteState extends State<SwiperStyleRoute> {
             autoStart: false,
             circular: _circular,
             indicator: RectangleSwiperIndicator(),
+            onChanged: (index)=>print(index),
             children: <Widget>[
-              Image.asset("images/sea.png",fit: BoxFit.fill,),
-              Image.asset("images/star.jpg", fit: BoxFit.fill),
-              Image.asset("images/cat.jpg",fit: BoxFit.fill,),
-              Image.asset("images/horse.jpg", fit: BoxFit.fill),
+              Image.asset("imgs/sea.png",fit: BoxFit.fill,),
+              Image.asset("imgs/star.jpg", fit: BoxFit.fill),
+              Image.asset("imgs/cat.jpg",fit: BoxFit.fill,),
+              Image.asset("imgs/horse.jpg", fit: BoxFit.fill),
             ],
           ),
         ),
-        RaisedButton(
+        ElevatedButton(
           child: Text("Circular($_circular)"),
           onPressed: () {
             setState(() {
@@ -54,25 +55,25 @@ class _SwiperStyleRouteState extends State<SwiperStyleRoute> {
             });
           },
         ),
-        RaisedButton(
+        ElevatedButton(
           child: Text("Prev"),
           onPressed: () {
             swiperController.previousPage(duration: Duration(milliseconds: 200), curve: Curves.easeOut);
           },
         ),
-        RaisedButton(
+        ElevatedButton(
           child: Text("Next"),
           onPressed: () {
             swiperController.nextPage(duration: Duration(milliseconds: 200), curve: Curves.easeOut);
           },
         ),
-        RaisedButton(
+        ElevatedButton(
           child: Text("start"),
           onPressed: () {
             swiperController.start();
           },
         ),
-        RaisedButton(
+        ElevatedButton(
           child: Text("Stop"),
           onPressed: () {
             swiperController.stop();
