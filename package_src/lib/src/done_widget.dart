@@ -5,7 +5,7 @@ import 'render_object_animation_mixin.dart';
 
 /// Done tip widget.
 class DoneWidget extends LeafRenderObjectWidget {
-  DoneWidget({
+  const DoneWidget({
     Key? key,
     this.strokeWidth = 2.0,
     this.color = Colors.green,
@@ -52,7 +52,7 @@ class RenderDoneObject extends RenderBox with RenderObjectAnimationMixin {
 
   // 动画执行时间为 300ms
   @override
-  Duration get duration => Duration(milliseconds: 300);
+  Duration get duration => const Duration(milliseconds: 300);
 
   @override
   void doPaint(PaintingContext context, Offset offset) {
@@ -91,7 +91,7 @@ class RenderDoneObject extends RenderBox with RenderObjectAnimationMixin {
 
     path.moveTo(firstOffset.dx, firstOffset.dy);
 
-    final adjustProgress = .6;
+    const adjustProgress = .6;
     //画 "勾"
     if (_progress < adjustProgress) {
       //第一个点到第二个点的连线做动画(第二个点不停的变)
@@ -123,7 +123,7 @@ class RenderDoneObject extends RenderBox with RenderObjectAnimationMixin {
   void performLayout() {
     // 如果父组件指定了固定宽高，则使用父组件指定的，否则宽高默认置为 25
     size = constraints.constrain(
-      constraints.isTight ? Size.infinite : Size(25, 25),
+      constraints.isTight ? Size.infinite : const Size(25, 25),
     );
   }
 }

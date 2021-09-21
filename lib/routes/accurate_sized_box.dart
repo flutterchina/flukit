@@ -7,13 +7,13 @@ class AccurateSizedBoxRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final child = GestureDetector(
-      onTap: () => print("tap"),
+      onTap: () => debugPrint("tap"),
       child: Container(width: 300, height: 300, color: Colors.red),
     );
     return Row(
       children: [
         ConstrainedBox(
-          constraints: BoxConstraints.tight(Size(100, 100)),
+          constraints: BoxConstraints.tight(const Size(100, 100)),
           // Actually, the child size will be 100×100.
           child: SizedBox(
             width: 50,
@@ -24,7 +24,7 @@ class AccurateSizedBoxRoute extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(left: 8),
           child: ConstrainedBox(
-            constraints: BoxConstraints.tight(Size(100, 100)),
+            constraints: BoxConstraints.tight(const Size(100, 100)),
             // The child size will be 50×50.
             child: AccurateSizedBox(
               width: 50,

@@ -2,7 +2,7 @@ import 'package:flukit/flukit.dart';
 import 'package:flutter/material.dart';
 
 class PullRefreshRoute extends StatefulWidget {
-  PullRefreshRoute({Key? key}) : super(key: key);
+  const PullRefreshRoute({Key? key}) : super(key: key);
 
   @override
   State<PullRefreshRoute> createState() => _PullRefreshRouteState();
@@ -29,7 +29,7 @@ class _PullRefreshRouteState extends State<PullRefreshRoute> {
             itemExtent: 50,
             delegate: SliverChildBuilderDelegate(
                   (context, index) {
-                return ListTile(title: Text('$index'), onTap: () => print(index));
+                return ListTile(title: Text('$index'), onTap: () => debugPrint('$index'));
               },
               childCount: _itemCount,
             ),

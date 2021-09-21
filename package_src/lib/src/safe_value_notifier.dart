@@ -24,4 +24,8 @@ class SafeValueNotifier<T> extends ValueNotifier<T> {
       super.notifyListeners();
     }
   }
+
+  void notifyListenersUnsafe() {
+    super.notifyListeners();
+  }
 }

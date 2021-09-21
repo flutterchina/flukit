@@ -2,6 +2,8 @@ import 'package:flukit/flukit.dart';
 import 'package:flutter/material.dart';
 
 class SlideTransitionXRoute extends StatefulWidget {
+  const SlideTransitionXRoute({Key? key}) : super(key: key);
+
   @override
   _SlideTransitionXRouteState createState() => _SlideTransitionXRouteState();
 }
@@ -14,13 +16,13 @@ class _SlideTransitionXRouteState extends State<SlideTransitionXRoute> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Text('Score(<100)'),
+        const Text('Score(<100)'),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ClipRect(child: wSwitcher(_score1)),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10,0,10,5),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(10,0,10,5),
               child: Text(':', textScaleFactor: 2),
             ),
             ClipRect(child: wSwitcher(_score2)),
@@ -39,7 +41,7 @@ class _SlideTransitionXRouteState extends State<SlideTransitionXRoute> {
 
   Widget wButton(VoidCallback fun) {
     return TextButton(
-      child: Text('+1'),
+      child: const Text('+1'),
       onPressed: () {
         setState(fun);
       },
@@ -51,7 +53,7 @@ class _SlideTransitionXRouteState extends State<SlideTransitionXRoute> {
       width: 60,
       child: Center(
         child: AnimatedSwitcher(
-          duration: Duration(milliseconds: 400),
+          duration: const Duration(milliseconds: 400),
           transitionBuilder: (Widget child, Animation<double> animation) {
             return SlideTransitionX(
               child: FadeTransition(child: child, opacity: animation),

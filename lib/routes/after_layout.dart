@@ -23,21 +23,21 @@ class _AfterLayoutRouteState extends State<AfterLayoutRoute> {
           child: Builder(
             builder: (context) {
               return GestureDetector(
-                child: Text(
+                child: const Text(
                   'Text1: 点我获取我的大小',
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.blue),
                 ),
-                onTap: () => print('Text1: ${context.size}'),
+                onTap: () => debugPrint('Text1: ${context.size}'),
               );
             },
           ),
         ),
         AfterLayout(
           callback: (RenderAfterLayout ral) {
-            print('Text2： ${ral.size}, ${ral.offset}');
+            debugPrint('Text2： ${ral.size}, ${ral.offset}');
           },
-          child: Text('Text2：flutter@wendux'),
+          child: const Text('Text2：flutter@wendux'),
         ),
         Builder(builder: (context) {
           return Container(
@@ -51,13 +51,13 @@ class _AfterLayoutRouteState extends State<AfterLayoutRoute> {
                   Offset.zero,
                   ancestor: context.findRenderObject(),
                 );
-                print('A 在 Container 中占用的空间范围为：${offset & ral.size}');
+                debugPrint('A 在 Container 中占用的空间范围为：${offset & ral.size}');
               },
-              child: Text('A'),
+              child: const Text('A'),
             ),
           );
         }),
-        Divider(),
+        const Divider(),
         AfterLayout(
           child: Text(_text),
           callback: (RenderAfterLayout value) {
@@ -71,7 +71,7 @@ class _AfterLayoutRouteState extends State<AfterLayoutRoute> {
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Text(
             'Text size: $_size ',
-            style: TextStyle(color: Colors.blue),
+            style: const TextStyle(color: Colors.blue),
           ),
         ),
         ElevatedButton(
@@ -80,7 +80,7 @@ class _AfterLayoutRouteState extends State<AfterLayoutRoute> {
               _text += 'flutter 实战 ';
             });
           },
-          child: Text('追加字符串'),
+          child: const Text('追加字符串'),
         ),
       ],
     );

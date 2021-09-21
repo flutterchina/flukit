@@ -9,7 +9,7 @@ class SliverPersistentHeaderToBoxRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
-      key: PageStorageKey('xx'),
+      key: const PageStorageKey(1),
       slivers: [
         buildSliverList(5),
         SliverPersistentHeaderToBox.builder(builder: headerBuilder),
@@ -38,7 +38,7 @@ class SliverPersistentHeaderToBoxRoute extends StatelessWidget {
     return Material(
       child: ListTile(
         title: Text(text),
-        onTap: () => print(text),
+        onTap: () => debugPrint(text),
       ),
     );
   }

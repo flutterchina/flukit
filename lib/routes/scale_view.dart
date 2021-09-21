@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flukit/flukit.dart';
 
 class ScaleViewRoute extends StatelessWidget {
+  const ScaleViewRoute({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Swiper(
       autoStart: false,
       circular: false,
       indicator: CircleSwiperIndicator(
-        padding: EdgeInsets.only(bottom: 30.0),
+        padding: const EdgeInsets.only(bottom: 30.0),
         itemColor: Colors.black26,
       ),
       children: <Widget>[

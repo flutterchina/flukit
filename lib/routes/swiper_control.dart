@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flukit/flukit.dart';
 
 class SwiperStyleRoute extends StatefulWidget {
+  const SwiperStyleRoute({Key? key}) : super(key: key);
+
   @override
-  _SwiperStyleRouteState createState() => new _SwiperStyleRouteState();
+  _SwiperStyleRouteState createState() => _SwiperStyleRouteState();
 }
 
 class _SwiperStyleRouteState extends State<SwiperStyleRoute> {
@@ -13,13 +15,9 @@ class _SwiperStyleRouteState extends State<SwiperStyleRoute> {
   @override
   void initState() {
     super.initState();
-    swiperController= SwiperController();
-    swiperController.addListener((){
-//      print(swiperController.index);
-//      print(swiperController.page);
-    });
+    swiperController = SwiperController();
+    swiperController.addListener(() {});
   }
-
 
   @override
   void dispose() {
@@ -38,11 +36,17 @@ class _SwiperStyleRouteState extends State<SwiperStyleRoute> {
             autoStart: false,
             circular: _circular,
             indicator: RectangleSwiperIndicator(),
-            onChanged: (index)=>print(index),
+            onChanged: (index) => debugPrint('$index'),
             children: <Widget>[
-              Image.asset("imgs/sea.png",fit: BoxFit.fill,),
+              Image.asset(
+                "imgs/sea.png",
+                fit: BoxFit.fill,
+              ),
               Image.asset("imgs/star.jpg", fit: BoxFit.fill),
-              Image.asset("imgs/cat.jpg",fit: BoxFit.fill,),
+              Image.asset(
+                "imgs/cat.jpg",
+                fit: BoxFit.fill,
+              ),
               Image.asset("imgs/horse.jpg", fit: BoxFit.fill),
             ],
           ),
@@ -56,25 +60,31 @@ class _SwiperStyleRouteState extends State<SwiperStyleRoute> {
           },
         ),
         ElevatedButton(
-          child: Text("Prev"),
+          child: const Text("Prev"),
           onPressed: () {
-            swiperController.previousPage(duration: Duration(milliseconds: 200), curve: Curves.easeOut);
+            swiperController.previousPage(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOut,
+            );
           },
         ),
         ElevatedButton(
-          child: Text("Next"),
+          child: const Text("Next"),
           onPressed: () {
-            swiperController.nextPage(duration: Duration(milliseconds: 200), curve: Curves.easeOut);
+            swiperController.nextPage(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOut,
+            );
           },
         ),
         ElevatedButton(
-          child: Text("start"),
+          child: const Text("start"),
           onPressed: () {
             swiperController.start();
           },
         ),
         ElevatedButton(
-          child: Text("Stop"),
+          child: const Text("Stop"),
           onPressed: () {
             swiperController.stop();
           },

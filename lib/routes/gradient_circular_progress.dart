@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flukit/flukit.dart';
 
 class GradientCircularProgressRoute extends StatefulWidget {
+  const GradientCircularProgressRoute({Key? key}) : super(key: key);
+
   @override
   GradientCircularProgressRouteState createState() {
-    return new GradientCircularProgressRouteState();
+    return GradientCircularProgressRouteState();
   }
 }
 
@@ -47,25 +49,29 @@ class GradientCircularProgressRouteState
                         children: <Widget>[
                           GradientCircularProgressIndicator(
                             // No gradient
-                            colors: [Colors.blue, Colors.blue],
+                            colors: const [Colors.blue, Colors.blue],
                             radius: 50.0,
                             stokeWidth: 3.0,
                             value: _animationController.value,
                           ),
                           GradientCircularProgressIndicator(
-                            colors: [Colors.red, Colors.orange],
+                            colors: const [Colors.red, Colors.orange],
                             radius: 50.0,
                             stokeWidth: 3.0,
                             value: _animationController.value,
                           ),
                           GradientCircularProgressIndicator(
-                            colors: [Colors.red, Colors.orange, Colors.red],
+                            colors: const [
+                              Colors.red,
+                              Colors.orange,
+                              Colors.red
+                            ],
                             radius: 50.0,
                             stokeWidth: 5.0,
                             value: _animationController.value,
                           ),
                           GradientCircularProgressIndicator(
-                            colors: [Colors.teal, Colors.cyan],
+                            colors: const [Colors.teal, Colors.cyan],
                             radius: 50.0,
                             stokeWidth: 5.0,
                             strokeCapRound: true,
@@ -77,7 +83,11 @@ class GradientCircularProgressRouteState
                           TurnBox(
                             turns: 1 / 8,
                             child: GradientCircularProgressIndicator(
-                              colors: [Colors.red, Colors.orange, Colors.red],
+                              colors: const [
+                                Colors.red,
+                                Colors.orange,
+                                Colors.red
+                              ],
                               radius: 50.0,
                               stokeWidth: 5.0,
                               strokeCapRound: true,
@@ -185,7 +195,7 @@ class GradientCircularProgressRouteState
                               padding: const EdgeInsets.only(top: 10.0),
                               child: Text(
                                 "${(_animationController.value * 100).toInt()}%",
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 25.0,
                                   color: Colors.blueGrey,
                                 ),

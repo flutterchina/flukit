@@ -75,7 +75,7 @@ class _RenderLeftRight extends RenderBox
     // layout left child
     // 左子节点的offset默认为（0，0），为了确保左子节点始终能显示，我们不修改它
     leftChild.layout(
-      //左侧剩余的最大宽度
+      // 左侧剩余的最大宽度
       constraints.copyWith(
         minWidth: 0,
         maxWidth: constraints.maxWidth - rightChildWidth,
@@ -83,12 +83,12 @@ class _RenderLeftRight extends RenderBox
       parentUsesSize: true,
     );
 
-    //设置容器的size
+    // 设置容器的size
     size = Size(
       constraints.maxWidth,
       max(leftChild.size.height, rightChildHeight),
     );
-
+    // 处理垂直对齐
     if (verticalAlign.y != -1) {
       RenderBox? needAlignChild;
       if (leftChild.size.height < size.height) {

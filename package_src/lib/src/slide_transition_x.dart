@@ -11,19 +11,19 @@ class SlideTransitionX extends AnimatedWidget {
     this.direction = AxisDirection.down,
     required this.child,
   }) : super(key: key, listenable: position) {
-    _tween = Tween(begin: Offset(0, 1), end: Offset.zero);
+    _tween = Tween(begin: const Offset(0, 1), end: Offset.zero);
     switch (direction) {
       case AxisDirection.up:
-        _tween.begin = Offset(0, 1);
+        _tween.begin = const Offset(0, 1);
         break;
       case AxisDirection.right:
-        _tween.begin = Offset(-1, 0);
+        _tween.begin = const Offset(-1, 0);
         break;
       case AxisDirection.down:
-        _tween.begin = Offset(0, -1);
+        _tween.begin = const Offset(0, -1);
         break;
       case AxisDirection.left:
-        _tween.begin = Offset(1, 0);
+        _tween.begin = const Offset(1, 0);
         break;
     }
   }

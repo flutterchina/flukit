@@ -17,20 +17,20 @@ class OverflowWithTranslateRoute extends StatelessWidget {
         ),
       ],
     );
-    const offset = const Offset(-20, 0);
+    const offset = Offset(-20, 0);
     return LayoutBuilder(builder: (context, constraints) {
       return Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
             child: Text('Transform.translate：向左平移20像素后，右边会出现20像素空白'),
           ),
           Transform.translate(
             offset: offset,
             child: row,
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
             child: Text('OverflowWithTranslateBox 向左平移20像素后，右边不会出现空白'),
           ),
           SizedBox(

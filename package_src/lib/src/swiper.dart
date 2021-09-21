@@ -82,10 +82,6 @@ class SwiperController extends ChangeNotifier {
     );
   }
 
-  void notifyListeners() {
-    super.notifyListeners();
-  }
-
   void _attach(_SwiperState state) => _swiperState = state;
 
   void _detach() => _swiperState = null;
@@ -171,7 +167,7 @@ class _SwiperIndicator implements SwiperIndicator {
 
   @override
   Widget build(BuildContext context, int index, int itemCount) {
-    if (itemCount == 1) return SizedBox(width: .0, height: .0);
+    if (itemCount == 1) return const SizedBox(width: .0, height: .0);
 
     var children = List.generate(itemCount, (_index) {
       Color color = itemColor;
@@ -258,7 +254,7 @@ class Swiper extends StatefulWidget {
         itemBuilder = ((context, index) => children[index]),
         super(key: key);
 
-  Swiper.builder({
+  const Swiper.builder({
     Key? key,
     this.direction = Axis.horizontal,
     required this.childCount,
@@ -341,7 +337,7 @@ class Swiper extends StatefulWidget {
   final List<Widget>? children;
 
   @override
-  _SwiperState createState() => new _SwiperState();
+  _SwiperState createState() => _SwiperState();
 }
 
 class _SwiperState extends State<Swiper>
@@ -350,7 +346,7 @@ class _SwiperState extends State<Swiper>
   late int _index;
   Timer? _timer;
   bool _autoPlay = false;
-  var _globalKey = GlobalKey<__IndicatorState>();
+  final _globalKey = GlobalKey<__IndicatorState>();
   bool _animateToPage = false;
 
   int getIndex() {

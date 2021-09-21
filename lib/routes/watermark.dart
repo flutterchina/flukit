@@ -7,15 +7,16 @@ class WatermarkRoute extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListPage(children: [
-      Page('文本水印', wTextWaterMark(), padding: false),
-      Page('交错文本水印', wStaggerTextWaterMark(), padding: false),
-      Page('水印指定偏移', wTextWaterMarkWithOverflowBox(), padding: false),
-    ]);
+    return ListPage(
+      children: [
+        Page('文本水印', wTextWaterMark(), padding: false),
+        Page('交错文本水印', wStaggerTextWaterMark(), padding: false),
+        Page('水印指定偏移', wTextWaterMarkWithOverflowBox(), padding: false),
+      ],
+    );
   }
 
   Widget wTextWaterMark() {
-    TextStyle();
     return Stack(
       children: [
         wPage(),
@@ -23,8 +24,8 @@ class WatermarkRoute extends StatelessWidget {
           child: WaterMark(
             painter: TextWaterMarkPainter(
               text: 'Flutter 中国 @wendux',
-              padding: EdgeInsets.all(18),
-              textStyle: TextStyle(
+              padding: const EdgeInsets.all(18),
+              textStyle: const TextStyle(
                 color: Colors.black38,
               ),
               rotate: -10,
@@ -60,17 +61,17 @@ class WatermarkRoute extends StatelessWidget {
   }
 
   Widget wTextWaterMarkWithOverflowBox() {
-    Future.delayed(Duration(milliseconds: 200), () => print('dd'));
+    Future.delayed(const Duration(milliseconds: 200), () => debugPrint('dd'));
     return Stack(
       children: [
         wPage(),
         IgnorePointer(
           child: OverflowWithTranslateBox(
-            offset: Offset(-30, 0),
+            offset: const Offset(-30, 0),
             child: WaterMark(
               painter: TextWaterMarkPainter(
                 text: 'Flutter 中国 @wendux',
-                textStyle: TextStyle(
+                textStyle: const TextStyle(
                   fontSize: 14,
                   color: Colors.black38,
                 ),
@@ -87,7 +88,7 @@ class WatermarkRoute extends StatelessWidget {
     return Center(
       child: ElevatedButton(
         child: const Text('按钮'),
-        onPressed: () => print('tab'),
+        onPressed: () => debugPrint('tab'),
       ),
     );
   }

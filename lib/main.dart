@@ -10,7 +10,7 @@ void main() {
     () => runApp(MyApp()),
     zoneSpecification: ZoneSpecification(
       print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
-        parent.print(zone, "$line");
+        parent.print(zone, line);
         // Intercept `print` function and redirect log.
         logEmitter.value = LogInfo(false, line);
       },
@@ -32,6 +32,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -45,7 +47,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({
+  const MyHomePage({
     Key? key,
     required this.title,
   }) : super(key: key);
@@ -63,49 +65,57 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(title: Text(widget.title)),
       body: ListPage(
         children: [
-          Page("AfterLayout", AfterLayoutRoute(), showLog: true),
-          Page("AccurateSizedBox", AccurateSizedBoxRoute(), showLog: true),
-          Page("AnimatedRotationBox", AnimatedRotationBoxRoute()),
-          Page("DoneWidget", DoneWidgetRoute()),
-          Page("GradientButton", GradientButtonRoute()),
+          Page("AfterLayout", const AfterLayoutRoute(), showLog: true),
+          Page(
+            "AccurateSizedBox",
+            const AccurateSizedBoxRoute(),
+            showLog: true,
+          ),
+          Page("AnimatedRotationBox", const AnimatedRotationBoxRoute()),
+          Page("DoneWidget", const DoneWidgetRoute()),
+          Page("GradientButton", const GradientButtonRoute()),
           Page(
             "GradientCircularProgressIndicator",
-            GradientCircularProgressRoute(),
+            const GradientCircularProgressRoute(),
           ),
           Page(
             "KeepAlive Test",
-            KeepAliveTest(),
+            const KeepAliveTest(),
             padding: false,
             showLog: true,
           ),
-          Page("LayoutLogPrint", LayoutLogPrintRoute(), showLog: true),
-          Page("LeftRightBox", LeftRightBoxRoute()),
-          Page("Log Panel", LogListenerScopeRoute(), withScaffold: false),
-          Page("OverflowWithTranslateBox", OverflowWithTranslateRoute(), padding: false),
-          Page("PullRefresh", PullRefreshRoute()),
+          Page("LayoutLogPrint", const LayoutLogPrintRoute(), showLog: true),
+          Page("LeftRightBox", const LeftRightBoxRoute()),
+          Page("Log Panel", const LogListenerScopeRoute(), withScaffold: false),
+          Page(
+            "OverflowWithTranslateBox",
+            const OverflowWithTranslateRoute(),
+            padding: false,
+          ),
+          Page("PullRefresh", const PullRefreshRoute()),
 
-          Page("Quick Scrollbar", QuickScrollbarRoute()),
+          Page("Quick Scrollbar", const QuickScrollbarRoute()),
           Page("Swiper", SwiperRoute()),
-          Page("Swiper Style", SwiperStyleRoute()),
-          Page("ScaleView", ScaleViewRoute(), padding: false),
+          Page("Swiper Style", const SwiperStyleRoute()),
+          Page("ScaleView", const ScaleViewRoute(), padding: false),
           Page(
             "SliverFlexibleHeader",
-            SliverFlexibleHeaderRoute(),
+            const SliverFlexibleHeaderRoute(),
             padding: false,
           ),
           Page(
             "SliverHeaderDelegate",
-            SliverHeaderDelegateRoute(),
+            const SliverHeaderDelegateRoute(),
             padding: false,
           ),
           Page(
             "SliverPersistentHeaderToBox",
-            SliverPersistentHeaderToBoxRoute(),
+            const SliverPersistentHeaderToBoxRoute(),
             padding: false,
           ),
-          Page("SlideTransitionX", SlideTransitionXRoute()),
+          Page("SlideTransitionX", const SlideTransitionXRoute()),
           Page("TurnBox", TurnBoxRoute()),
-          Page("WaterMark(水印)", WatermarkRoute(), padding: false),
+          Page("WaterMark(水印)", const WatermarkRoute(), padding: false),
           // Page("AzListView", (ctx) => QuickSelectListViewRoute()),
         ],
       ),

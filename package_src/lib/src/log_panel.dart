@@ -7,9 +7,7 @@ import 'safe_value_notifier.dart';
 ValueNotifier<LogInfo?>? _logEmitter;
 
 ValueNotifier<LogInfo?> getGlobalLogEmitter() {
-  if (_logEmitter == null) {
-    _logEmitter = ValueNotifier<LogInfo?>(null);
-  }
+  _logEmitter ??= ValueNotifier<LogInfo?>(null);
   return _logEmitter!;
 }
 
@@ -27,6 +25,9 @@ class LogValueNotifier extends SafeValueNotifier<List<LogInfo>> {
 typedef LogPanelBuilder = Widget Function(
     LogValueNotifier? listenable, BoxConstraints constraints);
 
+typedef VerticalLogPanelBuilder = Widget Function(LogValueNotifier? listenable,
+    BoxConstraints constraints, bool mergeDuplicateLogs);
+
 class LogNotifier extends ValueNotifier<LogInfo> {
   LogNotifier(LogInfo value) : super(value);
 }
@@ -37,7 +38,7 @@ class LogListener extends LogValueNotifier {
 
   static const logEvent = '_log';
 
-  bool listen = false;
+  bool _listen = false;
   final ValueNotifier<LogInfo?> emitter;
 
   void callback() {
@@ -48,22 +49,15 @@ class LogListener extends LogValueNotifier {
   }
 
   void on() {
-    if (listen) return;
-    listen = true;
+    if (_listen) return;
+    _listen = true;
     emitter.addListener(callback);
   }
 
   void off() {
-    if (listen) {
+    if (_listen) {
       emitter.removeListener(callback);
-      listen = false;
-    }
-  }
-
-  void clear() {
-    if (value.isNotEmpty) {
-      value.clear();
-      notifyListeners();
+      _listen = false;
     }
   }
 
@@ -77,15 +71,24 @@ class LogInfo {
 
   bool error = false;
   String text;
+  int times = 1;
 
-  @override
-  bool operator ==(Object other) {
+  // we shouldn't override operator '==', since if the logs triggered before and
+  // after are the same , the ValueNotifier<LogInfo?> can **not** notify again,
+  // because the value doesn't change.
+  // @override
+  // bool operator ==(Object other) {
+  //   if (identical(this, other)) return true;
+  //   return (other is LogInfo) && error == other.error && text == other.text;
+  // }
+  // @override
+  // int get hashCode => hashValues(error, text);
+
+  bool isEqual(LogInfo? other) {
+    if (other == null) return false;
     if (identical(this, other)) return true;
-    return (other is LogInfo) && error == other.error && text == other.text;
+    return error == other.error && text == other.text;
   }
-
-  @override
-  int get hashCode => hashValues(error, text);
 }
 
 Widget defaultLogPanelBuilder(
@@ -193,9 +196,10 @@ class VerticalLogPanel extends StatefulWidget {
   const VerticalLogPanel({
     Key? key,
     this.showLogPanel = true,
-    this.logPanelBuilder,
+    this.logPanelBuilder = VerticalLogPanel.defaultLogBuilder,
     this.minHeight,
     this.child,
+    this.mergeDuplicateLogs = true,
   }) : super(key: key);
   final Widget? child;
 
@@ -206,7 +210,19 @@ class VerticalLogPanel extends StatefulWidget {
   final bool showLogPanel;
 
   /// Defaults to [defaultLogPanelBuilder], which use [LogPanel] directly.
-  final LogPanelBuilder? logPanelBuilder;
+  final VerticalLogPanelBuilder? logPanelBuilder;
+
+  /// Merge adjacent duplicate logs
+  final bool mergeDuplicateLogs;
+
+  static Widget defaultLogBuilder(LogValueNotifier? listenable,
+      BoxConstraints constraints, bool mergeDuplicateLogs) {
+    return LogPanel(
+      minHeight: constraints.minHeight,
+      maxHeight: constraints.maxHeight,
+      mergeDuplicateLogs: mergeDuplicateLogs,
+    );
+  }
 
   @override
   State<VerticalLogPanel> createState() => _VerticalLogPanelState();
@@ -215,8 +231,14 @@ class VerticalLogPanel extends StatefulWidget {
 class _VerticalLogPanelState extends State<VerticalLogPanel>
     with LogPanelMixin {
   @override
-  LogPanelBuilder get logPanelBuilder =>
-      widget.logPanelBuilder ?? super.logPanelBuilder;
+  LogPanelBuilder get logPanelBuilder {
+    if (widget.logPanelBuilder != null) {
+      return (a, b) {
+        return widget.logPanelBuilder!(a, b, widget.mergeDuplicateLogs);
+      };
+    }
+    return super.logPanelBuilder;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -232,6 +254,7 @@ abstract class LogState<T extends StatefulWidget> extends State<T>
     with LogPanelMixin {
   LogListener get logListener;
 
+  @override
   get logNotifier => logListener;
 
   @override
@@ -322,10 +345,10 @@ class LogListenerScope extends StatefulWidget {
 
   final LogPanelBuilder? logPanelBuilder;
 
-  static LogValueNotifier? of(BuildContext context) {
+  static LogListener? of(BuildContext context) {
     return context
         .findAncestorStateOfType<_LogListenerScopeState>()
-        ?.logNotifier;
+        ?.logNotifier as LogListener;
   }
 
   @override
@@ -343,7 +366,10 @@ class _LogListenerScopeState extends LogState<LogListenerScope> {
 
   @override
   void didUpdateWidget(LogListenerScope oldWidget) {
-    _logListener = LogListener(widget.logEmitter);
+    if (oldWidget.logEmitter != widget.logEmitter) {
+      _logListener = LogListener(widget.logEmitter);
+      _logListener.on();
+    }
     super.didUpdateWidget(oldWidget);
   }
 
@@ -384,6 +410,7 @@ class LogPanel extends StatefulWidget {
     required this.minHeight,
     this.maxHeight = double.infinity,
     this.listenable,
+    this.mergeDuplicateLogs = true,
     this.itemBuilder = LogPanel.defaultItemBuilder,
   }) : super(key: key);
 
@@ -392,13 +419,32 @@ class LogPanel extends StatefulWidget {
   final LogValueNotifier? listenable;
   final LogItemBuilder itemBuilder;
 
+  /// Merge adjacent duplicate logs
+  final bool mergeDuplicateLogs;
+
   static Widget defaultItemBuilder(
       BuildContext context, LogInfo logInfo, bool isFullScreen) {
+    Widget? times;
+
+    if (logInfo.times > 1) {
+      times = DecoratedBox(
+        decoration: BoxDecoration(
+          color: Colors.grey.shade300,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+          child: Text('${logInfo.times}', textScaleFactor: 0.9),
+        ),
+      );
+    }
+
     return ListTile(
       title: Text(
         logInfo.text,
         style: TextStyle(color: logInfo.error ? Colors.red : null),
       ),
+      trailing: times,
       dense: !isFullScreen,
     );
   }
@@ -430,21 +476,63 @@ class _LogPanelState extends State<LogPanel> {
     );
   }
 
-  @override
-  void initState() {
-    _height = widget.minHeight;
-    final listenable = widget.listenable ?? LogListenerScope.of(context);
+  late LogValueNotifier _originalListenable;
+  LogInfo? _last;
+
+  void _mergeLog() {
+    final list = _originalListenable.value;
+    if (list.isEmpty) {
+      _last = null;
+      _listenable.value.clear();
+    } else {
+      if (_last != null && list.last.isEqual(_last)) {
+        _last!.times++;
+        list.removeLast();
+      } else {
+        _last = list.last;
+        _listenable.value.add(_last!);
+      }
+    }
+    _listenable.notifyListenersUnsafe();
+  }
+
+  _init(LogValueNotifier? listenable) {
     assert(
       listenable != null,
       '[listenable] required! Consider [LogListenerScope] as an ancestor widget.',
     );
-    _listenable = listenable!;
+    _originalListenable = listenable!;
+    if (widget.mergeDuplicateLogs) {
+      _listenable = LogValueNotifier();
+      _originalListenable.addListener(_mergeLog);
+    } else {
+      _listenable = _originalListenable;
+    }
     _listenable.addListener(_jumpToListEnd);
+  }
+
+  @override
+  void initState() {
+    _height = widget.minHeight;
+    _init(widget.listenable ?? LogListenerScope.of(context));
     super.initState();
   }
 
   @override
+  void didUpdateWidget(covariant LogPanel oldWidget) {
+    final listenable = widget.listenable ?? LogListenerScope.of(context);
+    if (widget.mergeDuplicateLogs != oldWidget.mergeDuplicateLogs ||
+        _originalListenable != listenable) {
+      _originalListenable.removeListener(_mergeLog);
+      _listenable.removeListener(_jumpToListEnd);
+      _init(listenable);
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   void dispose() {
+    _originalListenable.removeListener(_mergeLog);
     _listenable.removeListener(_jumpToListEnd);
     _controller.dispose();
     super.dispose();
@@ -476,7 +564,7 @@ class _LogPanelState extends State<LogPanel> {
       color: _drag ? Colors.blue.shade100 : Colors.grey.shade100,
       elevation: 1,
       child: Row(children: [
-        Text('  日志', style: TextStyle(fontWeight: FontWeight.bold)),
+        const Text('  日志', style: TextStyle(fontWeight: FontWeight.bold)),
         if (_draggable)
           Expanded(
             child: GestureDetector(
@@ -504,21 +592,21 @@ class _LogPanelState extends State<LogPanel> {
                   child: Text(
                     _canExpanded ? '向上拖动可增大日志显示空间' : '向下拖动可缩小日志显示空间',
                     textScaleFactor: .9,
-                    style: TextStyle(color: Colors.grey),
+                    style: const TextStyle(color: Colors.grey),
                   ),
                 ),
               ),
             ),
           )
         else
-          Spacer(),
+          const Spacer(),
         IconButton(
           onPressed: () => _listenable.clear(),
-          icon: Icon(Icons.delete_outline),
+          icon: const Icon(Icons.delete_outline),
         ),
         IconButton(
           onPressed: () => _openFullScreen(context),
-          icon: Icon(Icons.fullscreen_exit_sharp),
+          icon: const Icon(Icons.fullscreen_exit_sharp),
         ),
       ]),
     );
@@ -550,7 +638,7 @@ class _LogPanelState extends State<LogPanel> {
       MaterialPageRoute(
         builder: (context) {
           return Scaffold(
-            appBar: AppBar(title: Text('日志')),
+            appBar: AppBar(title: const Text('日志')),
             body: wLogList(true),
           );
         },

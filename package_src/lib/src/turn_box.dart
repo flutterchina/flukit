@@ -21,7 +21,7 @@ class TurnBox extends StatefulWidget {
   final Widget child;
 
   @override
-  _TurnBoxState createState() => new _TurnBoxState();
+  _TurnBoxState createState() => _TurnBoxState();
 }
 
 class _TurnBoxState extends State<TurnBox> with SingleTickerProviderStateMixin {
@@ -30,8 +30,11 @@ class _TurnBoxState extends State<TurnBox> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _controller = new AnimationController(
-        vsync: this, lowerBound: -double.infinity, upperBound: double.infinity);
+    _controller = AnimationController(
+      vsync: this,
+      lowerBound: -double.infinity,
+      upperBound: double.infinity,
+    );
     _controller.value = widget.turns;
   }
 

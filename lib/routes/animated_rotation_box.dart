@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flukit/flukit.dart';
 
 class AnimatedRotationBoxRoute extends StatelessWidget {
+  const AnimatedRotationBoxRoute({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -28,7 +30,7 @@ class AnimatedRotationBoxRoute extends StatelessWidget {
                 backgroundColor: Colors.transparent,
               ),
             ),
-            AnimatedRotationBox(
+            const AnimatedRotationBox(
               child: GradientCircularProgressIndicator(
                 radius: 15.0,
                 colors: [Colors.red, Colors.red],
@@ -37,7 +39,7 @@ class AnimatedRotationBoxRoute extends StatelessWidget {
               ),
             ),
             AnimatedRotationBox(
-              duration: Duration(milliseconds: 800),
+              duration: const Duration(milliseconds: 800),
               child: GradientCircularProgressIndicator(
                 radius: 15.0,
                 colors: [Colors.blue, Colors.lightBlue.shade50],
@@ -47,7 +49,7 @@ class AnimatedRotationBoxRoute extends StatelessWidget {
               ),
             ),
             // Icon
-            AnimatedRotationBox(
+            const AnimatedRotationBox(
               duration: Duration(milliseconds: 800),
               child: Icon(Icons.loop),
             ),
@@ -77,13 +79,13 @@ class AnimatedRotationBoxRoute extends StatelessWidget {
 
 class MyIcons {
   static const IconData loading0 =
-      const IconData(0xe65e, fontFamily: 'myIcon', matchTextDirection: true);
+      IconData(0xe65e, fontFamily: 'myIcon', matchTextDirection: true);
 
   static const IconData loading1 =
-      const IconData(0xe61c, fontFamily: 'myIcon', matchTextDirection: true);
+      IconData(0xe61c, fontFamily: 'myIcon', matchTextDirection: true);
 
   static const IconData loading2 =
-      const IconData(0xe61f, fontFamily: 'myIcon', matchTextDirection: true);
+      IconData(0xe61f, fontFamily: 'myIcon', matchTextDirection: true);
   static const IconData loading3 =
-      const IconData(0xe68f, fontFamily: 'myIcon', matchTextDirection: true);
+      IconData(0xe68f, fontFamily: 'myIcon', matchTextDirection: true);
 }

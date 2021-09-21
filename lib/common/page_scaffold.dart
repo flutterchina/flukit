@@ -2,12 +2,13 @@ import 'package:flukit/flukit.dart';
 import 'package:flutter/material.dart';
 
 class PageScaffold extends StatefulWidget {
-  PageScaffold({
+  const PageScaffold({
+    Key? key,
     required this.title,
     required this.body,
     this.padding = false,
     this.showLog = false,
-  });
+  }):super(key:key);
 
   final String title;
   final Widget body;
@@ -47,7 +48,7 @@ class _PageScaffoldState extends State<PageScaffold> {
                 _showLog = !_showLog;
               });
             },
-            icon: Icon(Icons.print),
+            icon: const Icon(Icons.print),
           )
         ],
       ),
@@ -104,11 +105,13 @@ class Page {
               showLog: showLog,
               body: widget,
             );
+            widget = LogListenerScope(
+              child: widget,
+              logEmitter: getGlobalLogEmitter(),
+            );
           } else if (showLog) {
             widget = VerticalLogPanel(child: widget);
-          }
-          if (showLog) {
-            widget= LogListenerScope(
+            widget = LogListenerScope(
               child: widget,
               logEmitter: getGlobalLogEmitter(),
             );
@@ -121,7 +124,7 @@ class Page {
 }
 
 class ListPage extends StatelessWidget {
-  ListPage({
+  const ListPage({
     Key? key,
     required this.children,
   }) : super(key: key);
@@ -137,7 +140,7 @@ class ListPage extends StatelessWidget {
     return children.map<Widget>((page) {
       return ListTile(
         title: Text(page.title),
-        trailing: Icon(Icons.keyboard_arrow_right),
+        trailing: const Icon(Icons.keyboard_arrow_right),
         onTap: () => page.openPage(context),
       );
     }).toList();

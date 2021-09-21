@@ -17,7 +17,7 @@ class SliverPersistentHeaderToBox extends StatelessWidget {
   })  : builder = ((a, b, c) => child),
         super(key: key);
 
-  SliverPersistentHeaderToBox.builder({
+  const SliverPersistentHeaderToBox.builder({
     Key? key,
     required this.builder,
   }) : super(key: key);

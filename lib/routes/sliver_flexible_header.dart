@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../common/index.dart';
 
 class SliverFlexibleHeaderRoute extends StatefulWidget {
-  SliverFlexibleHeaderRoute({Key? key}) : super(key: key);
+  const SliverFlexibleHeaderRoute({Key? key}) : super(key: key);
 
   @override
   State<SliverFlexibleHeaderRoute> createState() =>
@@ -23,10 +23,10 @@ class _SliverFlexibleHeaderRouteState extends State<SliverFlexibleHeaderRoute> {
           visibleExtent: _initHeight,
           builder: (context, availableHeight, direction) {
             return GestureDetector(
-              onTap: () => print('tap'),
+              onTap: () => debugPrint('tap'),
               child: LayoutBuilder(builder: (context, cons) {
                 return Image(
-                  image: AssetImage("imgs/avatar.png"),
+                  image: const AssetImage("imgs/avatar.png"),
                   width: 50.0,
                   height: availableHeight,
                   alignment: Alignment.bottomCenter,
@@ -43,7 +43,7 @@ class _SliverFlexibleHeaderRouteState extends State<SliverFlexibleHeaderRoute> {
                 _initHeight = _initHeight == 250 ? 150 : 250;
               });
             },
-            title: Text('点击重置高度'),
+            title: const Text('点击重置高度'),
             trailing: Text('当前高度 $_initHeight'),
           ),
         ),

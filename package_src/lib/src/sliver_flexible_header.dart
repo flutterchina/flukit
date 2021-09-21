@@ -53,15 +53,14 @@ class _SliverFlexibleHeader extends SingleChildRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(
-      BuildContext context, _FlexibleHeaderRenderSliver renderObject) {
-    renderObject..visibleExtent = visibleExtent;
+  void updateRenderObject(context, _FlexibleHeaderRenderSliver renderObject) {
+    renderObject.visibleExtent = visibleExtent;
   }
 }
 
 class _FlexibleHeaderRenderSliver extends RenderSliverSingleBoxAdapter {
   _FlexibleHeaderRenderSliver(double visibleExtent)
-      : this._visibleExtent = visibleExtent;
+      : _visibleExtent = visibleExtent;
   double _lastOverScroll = 0;
   double _lastScrollOffset = 0;
   double _visibleExtent = 0;

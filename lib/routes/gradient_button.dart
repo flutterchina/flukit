@@ -2,27 +2,29 @@ import 'package:flukit/flukit.dart';
 import 'package:flutter/material.dart';
 
 class GradientButtonRoute extends StatelessWidget {
+  const GradientButtonRoute({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
         GradientButton(
-          colors: [Colors.orange, Colors.red],
-          child: Text("Submit"),
+          colors: const [Colors.orange, Colors.red],
+          child: const Text("Submit"),
           onPressed: onTap,
         ),
         ElevatedGradientButton(
-          colors: [Colors.orange, Colors.red],
-          child: Text("Submit"),
+          colors: const [Colors.orange, Colors.red],
+          child: const Text("Submit"),
           onPressed: onTap,
         ),
         GradientButton(
-          child: Text("Submit"),
+          child: const Text("Submit"),
           onPressed: onTap,
           borderRadius: BorderRadius.circular(30),
         ),
         ElevatedGradientButton(
-          child: Text("Submit"),
+          child: const Text("Submit"),
           onPressed: onTap,
           borderRadius: BorderRadius.circular(30),
         ),
@@ -31,7 +33,7 @@ class GradientButtonRoute extends StatelessWidget {
           height: 48,
           child:  GradientButton(
             colors: [Colors.lightGreen, Colors.green.shade700],
-            child: Text("Submit"),
+            child: const Text("Submit"),
             onPressed: onTap,
           ),
         ),
@@ -40,17 +42,17 @@ class GradientButtonRoute extends StatelessWidget {
           height: 48,
           child:  ElevatedGradientButton(
             colors: [Colors.lightGreen, Colors.green.shade700],
-            child: Text("Submit"),
+            child: const Text("Submit"),
             onPressed: onTap,
           ),
         ),
-        ElevatedGradientButton(
+        const ElevatedGradientButton(
           child: Text("Submit"),
           //onPressed: onTap,
         ),
       ].map((e) {
         return Padding(
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           child: e,
         );
       }).toList(),
@@ -58,6 +60,6 @@ class GradientButtonRoute extends StatelessWidget {
   }
 
   onTap() {
-    print("button click");
+    debugPrint("button click");
   }
 }

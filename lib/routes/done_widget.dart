@@ -23,15 +23,15 @@ class _DoneWidgetRouteState extends State<DoneWidgetRoute> {
       child: Center(
         child: Column(
           children: [
-            Text('点击屏幕'),
+            const Text('点击屏幕'),
             Visibility(
               visible: show,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
-                children: [
+                children: const [
                   DoneWidget(outline: true),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    padding: EdgeInsets.symmetric(horizontal: 12),
                     child: Text("操作成功"),
                   ),
                   DoneWidget(),

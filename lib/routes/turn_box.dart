@@ -19,17 +19,17 @@ class _TurnBoxRouteState extends State<TurnBoxRoute> {
           TurnBox(
             turns: _turns,
             speed: 600,
-            child: Icon(Icons.refresh),
+            child: const Icon(Icons.refresh),
           ),
           TurnBox(
             turns: _turns,
             speed: 400,
-            child: Icon(Icons.refresh, size: 50.0,),
+            child: const Icon(Icons.refresh, size: 50.0,),
           ),
           TurnBox(
             turns: _turns,
             speed: 200,
-            child: TurnBox(
+            child: const TurnBox(
               turns: 1/8,
               child: GradientCircularProgressIndicator(
                 radius: 60.0,
@@ -41,16 +41,16 @@ class _TurnBoxRouteState extends State<TurnBoxRoute> {
               ),
             ),
           ),
-          RaisedButton(
-            child: Text("Clockwise"),
+          ElevatedButton(
+            child: const Text("Clockwise"),
             onPressed: () {
               setState(() {
                 _turns += .25;
               });
             },
           ),
-          RaisedButton(
-            child: Text("Anti-clockwise"),
+          ElevatedButton(
+            child: const Text("Anti-clockwise"),
             onPressed: () {
               setState(() {
                 _turns -= .25;

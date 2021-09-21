@@ -3,6 +3,8 @@ import 'package:flukit/flukit.dart';
 import '../common/index.dart';
 
 class SliverHeaderDelegateRoute extends StatelessWidget {
+  const SliverHeaderDelegateRoute({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return ListPage(children: [
@@ -59,8 +61,8 @@ class SliverHeaderDelegateRoute extends StatelessWidget {
               MediaQuery.removePadding(
                 context: context,
                 removeTop: true,
-                child: SliverAppBar(
-                  title: const Text('示例二'),
+                child: const SliverAppBar(
+                  title: Text('示例二'),
                   pinned: true,
                   collapsedHeight: 56,
                 ),
@@ -83,7 +85,7 @@ class SliverHeaderDelegateRoute extends StatelessWidget {
   Widget buildHeader(int i) {
     return GestureDetector(
       key: ValueKey(i),
-      onTap: () => print('header $i'),
+      onTap: () => debugPrint('header $i'),
       child: Container(
         color: Colors.lightBlue.shade200,
         alignment: Alignment.centerLeft,
@@ -94,19 +96,19 @@ class SliverHeaderDelegateRoute extends StatelessWidget {
 
   Widget wSearch() {
     const border =
-        const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white));
-    const textStyle = const TextStyle(color: Colors.white);
+        UnderlineInputBorder(borderSide: BorderSide(color: Colors.white));
+    const textStyle = TextStyle(color: Colors.white);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12,4,12,4),
+      padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
       child: TextField(
         decoration: InputDecoration(
           focusedBorder: border,
           enabledBorder: border,
-          contentPadding: EdgeInsets.fromLTRB(4, 8, 0, 8),
+          contentPadding: const EdgeInsets.fromLTRB(4, 8, 0, 8),
           hintText: 'Key words',
           hintStyle: textStyle,
-          prefix: Padding(
-            padding: const EdgeInsets.only(right: 16),
+          prefix: const Padding(
+            padding: EdgeInsets.only(right: 16),
             child: Text(
               '搜索',
               style: TextStyle(color: Colors.white),
@@ -114,7 +116,7 @@ class SliverHeaderDelegateRoute extends StatelessWidget {
             ),
           ),
           suffixIcon: IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.search,
               color: Colors.white,
             ),

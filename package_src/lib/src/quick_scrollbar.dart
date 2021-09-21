@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 /// Quick scrollbar support the drag gesture to scroll the [Scrollable]
 /// widget quickly.
 class QuickScrollbar extends StatefulWidget {
-  QuickScrollbar({
+  const QuickScrollbar({
     Key? key,
     this.controller,
     this.velocity = 10,
@@ -27,13 +27,13 @@ class QuickScrollbar extends StatefulWidget {
   final int velocity;
 
   @override
-  _QuickScrollBarState createState() => new _QuickScrollBarState();
+  _QuickScrollBarState createState() => _QuickScrollBarState();
 }
 
 class _QuickScrollBarState extends State<QuickScrollbar>
     with SingleTickerProviderStateMixin {
   double _offsetTop = 0.0;
-  double _barHeight = 35.0;
+  final double _barHeight = 35.0;
 
   // Animation controller for show/hide bar .
   late AnimationController _animationController;
@@ -43,8 +43,10 @@ class _QuickScrollBarState extends State<QuickScrollbar>
   @override
   void initState() {
     super.initState();
-    _animationController = new AnimationController(
-        vsync: this, duration: Duration(milliseconds: 200));
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
     _animation = Tween(begin: 1.0, end: 0.0).animate(_animationController);
     _animationController.value = 1.0;
   }
@@ -75,7 +77,7 @@ class _QuickScrollBarState extends State<QuickScrollbar>
                 padding: const EdgeInsets.only(right: 3.0),
                 child: FadeTransition(
                   child: Material(
-                    color: Color(0xffe8e8e8),
+                    color: const Color(0xffe8e8e8),
                     elevation: .8,
                     child: SizedBox(
                         height: _barHeight,
@@ -119,10 +121,13 @@ class _QuickScrollBarState extends State<QuickScrollbar>
   void _fadeBar() {
     if (_animationController.value == 1.0) return;
     _timer?.cancel();
-    _timer = new Timer(Duration(seconds: 1), () {
-      _animationController.animateTo(1.0);
-      _animationController.forward();
-    });
+    _timer = Timer(
+      const Duration(seconds: 1),
+      () {
+        _animationController.animateTo(1.0);
+        _animationController.forward();
+      },
+    );
   }
 
   bool _handleNotification(ScrollNotification notification) {

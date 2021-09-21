@@ -6,7 +6,7 @@ import 'dart:math' as math;
 
 /// A widget that paints watermark.
 class WaterMark extends StatefulWidget {
-  WaterMark({
+  const WaterMark({
     Key? key,
     this.repeat = ImageRepeat.repeat,
     required this.painter,
@@ -123,7 +123,7 @@ class TextWaterMarkPainter extends WaterMarkPainter {
         rotate = rotate ?? 0,
         padding = padding ?? const EdgeInsets.all(10.0),
         textStyle = textStyle ??
-            TextStyle(
+            const TextStyle(
               color: Color.fromARGB(30, 0, 0, 0),
               fontSize: 14,
             );

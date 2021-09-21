@@ -6,19 +6,23 @@ class LeftRightBoxRoute extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final more =
-        GestureDetector(onTap: () => print("点击更多"), child: Text("更多》"));
+    final more = GestureDetector(
+      onTap: () => debugPrint("点击更多"),
+      child: const Text(
+        "更多》",
+      ),
+    );
     return Column(
       children: [
         Row(
           children: [
-            Text("国漫精选", maxLines: 1),
-            Spacer(),
+            const Text("国漫精选", maxLines: 1),
+            const Spacer(),
             more,
           ],
         ),
         LeftRightBox(
-          left: Text("国漫精选", maxLines: 1),
+          left: const Text("国漫精选", maxLines: 1),
           right: more,
         ),
         // Row(
@@ -32,10 +36,14 @@ class LeftRightBoxRoute extends StatelessWidget {
           left: Text("国漫精选" * 10, maxLines: 1),
           right: more,
         ),
-        ListTile(title:Text("国漫精选", ) , trailing:Text('xxxxxx'*8) , contentPadding: EdgeInsets.zero,),
+        ListTile(
+          title: const Text("国漫精选"),
+          trailing: Text('xxxxxx' * 8),
+          contentPadding: EdgeInsets.zero,
+        ),
         LeftRightBox(
           left: Text("国漫精选" * 10, maxLines: 1),
-          right: Text('xxxxxx'*8),
+          right: Text('xxxxxx' * 8),
           verticalAlign: VerticalAlign.center,
         ),
       ],

@@ -27,8 +27,8 @@ class _KeepAliveTestState extends State<KeepAliveTest> {
   Widget wItem(index) {
     if (index == 0) {
       return CheckboxListTile(
-        title: Text('缓存列表项'),
-        subtitle: Text('勾选后将缓存每一个列表项'),
+        title: const Text('缓存列表项'),
+        subtitle: const Text('勾选后将缓存每一个列表项'),
         value: _keepAlive,
         onChanged: (v) {
           setState(() {
@@ -58,7 +58,7 @@ class _ListItemState extends State<ListItem> {
 
   @override
   void dispose() {
-    print('dispose ${widget.index}');
+    debugPrint('dispose ${widget.index}');
     super.dispose();
   }
 }

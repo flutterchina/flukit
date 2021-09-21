@@ -12,7 +12,7 @@ class LayoutLogPrintRoute extends StatelessWidget {
         children: [
           LayoutLogPrint(
             child: Row(
-              children: [LayoutLogPrint(child: Text('flukit@wendux'))],
+              children: [LayoutLogPrint(child: const Text('flukit@wendux'))],
             ),
           ),
           Container(
@@ -21,7 +21,7 @@ class LayoutLogPrintRoute extends StatelessWidget {
             alignment: Alignment.center,
             color: Colors.red,
             child: LayoutLogPrint(
-              child: Text('A', style: const TextStyle(color: Colors.white)),
+              child: const Text('A', style: TextStyle(color: Colors.white)),
             ),
           ),
         ],

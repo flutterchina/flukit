@@ -16,7 +16,9 @@ import 'after_layout.dart';
 /// ```dart
 ///   ClipRect(
 ///    child: ScaleView(
-///       child: Image.asset("imgs/xx.png")
+///       child: Image.asset("imgs/xx.png"),
+///       minScale: .5,
+///       maxScale: 3,
 ///     )
 ///  )
 /// ```
@@ -74,10 +76,10 @@ class _ScaleViewState extends State<ScaleView>
   late double _previousScale;
   bool _doubleClick = true;
   late Size _childSize;
+
   // 缓存子Widget中心点
   late Offset _origin;
   late Offset _focalPoint;
-
 
   @override
   void initState() {
@@ -88,7 +90,7 @@ class _ScaleViewState extends State<ScaleView>
     )
       ..addListener(_handleFlingAnimation)
       ..addStatusListener(
-            (status) {
+        (status) {
           if (_doubleClick && status == AnimationStatus.completed) {
             _doubleClick = false;
           }
@@ -221,10 +223,10 @@ class _ScaleViewState extends State<ScaleView>
     // 如果已经缩放，且父可滚动组件可以沿水平方向滚动，则需要拦截水平拖拽手势，
     // 防止水平方向滑动而导致父可滚动组件滚动。
     bool hookHorizon =
-    (_scale != 1.0 && widget.parentScrollableAxis == Axis.horizontal);
+        (_scale != 1.0 && widget.parentScrollableAxis == Axis.horizontal);
     // 垂直方向同理
     bool hookVertical =
-    (_scale != 1.0 && widget.parentScrollableAxis == Axis.vertical);
+        (_scale != 1.0 && widget.parentScrollableAxis == Axis.vertical);
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onScaleStart: _handleOnScaleStart,
@@ -246,10 +248,13 @@ class _ScaleViewState extends State<ScaleView>
               fit: BoxFit.contain,
               child: AfterLayout(
                 callback: (ral) {
-                  // fit 为 BoxFit.contain 时，FittedBox 的大小等于最终图片在屏幕上的显示大小
+                  // fit 为 BoxFit.contain 时，FittedBox 的大小等于最终图片在屏幕上的显示大小。
+                  // 每次布局发生变化时都要更新
                   _childSize = context.size!;
-                  _origin =
-                      Offset(_childSize.width / 2.0, _childSize.height / 2.0);
+                  _origin = Offset(
+                    _childSize.width / 2.0,
+                    _childSize.height / 2.0,
+                  );
                 },
                 child: ConstrainedBox(
                   //至少size(1,1)，防止context.size为null

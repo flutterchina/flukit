@@ -1,9 +1,11 @@
 import 'package:flukit/flukit.dart';
 import 'package:flutter/material.dart';
 
-
 class SwiperRoute extends StatelessWidget {
-  final _imgs=["sea.png","star.jpg","cat.jpg","horse.jpg"];
+  final _imgs = ["sea.png", "star.jpg", "cat.jpg", "horse.jpg"];
+
+  SwiperRoute({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -19,12 +21,22 @@ class SwiperRoute extends StatelessWidget {
                 controller: SwiperController(initialPage: 1),
                 viewportFraction: .95,
                 indicator: CircleSwiperIndicator(),
-                onChanged: (index)=>print(index),
+                onChanged: (index) => debugPrint('$index'),
                 children: <Widget>[
-                  Image.asset("imgs/sea.png",fit: BoxFit.fill,),
+                  Image.asset(
+                    "imgs/sea.png",
+                    fit: BoxFit.fill,
+                  ),
                   Image.asset("imgs/star.jpg", fit: BoxFit.fill),
-                  Image.asset("imgs/cat.jpg",fit: BoxFit.fill,),
-                ].map((e) => Padding(child: e,padding: EdgeInsets.symmetric(horizontal: 1))).toList(),
+                  Image.asset(
+                    "imgs/cat.jpg",
+                    fit: BoxFit.fill,
+                  ),
+                ]
+                    .map((e) => Padding(
+                        child: e,
+                        padding: const EdgeInsets.symmetric(horizontal: 1)))
+                    .toList(),
               ),
             ),
             Padding(
@@ -36,11 +48,20 @@ class SwiperRoute extends StatelessWidget {
                   //reverse: true, //反向
                   indicator: RectangleSwiperIndicator(),
                   children: <Widget>[
-                    Image.asset("imgs/sea.png",fit: BoxFit.fill,),
+                    Image.asset(
+                      "imgs/sea.png",
+                      fit: BoxFit.fill,
+                    ),
                     Image.asset("imgs/star.jpg", fit: BoxFit.fill),
-                    Image.asset("imgs/cat.jpg",fit: BoxFit.fill,),
+                    Image.asset(
+                      "imgs/cat.jpg",
+                      fit: BoxFit.fill,
+                    ),
                     Image.asset("imgs/horse.jpg", fit: BoxFit.fill),
-                    Image.asset("imgs/road.jpg",fit: BoxFit.fill,),
+                    Image.asset(
+                      "imgs/road.jpg",
+                      fit: BoxFit.fill,
+                    ),
                   ],
                 ),
               ),
@@ -52,9 +73,9 @@ class SwiperRoute extends StatelessWidget {
                 circular: true,
                 indicator: NumberSwiperIndicator(),
                 children: <Widget>[
-                  Image.asset("imgs/sea.png",fit: BoxFit.fill),
+                  Image.asset("imgs/sea.png", fit: BoxFit.fill),
                   Image.asset("imgs/star.jpg", fit: BoxFit.fill),
-                  Image.asset("imgs/cat.jpg",fit: BoxFit.fill),
+                  Image.asset("imgs/cat.jpg", fit: BoxFit.fill),
                   Image.asset("imgs/horse.jpg", fit: BoxFit.fill),
                 ],
               ),
@@ -66,8 +87,8 @@ class SwiperRoute extends StatelessWidget {
                 circular: true,
                 childCount: _imgs.length,
                 indicator: NumberSwiperIndicator(),
-                itemBuilder: (context, index){
-                  return Image.asset("imgs/${_imgs[index]}",fit: BoxFit.fill);
+                itemBuilder: (context, index) {
+                  return Image.asset("imgs/${_imgs[index]}", fit: BoxFit.fill);
                 },
               ),
             ),
@@ -78,17 +99,20 @@ class SwiperRoute extends StatelessWidget {
   }
 }
 
-class NumberSwiperIndicator extends SwiperIndicator{
+class NumberSwiperIndicator extends SwiperIndicator {
   @override
   Widget build(BuildContext context, int index, int itemCount) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.black45,
-        borderRadius: BorderRadius.circular(20.0)
+        borderRadius: BorderRadius.circular(20.0),
       ),
-      margin: EdgeInsets.only(top: 10.0,right: 5.0),
-      padding: EdgeInsets.symmetric(horizontal: 6.0,vertical: 2.0),
-      child: Text("${++index}/$itemCount", style: TextStyle(color: Colors.white70, fontSize: 11.0)),
+      margin: const EdgeInsets.only(top: 10.0, right: 5.0),
+      padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
+      child: Text(
+        "${++index}/$itemCount",
+        style: const TextStyle(color: Colors.white70, fontSize: 11.0),
+      ),
     );
   }
 }
