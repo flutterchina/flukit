@@ -534,7 +534,7 @@ class _LogPanelState extends State<LogPanel> {
           itemBuilder: (context, index) {
             return widget.itemBuilder(context, value[index], fullScreen);
           },
-          separatorBuilder: (_, b) => Divider(height: 0),
+          separatorBuilder: (_, b) => const Divider(height: 0),
         );
       },
     );

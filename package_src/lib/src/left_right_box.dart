@@ -23,7 +23,7 @@ class LeftRightBox extends MultiChildRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(_, _RenderLeftRight renderObject) {
+  void updateRenderObject(context, _RenderLeftRight renderObject) {
     renderObject.verticalAlign = verticalAlign;
   }
 }
@@ -40,8 +40,9 @@ class _RenderLeftRight extends RenderBox
 
   @override
   void setupParentData(RenderBox child) {
-    if (child.parentData is! _LeftRightParentData)
+    if (child.parentData is! _LeftRightParentData) {
       child.parentData = _LeftRightParentData();
+    }
   }
 
   @override

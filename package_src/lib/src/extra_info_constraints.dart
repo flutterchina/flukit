@@ -17,7 +17,7 @@ class ExtraInfoBoxConstraints<T> extends BoxConstraints {
           maxHeight: constraints.maxHeight,
         );
 
-  //滑动方向
+  /// extra information
   final T extra;
 
   BoxConstraints asBoxConstraints() => copyWith();

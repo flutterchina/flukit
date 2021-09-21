@@ -57,7 +57,7 @@ class GradientButton extends StatelessWidget {
             child: Padding(
               padding: padding ?? theme.buttonTheme.padding,
               child: DefaultTextStyle(
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
                 child: Center(
                   child: DefaultTextStyle(
                     style: theme.textTheme.button!.copyWith(
@@ -121,7 +121,7 @@ class _ElevatedGradientButtonState extends State<ElevatedGradientButton> {
   Widget build(BuildContext context) {
     bool disabled = widget.onPressed == null;
     return AnimatedContainer(
-      duration: Duration(milliseconds: 100),
+      duration: const Duration(milliseconds: 100),
       decoration: BoxDecoration(
         borderRadius: widget.borderRadius,
         boxShadow: disabled
@@ -129,13 +129,13 @@ class _ElevatedGradientButtonState extends State<ElevatedGradientButton> {
             : [
                 _tapDown
                     ? BoxShadow(
-                        offset: Offset(2, 6),
+                        offset: const Offset(2, 6),
                         spreadRadius: -2,
                         blurRadius: 9,
                         color: widget.shadowColor ?? Colors.black54,
                       )
                     : BoxShadow(
-                        offset: Offset(0, 2),
+                        offset: const Offset(0, 2),
                         spreadRadius: -2,
                         blurRadius: 3,
                         color: widget.shadowColor ?? Colors.black87,

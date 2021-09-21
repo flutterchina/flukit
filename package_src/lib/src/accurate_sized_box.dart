@@ -67,7 +67,11 @@ class RenderAccurateSizedBox extends RenderProxyBoxWithHitTestBehavior {
   void performLayout() {
     child!.layout(
       BoxConstraints.tight(
-          Size(min(size.width, width), min(size.height, height))),
+        Size(
+          min(size.width, width),
+          min(size.height, height),
+        ),
+      ),
       // 父容器是固定大小，子元素大小改变时不影响父元素
       // parentUseSize为false时，子组件的布局边界会是它自身，子组件布局发生变化后不会影响当前组件
       parentUsesSize: false,

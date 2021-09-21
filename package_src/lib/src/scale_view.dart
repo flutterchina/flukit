@@ -26,12 +26,12 @@ import 'after_layout.dart';
 /// explicitly.
 ///
 class ScaleView extends StatefulWidget {
-  ScaleView({
+  const ScaleView({
     Key? key,
     this.minScale = 1.0,
     this.maxScale = 10.0,
-    this.doubleClickScale = 3.0,
-    this.alignment: Alignment.center,
+    this.doubleClickScale = 2.0,
+    this.alignment = Alignment.center,
     this.parentScrollableAxis = Axis.horizontal,
     required this.child,
   }) : super(key: key);
@@ -48,14 +48,17 @@ class ScaleView extends StatefulWidget {
   /// Child widget alignment in scale view.
   final Alignment alignment;
 
-  /// If there is an ancestor scrollview, the [parentScrollableAxis]
+  /// If there is an ancestor scrollview, in order to resolve the gesture conflict
+  /// between ScaleView and the ancestor scrollview , [parentScrollableAxis]
   /// must be same as the scroll direction of the ancestor scrollview.
-  final Axis parentScrollableAxis;
+  ///
+  /// If there is **not** an ancestor scrollview, it should be null.
+  final Axis? parentScrollableAxis;
 
   final Widget child;
 
   @override
-  _ScaleViewState createState() => new _ScaleViewState();
+  _ScaleViewState createState() => _ScaleViewState();
 }
 
 const double _kMinFlingVelocity = 800.0;
@@ -71,27 +74,21 @@ class _ScaleViewState extends State<ScaleView>
   late double _previousScale;
   bool _doubleClick = true;
   late Size _childSize;
-  Offset? _origin;
+  // 缓存子Widget中心点
+  late Offset _origin;
   late Offset _focalPoint;
 
-  //缓存子Widget中心点
-  Offset get origin {
-    if (_origin == null) {
-      _origin = Offset(_childSize.width / 2.0, _childSize.height / 2.0);
-    }
-    return _origin!;
-  }
 
   @override
   void initState() {
     super.initState();
-    _controller = new AnimationController(
+    _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 150),
+      duration: const Duration(milliseconds: 150),
     )
       ..addListener(_handleFlingAnimation)
       ..addStatusListener(
-        (status) {
+            (status) {
           if (_doubleClick && status == AnimationStatus.completed) {
             _doubleClick = false;
           }
@@ -137,7 +134,7 @@ class _ScaleViewState extends State<ScaleView>
   void _handleOnScaleStart(ScaleStartDetails details) {
     setState(() {
       _previousScale = _scale;
-      _normalizedOffset = (origin - _offset) / _scale;
+      _normalizedOffset = (_origin - _offset) / _scale;
       _focalPoint = details.focalPoint;
       //开始缩放，停止之前的fling动画
       _controller.stop();
@@ -152,7 +149,7 @@ class _ScaleViewState extends State<ScaleView>
         //放大倍数在widget.minScale-maxScale倍之间。
         _scale = (_previousScale * details.scale)
             .clamp(widget.minScale, widget.maxScale);
-        _offset = origin - _normalizedOffset * _scale;
+        _offset = _origin - _normalizedOffset * _scale;
       } else {
         //垂直方向拖动
         _offset += details.focalPoint - _focalPoint;
@@ -173,10 +170,12 @@ class _ScaleViewState extends State<ScaleView>
     }
 
     final Offset direction = details.velocity.pixelsPerSecond / magnitude;
-    final double distance = (Offset.zero & context.size!).shortestSide;
-    _flingAnimation = new Tween<Offset>(
-            begin: _offset, end: _clampOffset(_offset + direction * distance))
-        .animate(_controller);
+    //手指甩动的时候，移动的距离为当前ScaleView短边的一般
+    final double distance = context.size!.shortestSide / 2;
+    _flingAnimation = Tween<Offset>(
+      begin: _offset,
+      end: _clampOffset(_offset + direction * distance),
+    ).animate(_controller);
     _controller
       ..value = 0.0
       ..fling(velocity: magnitude / 1000.0);
@@ -197,11 +196,15 @@ class _ScaleViewState extends State<ScaleView>
       //计算多出来的部分
       size = size * (widget.doubleClickScale - 1);
       _flingAnimation = Tween<Offset>(
-              begin: Offset.zero, end: Offset(size.width, size.height) / -2.0)
-          .animate(_controller);
-      _scaleAnimation =
-          Tween<double>(begin: _scale, end: widget.doubleClickScale)
-              .animate(_controller);
+        begin: Offset.zero,
+        end: Offset(size.width, size.height) / -2.0,
+      ).animate(_controller);
+
+      _scaleAnimation = Tween<double>(
+        begin: _scale,
+        end: widget.doubleClickScale,
+      ).animate(_controller);
+
       _controller.forward();
     }
   }
@@ -215,12 +218,13 @@ class _ScaleViewState extends State<ScaleView>
 
   @override
   Widget build(BuildContext context) {
-    bool horizontal = widget.parentScrollableAxis == Axis.horizontal;
     // 如果已经缩放，且父可滚动组件可以沿水平方向滚动，则需要拦截水平拖拽手势，
     // 防止水平方向滑动而导致父可滚动组件滚动。
-    bool hookHorizon = (_scale != 1.0 && horizontal);
+    bool hookHorizon =
+    (_scale != 1.0 && widget.parentScrollableAxis == Axis.horizontal);
     // 垂直方向同理
-    bool hookVertical = (_scale != 1.0 && !horizontal);
+    bool hookVertical =
+    (_scale != 1.0 && widget.parentScrollableAxis == Axis.vertical);
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onScaleStart: _handleOnScaleStart,
@@ -244,10 +248,12 @@ class _ScaleViewState extends State<ScaleView>
                 callback: (ral) {
                   // fit 为 BoxFit.contain 时，FittedBox 的大小等于最终图片在屏幕上的显示大小
                   _childSize = context.size!;
+                  _origin =
+                      Offset(_childSize.width / 2.0, _childSize.height / 2.0);
                 },
                 child: ConstrainedBox(
                   //至少size(1,1)，防止context.size为null
-                  constraints: BoxConstraints(minWidth: 1, minHeight: 1),
+                  constraints: const BoxConstraints(minWidth: 1, minHeight: 1),
                   child: widget.child,
                 ),
               ),

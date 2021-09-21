@@ -13,7 +13,7 @@ typedef AfterLayoutCallback = Function(RenderAfterLayout ral);
 ///
 /// Call `setState` in callback is **allowed**, it is safe!
 class AfterLayout extends SingleChildRenderObjectWidget {
-  AfterLayout({
+  const AfterLayout({
     Key? key,
     required this.callback,
     Widget? child,
@@ -25,9 +25,8 @@ class AfterLayout extends SingleChildRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(
-      BuildContext context, RenderAfterLayout renderObject) {
-    renderObject..callback = callback;
+  void updateRenderObject(context, RenderAfterLayout renderObject) {
+    renderObject.callback = callback;
   }
 
   /// [callback] will be triggered after the layout phase ends.
