@@ -479,20 +479,52 @@ class _LogPanelState extends State<LogPanel> {
   late LogValueNotifier _originalListenable;
   LogInfo? _last;
 
+  //每一次都从该位置开始处理
+  int _lastLength = 0;
+
+  //合并相邻重复日志
   void _mergeLog() {
     final list = _originalListenable.value;
     if (list.isEmpty) {
       _last = null;
+      _lastLength = 0;
       _listenable.value.clear();
     } else {
-      if (_last != null && list.last.isEqual(_last)) {
-        _last!.times++;
-        list.removeLast();
-      } else {
-        _last = list.last;
-        _listenable.value.add(_last!);
+      /**
+       * 对新接收的日志进行批量处理。因为并不是每捕获一次日志就能执行到这里，比如在 build 过程捕获到
+       * 日志时会等到 frame 快结束时才通知，所以这段时间可能会捕获多条日志，关于通知时机可以参考
+       * [SafeValueNotifier]。
+       **/
+
+      // 先判断是否所有的日志都已经处理过了，如果时则直接返回，避免通知ValueListenableBuilder
+      // 进行不必要的build.
+      if (_lastLength == list.length) {
+        return;
       }
+      // 对重复日志进行合并
+      final newLogs = list.sublist(_lastLength, list.length).fold(
+        <LogInfo>[],
+        (List<LogInfo> previousValue, element) {
+          if (_last == null) {
+            _last = element;
+            return previousValue..add(_last!);
+          } else {
+            if (_last!.isEqual(element)) {
+              //如果日志和上一条相同，则更新上一条日志的times
+              _last!.times++;
+              return previousValue;
+            }
+            //和上一条不同
+            _last = element;
+            return previousValue..add(_last!);
+          }
+        },
+      );
+      _lastLength = list.length;
+      _listenable.value.addAll(newLogs);
     }
+    // 因为通知者已经保证在能安全更新UI的时机触发通知，此函数作为通知回调所以被执行时是可以安全
+    // 更新UI的，因此，我们直接通知ValueListenableBuilder更新。
     _listenable.notifyListenersUnsafe();
   }
 

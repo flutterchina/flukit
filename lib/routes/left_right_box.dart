@@ -36,11 +36,11 @@ class LeftRightBoxRoute extends StatelessWidget {
           left: Text("国漫精选" * 10, maxLines: 1),
           right: more,
         ),
-        ListTile(
-          title: const Text("国漫精选"),
-          trailing: Text('xxxxxx' * 8),
-          contentPadding: EdgeInsets.zero,
-        ),
+        // ListTile(
+        //   title: const Text("国漫精选"),
+        //   trailing: Text('xxxxxx' * 8),
+        //   contentPadding: EdgeInsets.zero,
+        // ),
         LeftRightBox(
           left: Text("国漫精选" * 10, maxLines: 1),
           right: Text('xxxxxx' * 8),

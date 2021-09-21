@@ -66,7 +66,7 @@ class WatermarkRoute extends StatelessWidget {
       children: [
         wPage(),
         IgnorePointer(
-          child: OverflowWithTranslateBox(
+          child: TranslateWithExpandedPaintingArea(
             offset: const Offset(-30, 0),
             child: WaterMark(
               painter: TextWaterMarkPainter(

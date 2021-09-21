@@ -7,8 +7,7 @@
 
 **This project is in development now and  there is no release or stable version。 We do not recommend that you use it in production .**
 
-## Contribution&Run demo
-
+## Contribution& Run demo
 ### **Project dirs**
 
 ```
@@ -19,6 +18,8 @@ flukit
 		--lib
 			--src  //widget dir
 ```
+
+[Demo is here](https://github.com/flutterchina/flukit/tree/main/lib/routes).
 
 ### **Run demo**
 
@@ -59,7 +60,7 @@ If you add a new widget，please follow these rules:
 | SliverPersistentHeaderToBox                | A sliver like [SliverPersistentHeader], the difference is [SliverPersistentHeaderToBox]   can contain a box widget and use the height of its child directly. |                                                              |
 | SliverHeaderDelegate                       | Delegate helper  for [SliverPersistentHeader]                |                                                              |
 | SlideTransitionX                           | Animates the position of a widget relative to its normal position  ignoring the animation direction(always slide along one direction). Typically, is used in combination with [AnimatedSwitcher]. |                                                              |
-| OverflowWithTranslateBox                   | A widget that:  1. imposes different constraints on its child than it gets from   its parent, possibly allowing the child to overflow the parent.  2.  apply translate to its child (specified by [offset]). |                                                              |
+| TranslateWithExpandedPaintingArea          | A widget that:  1. imposes different constraints on its child than it gets from   its parent, possibly allowing the child to overflow the parent.  2.  apply translate to its child (specified by [offset]). |                                                              |
 | TurnBox                                    | Animates the rotation of a widget when [turns]  is changed.  |                                                              |
 | WaterMark                                  | A widget that paints watermark.                              | TextWaterMarkPainter、StaggerTextWaterMarkPainter            |
 
@@ -70,3 +71,4 @@ If you add a new widget，please follow these rules:
 | ExtraInfoBoxConstraints    | A box constraints with extra information.                    |
 | SafeValueNotifier          | Make sure notifying is safe during build/layout/paint phase. |
 | RenderObjectAnimationMixin | Animation scheduling helper for RenderObject.                |
+

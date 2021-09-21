@@ -4,8 +4,8 @@ import 'package:flutter/widgets.dart';
 ///  - imposes different constraints on its child than it gets from
 ///    its parent, possibly allowing the child to overflow the parent.
 ///  - apply translate to its child (specified by [offset]).
-class OverflowWithTranslateBox extends StatelessWidget {
-  const OverflowWithTranslateBox({
+class TranslateWithExpandedPaintingArea extends StatelessWidget {
+  const TranslateWithExpandedPaintingArea({
     Key? key,
     required this.offset,
     this.clipBehavior = Clip.none,

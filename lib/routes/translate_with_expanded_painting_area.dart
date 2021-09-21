@@ -37,7 +37,7 @@ class OverflowWithTranslateRoute extends StatelessWidget {
             // Column子元素的maxHeight约束为无限大，但OverflowWithTranslateBox的最大宽高
             // 必须有限，因此我们显式指定高度
             height: 10,
-            child: OverflowWithTranslateBox(offset: offset, child: row),
+            child: TranslateWithExpandedPaintingArea(offset: offset, child: row),
           )
         ],
       );

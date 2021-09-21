@@ -6,7 +6,7 @@ export 'done_widget.dart';
 export 'layout_builder_print.dart';
 export 'left_right_box.dart';
 export 'log_panel.dart';
-export 'overflow_with_translate.dart';
+export 'translate_with_expanded_painting_area.dart';
 export 'swiper.dart';
 export 'scale_view.dart';
 export 'swiper_control.dart';

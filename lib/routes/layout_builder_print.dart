@@ -12,16 +12,22 @@ class LayoutLogPrintRoute extends StatelessWidget {
         children: [
           LayoutLogPrint(
             child: Row(
-              children: [LayoutLogPrint(child: const Text('flukit@wendux'))],
+              children: [
+                LayoutLogPrint(child: const Text('flukit@wendux')),
+                LayoutLogPrint(child: const Text('flukit@wendux')),
+              ],
             ),
           ),
-          Container(
-            width: 50,
-            height: 50,
-            alignment: Alignment.center,
-            color: Colors.red,
-            child: LayoutLogPrint(
-              child: const Text('A', style: TextStyle(color: Colors.white)),
+          GestureDetector(
+            onTap: ()=>debugPrint('tap'),
+            child: Container(
+              width: 50,
+              height: 50,
+              alignment: Alignment.center,
+              color: Colors.red,
+              child: LayoutLogPrint(
+                child: const Text('A', style: TextStyle(color: Colors.white)),
+              ),
             ),
           ),
         ],

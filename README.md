@@ -30,6 +30,8 @@ flukit
 
 ### 运行Demo
 
+[示例目录](https://github.com/flutterchina/flukit/tree/main/lib/routes).
+
 ```
 flutter run
 ```
@@ -68,7 +70,7 @@ flutter run
 | SliverPersistentHeaderToBox                | 和 [SliverPersistentHeader]功能类似，但不同是[SliverPersistentHeaderToBox]   能够直接包含一个盒模型子组件（Box widget），并且高度会使用子组件高度。 |                                                              |
 | SliverHeaderDelegate                       | [SliverPersistentHeader] 的帮助类，用于快速创建delegate 。   |                                                              |
 | SlideTransitionX                           | 实现同向滑动效果，通常和[AnimatedSwitcher]一起使用，具体效果见示例demo. |                                                              |
-| OverflowWithTranslateBox                   | 可以将子组件沿着某个方向平移x像素，平移后，反方向不会出现空白。原理是该组件允许子组件的绘制空间大小在平移方向超过当前显示空间x像素。具体效果见示例demo. |                                                              |
+| TranslateWithExpandedPaintingArea          | 可以将子组件沿着某个方向平移x像素，平移后，反方向不会出现空白。原理是该组件允许子组件的绘制空间大小在平移方向超过当前显示空间x像素。具体效果见示例demo. |                                                              |
 | TurnBox                                    | 可按任意角度旋转子组件，旋转过程执行动画。                   |                                                              |
 | WaterMark                                  | 水印组件                                                     | TextWaterMarkPainter、StaggerTextWaterMarkPainter            |
 
