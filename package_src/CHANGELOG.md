@@ -1,4 +1,4 @@
-## [2.0.0-beta3]
+## [2.0.0-beta4]
 - fix LogPanel bugs
 
 ## [2.0.0-beta2]

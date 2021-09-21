@@ -345,18 +345,19 @@ class LogListenerScope extends StatefulWidget {
 
   final LogPanelBuilder? logPanelBuilder;
 
-  static LogListener? of(BuildContext context) {
-    return context
-        .findAncestorStateOfType<_LogListenerScopeState>()
-        ?.logNotifier as LogListener;
+  static LogListenerScopeState? of(BuildContext context) {
+    return context.findAncestorStateOfType<LogListenerScopeState>();
   }
 
   @override
-  _LogListenerScopeState createState() => _LogListenerScopeState();
+  LogListenerScopeState createState() => LogListenerScopeState();
 }
 
-class _LogListenerScopeState extends LogState<LogListenerScope> {
+class LogListenerScopeState extends LogState<LogListenerScope> {
   late LogListener _logListener;
+
+  // 日志面板（位于子树中，默认是LogPanel）会缓存自身的高度
+  double? storage;
 
   @override
   void initState() {
@@ -458,10 +459,23 @@ class _LogPanelState extends State<LogPanel> {
   double _height = 0;
   bool _drag = false;
   late LogValueNotifier _listenable;
+  late LogValueNotifier _originalListenable;
+  LogInfo? _last;
+
+  //每一次都从该位置开始处理
+  late int _lastLength;
 
   bool get _canExpanded => widget.maxHeight - _height > .0001;
 
   bool get _draggable => widget.maxHeight - widget.minHeight > 0.0001;
+
+  set height(double v) {
+    _height = v.clamp(widget.minHeight, widget.maxHeight);
+    final scope = LogListenerScope.of(context);
+    if (scope != null) {
+      scope.storage = _height;
+    }
+  }
 
   void _jumpToListEnd() {
     SchedulerBinding.instance!.addPostFrameCallback((_) {
@@ -475,12 +489,6 @@ class _LogPanelState extends State<LogPanel> {
       _controller.position.maxScrollExtent,
     );
   }
-
-  late LogValueNotifier _originalListenable;
-  LogInfo? _last;
-
-  //每一次都从该位置开始处理
-  int _lastLength = 0;
 
   //合并相邻重复日志
   void _mergeLog() {
@@ -506,7 +514,7 @@ class _LogPanelState extends State<LogPanel> {
         <LogInfo>[],
         (List<LogInfo> previousValue, element) {
           if (_last == null) {
-            _last = element;
+            _last = element..times = 1;
             return previousValue..add(_last!);
           } else {
             if (_last!.isEqual(element)) {
@@ -515,7 +523,7 @@ class _LogPanelState extends State<LogPanel> {
               return previousValue;
             }
             //和上一条不同
-            _last = element;
+            _last = element..times = 1;
             return previousValue..add(_last!);
           }
         },
@@ -534,9 +542,13 @@ class _LogPanelState extends State<LogPanel> {
       '[listenable] required! Consider [LogListenerScope] as an ancestor widget.',
     );
     _originalListenable = listenable!;
+    _lastLength = 0;
+    _last = null;
     if (widget.mergeDuplicateLogs) {
       _listenable = LogValueNotifier();
       _originalListenable.addListener(_mergeLog);
+      // 可能_originalListenable已经有日志了，先触发一次合并
+      _originalListenable.notifyListeners();
     } else {
       _listenable = _originalListenable;
     }
@@ -545,14 +557,16 @@ class _LogPanelState extends State<LogPanel> {
 
   @override
   void initState() {
-    _height = widget.minHeight;
-    _init(widget.listenable ?? LogListenerScope.of(context));
+    final scope = LogListenerScope.of(context);
+    height = scope?.storage ?? widget.minHeight;
+    _init(widget.listenable ?? scope?.logListener);
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant LogPanel oldWidget) {
-    final listenable = widget.listenable ?? LogListenerScope.of(context);
+    final listenable =
+        widget.listenable ?? LogListenerScope.of(context)?.logListener;
     if (widget.mergeDuplicateLogs != oldWidget.mergeDuplicateLogs ||
         _originalListenable != listenable) {
       _originalListenable.removeListener(_mergeLog);
@@ -572,7 +586,8 @@ class _LogPanelState extends State<LogPanel> {
 
   @override
   Widget build(BuildContext context) {
-    _height = _height.clamp(widget.minHeight, widget.maxHeight);
+    //触发setter，setter中会根据最大最小高度调整日志面板高度。
+    height = _height;
     return Material(
       child: SizedBox(
         height: _height,
@@ -605,7 +620,7 @@ class _LogPanelState extends State<LogPanel> {
                 var newHeight = _height - details.delta.dy;
                 if (newHeight != _height) {
                   setState(() {
-                    _height = newHeight;
+                    height = newHeight;
                   });
                 }
               },
@@ -633,7 +648,13 @@ class _LogPanelState extends State<LogPanel> {
         else
           const Spacer(),
         IconButton(
-          onPressed: () => _listenable.clear(),
+          onPressed: () {
+            // 清空日志
+            _originalListenable.value.clear();
+            _listenable.value.clear();
+            // 触发_mergeLog执行，最终会通知 ValueListenableBuilder 重新 build
+            _originalListenable.notifyListenersUnsafe();
+          },
           icon: const Icon(Icons.delete_outline),
         ),
         IconButton(
