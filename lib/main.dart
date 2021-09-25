@@ -34,10 +34,10 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
+      final routesMap= mapRoutes(getRoutes());
       final maxWidth = min(constraints.maxWidth, 500.0);
       return UnconstrainedBox(
         child: ConstrainedBox(
@@ -68,6 +68,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
+
   const MyHomePage({
     Key? key,
     required this.title,
@@ -79,70 +80,73 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-final routes = [
-  Page("AfterLayout", const AfterLayoutRoute(), showLog: true),
-  Page(
-    "AccurateSizedBox",
-    const AccurateSizedBoxRoute(),
-    showLog: true,
-  ),
-  Page("AnimatedRotationBox", const AnimatedRotationBoxRoute()),
-  Page("DoneWidget", const DoneWidgetRoute()),
-  Page("GradientButton", const GradientButtonRoute()),
-  Page(
-    "GradientCircularProgressIndicator",
-    const GradientCircularProgressRoute(),
-  ),
-  Page(
-    "KeepAlive Test",
-    const KeepAliveTest(),
-    padding: false,
-    showLog: true,
-  ),
-  Page("LayoutLogPrint", const LayoutLogPrintRoute(), showLog: true),
-  Page("LeftRightBox", const LeftRightBoxRoute()),
-  Page("Log Panel", const LogListenerScopeRoute(), withScaffold: false),
-  Page(
-    "OverflowWithTranslateBox",
-    const OverflowWithTranslateRoute(),
-    padding: false,
-  ),
-  Page("PullRefresh", const PullRefreshRoute(), padding: false),
+//防止热更新失效，我们不定义为静态变量
+List<Page> getRoutes(){
+  return  [
+    Page("AfterLayout", const AfterLayoutRoute(), showLog: true),
+    Page(
+      "AccurateSizedBox",
+      const AccurateSizedBoxRoute(),
+      showLog: true,
+    ),
+    Page("AnimatedRotationBox", const AnimatedRotationBoxRoute()),
+    Page("DoneWidget", const DoneWidgetRoute()),
+    Page("GradientButton", const GradientButtonRoute()),
+    Page(
+      "GradientCircularProgressIndicator",
+      const GradientCircularProgressRoute(),
+    ),
+    Page(
+      "KeepAlive Test",
+      const KeepAliveTest(),
+      padding: false,
+      showLog: true,
+    ),
+    Page("LayoutLogPrint", const LayoutLogPrintRoute(), showLog: true),
+    Page("LeftRightBox", const LeftRightBoxRoute()),
+    Page("Log Panel", const LogListenerScopeRoute(), withScaffold: false),
+    Page(
+      "OverflowWithTranslateBox",
+      const OverflowWithTranslateRoute(),
+      padding: false,
+    ),
+    Page("PullRefresh", const PullRefreshRoute(), padding: false),
 
-  Page("Quick Scrollbar", const QuickScrollbarRoute()),
-  Page("Swiper", SwiperRoute()),
-  Page("Swiper Style", const SwiperStyleRoute()),
-  Page("ScaleView", const ScaleViewRoute(), padding: false),
-  Page(
-    "SliverFlexibleHeader",
-    const SliverFlexibleHeaderRoute(),
-    padding: false,
-  ),
-  Page(
-    "SliverHeaderDelegate",
-    const SliverHeaderDelegateRoute(),
-    padding: false,
-  ),
-  Page(
-    "SliverPersistentHeaderToBox",
-    const SliverPersistentHeaderToBoxRoute(),
-    padding: false,
-  ),
-  Page("SlideTransitionX", const SlideTransitionXRoute()),
-  Page("TurnBox", TurnBoxRoute()),
-  Page("WaterMark(水印)", const WatermarkRoute(), padding: false),
-  // Page("AzListView", (ctx) => QuickSelectListViewRoute()),
-];
+    Page("Quick Scrollbar", const QuickScrollbarRoute(),padding: false),
+    Page("Swiper", SwiperRoute()),
+    Page("Swiper Style", const SwiperStyleRoute()),
+    Page("ScaleView", const ScaleViewRoute(), padding: false),
+    Page(
+      "SliverFlexibleHeader",
+      const SliverFlexibleHeaderRoute(),
+      padding: false,
+    ),
+    Page(
+      "SliverHeaderDelegate",
+      const SliverHeaderDelegateRoute(),
+      padding: false,
+    ),
+    Page(
+      "SliverPersistentHeaderToBox",
+      const SliverPersistentHeaderToBoxRoute(),
+      padding: false,
+    ),
+    Page("SlideTransitionX", const SlideTransitionXRoute()),
+    Page("TurnBox", TurnBoxRoute()),
+    Page("WaterMark(水印)", const WatermarkRoute(), padding: false),
+    // Page("AzListView", (ctx) => QuickSelectListViewRoute()),
+  ];
+}
 
-final routesMap = mapRoutes(routes);
 
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    print('build');
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
       body: ListPage(
-        children: routes,
+        children: getRoutes(),
       ),
     );
   }

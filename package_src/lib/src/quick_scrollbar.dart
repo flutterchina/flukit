@@ -7,6 +7,22 @@ import 'package:flutter/material.dart';
 ///
 /// Quick scrollbar support the drag gesture to scroll the [Scrollable]
 /// widget quickly.
+/// for example:
+/// ```dart
+///   QuickScrollbar(
+///      child: ListView.builder(
+///         itemCount: 1000,
+///         // Specifying an [itemExtent] or [prototypeItem]  is more efficient
+///         // than letting the children determine their own extent when use QuickScrollbar.
+///         //itemExtent: 56,
+///         prototypeItem: const ListTile(title: Text("1")),
+///         itemBuilder: (ctx, index) => ListTile(
+///           title: Text("$index"),
+///           onTap: () => debugPrint('$index'),
+///         ),
+///       ),
+///     );
+/// ```dart
 class QuickScrollbar extends StatefulWidget {
   const QuickScrollbar({
     Key? key,
@@ -63,6 +79,7 @@ class _QuickScrollBarState extends State<QuickScrollbar>
     ScrollController scrollController = widget.controller ??
         PrimaryScrollController.of(context) ??
         ScrollController();
+
     Widget stack = Stack(
       children: <Widget>[
         RepaintBoundary(
@@ -74,35 +91,35 @@ class _QuickScrollBarState extends State<QuickScrollbar>
           child: RepaintBoundary(
             child: GestureDetector(
               child: Padding(
-                padding: const EdgeInsets.only(right: 3.0),
+                padding: const EdgeInsets.only(right: 5.0),
                 child: FadeTransition(
                   child: Material(
                     color: const Color(0xffe8e8e8),
                     elevation: .8,
                     child: SizedBox(
-                        height: _barHeight,
-                        width: 28.0,
-                        child: Icon(
-                          Icons.unfold_more,
-                          color: Colors.grey[600],
-                          size: 24.0,
-                        )),
+                      height: _barHeight,
+                      child: Icon(
+                        Icons.unfold_more,
+                        color: Colors.grey[600],
+                        size: 24.0,
+                      ),
+                    ),
                   ),
                   opacity: _animation,
                 ),
               ),
-              onVerticalDragStart: (DragStartDetails details) {
-                _timer?.cancel();
-              },
+              onVerticalDragStart: (details) => _timer?.cancel(),
               onVerticalDragUpdate: (DragUpdateDetails details) {
-                var position = scrollController.position;
+                final position = scrollController.position;
 
                 double pixels = (position.extentBefore + position.extentAfter) *
                     details.delta.dy /
                     (position.extentInside - _barHeight);
                 pixels += position.pixels;
-                scrollController
-                    .jumpTo(pixels.clamp(0.0, position.maxScrollExtent));
+                scrollController.jumpTo(pixels.clamp(
+                  0.0,
+                  position.maxScrollExtent,
+                ));
               },
               onVerticalDragEnd: (details) {
                 _fadeBar();
