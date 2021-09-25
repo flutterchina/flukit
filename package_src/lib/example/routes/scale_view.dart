@@ -23,7 +23,7 @@ class ScaleViewRoute extends StatelessWidget {
         return ScaleView(
           child: v,
           minScale: .5,
-          maxScale: 3,
+          maxScale: 5,
         );
       }).toList(),
     );

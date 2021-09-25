@@ -32,7 +32,7 @@ class ScaleView extends StatefulWidget {
     Key? key,
     this.minScale = 1.0,
     this.maxScale = 10.0,
-    this.doubleClickScale = 2.0,
+    this.doubleClickScale = 3.0,
     this.alignment = Alignment.center,
     this.parentScrollableAxis = Axis.horizontal,
     required this.child,
@@ -183,6 +183,9 @@ class _ScaleViewState extends State<ScaleView>
       ..fling(velocity: magnitude / 1000.0);
   }
 
+  late Offset _doubleClickPosition;
+  late Rect _imgRect;
+
   void _handleOnDoubleTab() {
     _flingAnimation = null;
     _controller.reset();
@@ -196,10 +199,20 @@ class _ScaleViewState extends State<ScaleView>
       _controller.forward();
     } else {
       //计算多出来的部分
-      size = size * (widget.doubleClickScale - 1);
+      final more = (widget.doubleClickScale - 1);
+      //根据双击位置确定偏移
+      late Offset offset;
+      if (_imgRect.contains(_doubleClickPosition)) {
+        offset = Offset(
+          -_doubleClickPosition.dx * more,
+          -(_doubleClickPosition.dy - _imgRect.top) * more,
+        );
+      } else {
+        offset = Offset(size.width, size.height) / -2.0;
+      }
       _flingAnimation = Tween<Offset>(
         begin: Offset.zero,
-        end: Offset(size.width, size.height) / -2.0,
+        end: offset,
       ).animate(_controller);
 
       _scaleAnimation = Tween<double>(
@@ -233,6 +246,9 @@ class _ScaleViewState extends State<ScaleView>
       onScaleUpdate: _handleOnScaleUpdate,
       onScaleEnd: _handleFling,
       onDoubleTap: _handleOnDoubleTab,
+      onDoubleTapDown: (details) {
+        _doubleClickPosition = details.localPosition;
+      },
       onVerticalDragEnd: hookVertical ? _handleFling : null,
       onVerticalDragUpdate: hookVertical ? _handleOnDragUpdate : null,
       onHorizontalDragEnd: hookHorizon ? _handleFling : null,
@@ -243,19 +259,24 @@ class _ScaleViewState extends State<ScaleView>
           transform: Matrix4.identity()
             ..translate(_offset.dx, _offset.dy)
             ..scale(_scale),
-          child: Builder(builder: (context) {
-            return FittedBox(
-              fit: BoxFit.contain,
-              child: AfterLayout(
-                callback: (ral) {
-                  // fit 为 BoxFit.contain 时，FittedBox 的大小等于最终图片在屏幕上的显示大小。
-                  // 每次布局发生变化时都要更新
-                  _childSize = context.size!;
-                  _origin = Offset(
-                    _childSize.width / 2.0,
-                    _childSize.height / 2.0,
-                  );
-                },
+          child: Builder(builder: (_context) {
+            return AfterLayout(
+              callback: (ral) {
+                // fit 为 BoxFit.contain 时，FittedBox 的大小等于最终图片在屏幕上的显示大小。
+                // 每次布局发生变化时都要更新
+                _childSize = _context.size!;
+                _origin = Offset(
+                  _childSize.width / 2.0,
+                  _childSize.height / 2.0,
+                );
+                final offset = ral.localToGlobal(
+                  Offset.zero,
+                  ancestor: context.findRenderObject(),
+                );
+                _imgRect = offset & ral.size;
+              },
+              child: FittedBox(
+                fit: BoxFit.contain,
                 child: ConstrainedBox(
                   //至少size(1,1)，防止context.size为null
                   constraints: const BoxConstraints(minWidth: 1, minHeight: 1),

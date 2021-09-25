@@ -1,4 +1,6 @@
-## [2.0.0-beta4]
+## [2.0.0-beta5]
+- move examples to package dir.
+- optimize ScaleView
 - fix LogPanel bugs
 
 ## [2.0.0-beta2]

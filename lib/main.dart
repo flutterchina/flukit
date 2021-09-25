@@ -1,13 +1,14 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flukit/flukit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Page;
-import 'common/index.dart';
-import 'routes/index.dart';
+import 'package:flukit/example/example.dart';
 
 void main() {
   final logEmitter = getGlobalLogEmitter();
   runZoned(
-    () => runApp(MyApp()),
+    () => runApp(const MyApp()),
     zoneSpecification: ZoneSpecification(
       print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
         parent.print(zone, line);
@@ -36,13 +37,33 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flukit',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flukit demo'),
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      final maxWidth = min(constraints.maxWidth, 500.0);
+      return UnconstrainedBox(
+        child: ConstrainedBox(
+          constraints: constraints.copyWith(
+            minWidth: maxWidth,
+            maxWidth: maxWidth,
+          ),
+          child: MaterialApp(
+            title: 'Flukit',
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+            ),
+            routes: routesMap,
+            onGenerateRoute: (RouteSettings settings) {
+              String routeName = settings.name!.substring(1).toLowerCase();
+              routeName = Uri.decodeComponent(routeName);
+              return MaterialPageRoute(
+                builder: routesMap[routeName] ??
+                    (context) => const MyHomePage(title: 'Flukit demo'),
+              );
+            },
+            home: const MyHomePage(title: 'Flukit demo'),
+          ),
+        ),
+      );
+    });
   }
 }
 
@@ -58,67 +79,78 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+final routes = [
+  Page("AfterLayout", const AfterLayoutRoute(), showLog: true),
+  Page(
+    "AccurateSizedBox",
+    const AccurateSizedBoxRoute(),
+    showLog: true,
+  ),
+  Page("AnimatedRotationBox", const AnimatedRotationBoxRoute()),
+  Page("DoneWidget", const DoneWidgetRoute()),
+  Page("GradientButton", const GradientButtonRoute()),
+  Page(
+    "GradientCircularProgressIndicator",
+    const GradientCircularProgressRoute(),
+  ),
+  Page(
+    "KeepAlive Test",
+    const KeepAliveTest(),
+    padding: false,
+    showLog: true,
+  ),
+  Page("LayoutLogPrint", const LayoutLogPrintRoute(), showLog: true),
+  Page("LeftRightBox", const LeftRightBoxRoute()),
+  Page("Log Panel", const LogListenerScopeRoute(), withScaffold: false),
+  Page(
+    "OverflowWithTranslateBox",
+    const OverflowWithTranslateRoute(),
+    padding: false,
+  ),
+  Page("PullRefresh", const PullRefreshRoute(), padding: false),
+
+  Page("Quick Scrollbar", const QuickScrollbarRoute()),
+  Page("Swiper", SwiperRoute()),
+  Page("Swiper Style", const SwiperStyleRoute()),
+  Page("ScaleView", const ScaleViewRoute(), padding: false),
+  Page(
+    "SliverFlexibleHeader",
+    const SliverFlexibleHeaderRoute(),
+    padding: false,
+  ),
+  Page(
+    "SliverHeaderDelegate",
+    const SliverHeaderDelegateRoute(),
+    padding: false,
+  ),
+  Page(
+    "SliverPersistentHeaderToBox",
+    const SliverPersistentHeaderToBoxRoute(),
+    padding: false,
+  ),
+  Page("SlideTransitionX", const SlideTransitionXRoute()),
+  Page("TurnBox", TurnBoxRoute()),
+  Page("WaterMark(水印)", const WatermarkRoute(), padding: false),
+  // Page("AzListView", (ctx) => QuickSelectListViewRoute()),
+];
+
+final routesMap = mapRoutes(routes);
+
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
       body: ListPage(
-        children: [
-          Page("AfterLayout", const AfterLayoutRoute(), showLog: true),
-          Page(
-            "AccurateSizedBox",
-            const AccurateSizedBoxRoute(),
-            showLog: true,
-          ),
-          Page("AnimatedRotationBox", const AnimatedRotationBoxRoute()),
-          Page("DoneWidget", const DoneWidgetRoute()),
-          Page("GradientButton", const GradientButtonRoute()),
-          Page(
-            "GradientCircularProgressIndicator",
-            const GradientCircularProgressRoute(),
-          ),
-          Page(
-            "KeepAlive Test",
-            const KeepAliveTest(),
-            padding: false,
-            showLog: true,
-          ),
-          Page("LayoutLogPrint", const LayoutLogPrintRoute(), showLog: true),
-          Page("LeftRightBox", const LeftRightBoxRoute()),
-          Page("Log Panel", const LogListenerScopeRoute(), withScaffold: false),
-          Page(
-            "OverflowWithTranslateBox",
-            const OverflowWithTranslateRoute(),
-            padding: false,
-          ),
-          Page("PullRefresh", const PullRefreshRoute()),
-
-          Page("Quick Scrollbar", const QuickScrollbarRoute()),
-          Page("Swiper", SwiperRoute()),
-          Page("Swiper Style", const SwiperStyleRoute()),
-          Page("ScaleView", const ScaleViewRoute(), padding: false),
-          Page(
-            "SliverFlexibleHeader",
-            const SliverFlexibleHeaderRoute(),
-            padding: false,
-          ),
-          Page(
-            "SliverHeaderDelegate",
-            const SliverHeaderDelegateRoute(),
-            padding: false,
-          ),
-          Page(
-            "SliverPersistentHeaderToBox",
-            const SliverPersistentHeaderToBoxRoute(),
-            padding: false,
-          ),
-          Page("SlideTransitionX", const SlideTransitionXRoute()),
-          Page("TurnBox", TurnBoxRoute()),
-          Page("WaterMark(水印)", const WatermarkRoute(), padding: false),
-          // Page("AzListView", (ctx) => QuickSelectListViewRoute()),
-        ],
+        children: routes,
       ),
     );
   }
+}
+
+Map<String, WidgetBuilder> mapRoutes(List<Page> pages) {
+  return pages.fold(<String, WidgetBuilder>{}, (pre, page) {
+    pre[page.title.toLowerCase()] = page.build;
+    return pre;
+  });
 }

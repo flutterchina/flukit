@@ -1,3 +1,2 @@
-void main() {
-  // examples in flukit/lib
-}
+export 'routes/index.dart';
+export 'common/index.dart';

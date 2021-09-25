@@ -2,15 +2,11 @@
 
 # Flukit [![Pub](https://img.shields.io/pub/v/flukit.svg?style=flat-square)](https://pub.dartlang.org/packages/flukit)
 
-*flukit* （Flutter UI Kit）是一个Flutter Widget库。
+*flukit* （Flutter UI Kit）是一个Flutter Widget库。目前 2.0 版本正在预览中，2.0 版本有很大更新，可拉取项目后本地跑demo体验。
 
 ## 注意
 
-本项目正在持续迭代中，欢迎大家贡献代码。  
-
-原QuickSelectListView迁移至[AzListView](https://github.com/flutterchina/azlistview)  
-QuickSelectListView 更改为 AzListView  
-SuspensionListView 更改为 SuspensionView  
+本项目正在持续迭代中，欢迎大家贡献代码。
 
 ## 贡献代码须知
 
@@ -21,6 +17,7 @@ flukit
 	--lib           //示例目录
 	--package_src
 	  --lib
+	   --example
 	   --src  //widget库目录
 	--docs //文档目录，文档必须是markdown格式
       --images //文档用到的图片都放在这里，如截图
@@ -30,7 +27,7 @@ flukit
 
 ### 运行Demo
 
-[示例目录](https://github.com/flutterchina/flukit/tree/main/lib/routes).
+[示例目录](https://github.com/flutterchina/flukit/tree/main/package_src/lib/example).
 
 ```
 flutter run
@@ -84,7 +81,7 @@ flutter run
 
 
 
-## Demo部分截图（只有少数，待补充）
+## Demo部分截图（只有极少数有图片，待补充）
 
 <img src="./docs/images/quick_scroll_bar.gif" width="320"/>
 <img src="./docs/images/animated_rotation_box.gif" width="320"/>
@@ -92,5 +89,5 @@ flutter run
 <img src="./docs/images/swiper.gif" width="320"/>
 <img src="./docs/images/photoview.gif" width="320"/>
 <img src="./docs/images/raised_button.png" width="320"/>
-<img src="./docs/images/pull_refresh.gif" width="320"/>
+
 

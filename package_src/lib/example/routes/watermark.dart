@@ -68,6 +68,7 @@ class WatermarkRoute extends StatelessWidget {
         IgnorePointer(
           child: TranslateWithExpandedPaintingArea(
             offset: const Offset(-30, 0),
+            clipBehavior: Clip.hardEdge,
             child: WaterMark(
               painter: TextWaterMarkPainter(
                 text: 'Flutter 中国 @wendux',
