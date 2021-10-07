@@ -23,7 +23,7 @@ import 'after_layout.dart';
 ///  )
 /// ```
 ///
-/// Gesture conflicts may occur When the scale view in a [Scrollable] widget
+/// Gesture conflicts may occur when the scale view in a [Scrollable] widget
 /// such as [ListView], in this scenario, you can specify the [parentScrollableAxis]
 /// explicitly.
 ///
@@ -184,13 +184,14 @@ class _ScaleViewState extends State<ScaleView>
   }
 
   late Offset _doubleClickPosition;
-  late Rect _imgRect;
+  late Rect _childRect;
 
   void _handleOnDoubleTab() {
     _flingAnimation = null;
     _controller.reset();
     _doubleClick = true;
     Size size = _childSize;
+    // 已经处于缩放状态，则恢复原始大小
     if (_scale != 1.0) {
       _flingAnimation =
           Tween<Offset>(begin: _offset, end: Offset.zero).animate(_controller);
@@ -198,21 +199,26 @@ class _ScaleViewState extends State<ScaleView>
           Tween<double>(begin: _scale, end: 1.0).animate(_controller);
       _controller.forward();
     } else {
-      //计算多出来的部分
-      final more = (widget.doubleClickScale - 1);
-      //根据双击位置确定偏移
-      late Offset offset;
-      if (_imgRect.contains(_doubleClickPosition)) {
-        offset = Offset(
-          -_doubleClickPosition.dx * more,
-          -(_doubleClickPosition.dy - _imgRect.top) * more,
+      // 未处于缩放状态，则放大。
+
+      // 先计算多出来的倍数
+      final multiple = (widget.doubleClickScale - 1);
+      //点击的位置（放大的锚点），如果点击位置不在子组件上，则默认将子组件的中心点作为锚点
+      late Offset scaleAnchor;
+      if (_childRect.contains(_doubleClickPosition)) {
+        scaleAnchor = Offset(
+          _doubleClickPosition.dx,
+          (_doubleClickPosition.dy - _childRect.top),
         );
       } else {
-        offset = Offset(size.width, size.height) / -2.0;
+        scaleAnchor = Offset(size.width, size.height) / 2.0;
       }
+
       _flingAnimation = Tween<Offset>(
+        // 起始坐标为 0
         begin: Offset.zero,
-        end: offset,
+        // 子组件的偏移（top,left） = -（锚点位置×多出来的倍数）
+        end: scaleAnchor *= -multiple,
       ).animate(_controller);
 
       _scaleAnimation = Tween<double>(
@@ -273,7 +279,7 @@ class _ScaleViewState extends State<ScaleView>
                   Offset.zero,
                   ancestor: context.findRenderObject(),
                 );
-                _imgRect = offset & ral.size;
+                _childRect = offset & ral.size;
               },
               child: FittedBox(
                 fit: BoxFit.contain,

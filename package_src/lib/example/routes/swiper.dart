@@ -2,12 +2,13 @@ import 'package:flukit/flukit.dart';
 import 'package:flutter/material.dart';
 
 class SwiperRoute extends StatelessWidget {
-  final _imgs = ["sea.png", "star.jpg", "cat.jpg", "horse.jpg"];
-
-  SwiperRoute({Key? key}) : super(key: key);
+  const SwiperRoute({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final images = ["sea.png", "star.jpg", "cat.jpg", "horse.jpg"]
+        .map((e) => Image.asset("imgs/$e", fit: BoxFit.fill))
+        .toList();
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.only(bottom: 20.0),
@@ -22,48 +23,20 @@ class SwiperRoute extends StatelessWidget {
                 viewportFraction: .95,
                 indicator: CircleSwiperIndicator(),
                 onChanged: (index) => debugPrint('$index'),
-                children: <Widget>[
-                  Image.asset(
-                    "imgs/sea.png",
-                    fit: BoxFit.fill,
-                  ),
-                  Image.asset("imgs/star.jpg", fit: BoxFit.fill),
-                  Image.asset(
-                    "imgs/cat.jpg",
-                    fit: BoxFit.fill,
-                  ),
-                ]
+                children: images
                     .map((e) => Padding(
                         child: e,
                         padding: const EdgeInsets.symmetric(horizontal: 1)))
                     .toList(),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 18.0),
-              child: SizedBox(
-                height: 200.0,
-                child: Swiper(
-                  circular: true,
-                  //reverse: true, //反向
-                  indicator: RectangleSwiperIndicator(),
-                  children: <Widget>[
-                    Image.asset(
-                      "imgs/sea.png",
-                      fit: BoxFit.fill,
-                    ),
-                    Image.asset("imgs/star.jpg", fit: BoxFit.fill),
-                    Image.asset(
-                      "imgs/cat.jpg",
-                      fit: BoxFit.fill,
-                    ),
-                    Image.asset("imgs/horse.jpg", fit: BoxFit.fill),
-                    Image.asset(
-                      "imgs/road.jpg",
-                      fit: BoxFit.fill,
-                    ),
-                  ],
-                ),
+            SizedBox(
+              height: 200.0,
+              child: Swiper(
+                circular: true,
+                //reverse: true, //反向
+                indicator: RectangleSwiperIndicator(),
+                children: images,
               ),
             ),
             AspectRatio(
@@ -72,12 +45,7 @@ class SwiperRoute extends StatelessWidget {
                 indicatorAlignment: AlignmentDirectional.topEnd,
                 circular: true,
                 indicator: NumberSwiperIndicator(),
-                children: <Widget>[
-                  Image.asset("imgs/sea.png", fit: BoxFit.fill),
-                  Image.asset("imgs/star.jpg", fit: BoxFit.fill),
-                  Image.asset("imgs/cat.jpg", fit: BoxFit.fill),
-                  Image.asset("imgs/horse.jpg", fit: BoxFit.fill),
-                ],
+                children: images,
               ),
             ),
             AspectRatio(
@@ -85,14 +53,15 @@ class SwiperRoute extends StatelessWidget {
               child: Swiper.builder(
                 indicatorAlignment: AlignmentDirectional.topEnd,
                 circular: true,
-                childCount: _imgs.length,
+                childCount: images.length,
                 indicator: NumberSwiperIndicator(),
-                itemBuilder: (context, index) {
-                  return Image.asset("imgs/${_imgs[index]}", fit: BoxFit.fill);
-                },
+                itemBuilder: (context, index) => images[index],
               ),
             ),
-          ],
+          ]
+              .map((e) => Padding(
+                  child: e, padding: const EdgeInsets.symmetric(vertical: 10)))
+              .toList(),
         ),
       ),
     );

@@ -113,7 +113,7 @@ List<Page> getRoutes(){
     Page("PullRefresh", const PullRefreshRoute(), padding: false),
 
     Page("Quick Scrollbar", const QuickScrollbarRoute(),padding: false),
-    Page("Swiper", SwiperRoute()),
+    Page("Swiper", const SwiperRoute()),
     Page("Swiper Style", const SwiperStyleRoute()),
     Page("ScaleView", const ScaleViewRoute(), padding: false),
     Page(
@@ -142,7 +142,6 @@ List<Page> getRoutes(){
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    print('build');
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
       body: ListPage(

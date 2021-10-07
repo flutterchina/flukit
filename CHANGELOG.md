@@ -1,3 +1,5 @@
+## [2.0.0 stable]
+- 2.0 first stable version
 ## [2.0.0-beta5]
 - move examples to package dir.
 - optimize ScaleView
