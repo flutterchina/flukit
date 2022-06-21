@@ -207,7 +207,7 @@ class _ScaleViewState extends State<ScaleView>
       late Offset scaleAnchor;
       if (_childRect.contains(_doubleClickPosition)) {
         scaleAnchor = Offset(
-          _doubleClickPosition.dx,
+          (_doubleClickPosition.dx - _childRect.left),
           (_doubleClickPosition.dy - _childRect.top),
         );
       } else {

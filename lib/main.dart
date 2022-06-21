@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flukit/flukit.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:flukit/example/example.dart';
 
@@ -39,29 +38,21 @@ class MyApp extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       final routesMap= mapRoutes(getRoutes());
       final maxWidth = min(constraints.maxWidth, 500.0);
-      return UnconstrainedBox(
-        child: ConstrainedBox(
-          constraints: constraints.copyWith(
-            minWidth: maxWidth,
-            maxWidth: maxWidth,
-          ),
-          child: MaterialApp(
-            title: 'Flukit',
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
-            ),
-            routes: routesMap,
-            onGenerateRoute: (RouteSettings settings) {
-              String routeName = settings.name!.substring(1).toLowerCase();
-              routeName = Uri.decodeComponent(routeName);
-              return MaterialPageRoute(
-                builder: routesMap[routeName] ??
-                    (context) => const MyHomePage(title: 'Flukit demo'),
-              );
-            },
-            home: const MyHomePage(title: 'Flukit demo'),
-          ),
+      return MaterialApp(
+        title: 'Flukit',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
         ),
+        routes: routesMap,
+        onGenerateRoute: (RouteSettings settings) {
+          String routeName = settings.name!.substring(1).toLowerCase();
+          routeName = Uri.decodeComponent(routeName);
+          return MaterialPageRoute(
+            builder: routesMap[routeName] ??
+                (context) => const MyHomePage(title: 'Flukit demo'),
+          );
+        },
+        home: const MyHomePage(title: 'Flukit demo'),
       );
     });
   }

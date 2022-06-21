@@ -174,7 +174,7 @@ class SliverPullRefreshIndicatorState
     if (value == _height) return;
     _height = value;
     // build/layout 过程中不能调用 setState
-    SchedulerBinding.instance!.addPostFrameCallback((_) => setState(() => {}));
+    SchedulerBinding.instance.addPostFrameCallback((_) => setState(() => {}));
   }
 
   void goBack() {

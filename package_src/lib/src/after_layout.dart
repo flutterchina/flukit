@@ -45,7 +45,7 @@ class RenderAfterLayout extends RenderProxyBox {
     // 如果callback中又触发了UI更新（比如调用了 setState）则会报错。因此，我们
     // 在 frame 结束的时候再去触发回调。
     // callback(this);
-    SchedulerBinding.instance!
+    SchedulerBinding.instance
         .addPostFrameCallback((timeStamp) => callback(this));
   }
 

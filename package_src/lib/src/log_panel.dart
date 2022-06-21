@@ -478,7 +478,7 @@ class _LogPanelState extends State<LogPanel> {
   }
 
   void _jumpToListEnd() {
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         _controller.jumpTo(
           _controller.position.maxScrollExtent,

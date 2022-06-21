@@ -14,10 +14,10 @@ class SafeValueNotifier<T> extends ValueNotifier<T> {
 
   @override
   void notifyListeners() {
-    final schedulerPhase = SchedulerBinding.instance!.schedulerPhase;
+    final schedulerPhase = SchedulerBinding.instance.schedulerPhase;
     // build/layout/paint are performed in persistentCallbacks.
     if (schedulerPhase == SchedulerPhase.persistentCallbacks) {
-      SchedulerBinding.instance!.addPostFrameCallback((_) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
         super.notifyListeners();
       });
     } else {

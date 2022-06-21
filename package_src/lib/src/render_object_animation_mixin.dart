@@ -1,4 +1,3 @@
-import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
@@ -33,7 +32,7 @@ mixin RenderObjectAnimationMixin on RenderObject {
   void _scheduleAnimation() {
     //SchedulerBinding.instance.remo
     if (_animationStatus != AnimationStatus.completed) {
-      SchedulerBinding.instance!.addPostFrameCallback((Duration timeStamp) {
+      SchedulerBinding.instance.addPostFrameCallback((Duration timeStamp) {
         if (_lastTimeStamp != null) {
           double delta = (timeStamp.inMilliseconds - _lastTimeStamp!) /
               duration.inMilliseconds;
