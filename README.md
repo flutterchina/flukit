@@ -2,46 +2,9 @@
 
 # Flukit [![Pub](https://img.shields.io/pub/v/flukit.svg?style=flat-square)](https://pub.dartlang.org/packages/flukit)
 
-*flukit* （Flutter UI Kit）是一个Flutter Widget库。目前 2.0 版本正在预览中，2.0 版本有很大更新，可拉取项目后本地跑demo体验。
+*flukit* （Flutter UI Kit）是一个Flutter Widget库。
 
-## 注意
-
-本项目正在持续迭代中，欢迎大家贡献代码。
-
-## 贡献代码须知
-
-### 工程目录
-
-```
-flukit
-	--lib           //示例目录
-	--package_src
-	  --lib
-	   --example
-	   --src  //widget库目录
-	--docs //文档目录，文档必须是markdown格式
-      --images //文档用到的图片都放在这里，如截图
-      --chs //中文文档目录
-      --en //英文文档目录
-```
-
-### 运行Demo
-
-[示例目录](https://github.com/flutterchina/flukit/tree/main/package_src/lib/example).
-
-```
-flutter run
-```
-
-### **提交代码须知**
-
-如果你添加了一个组件，请遵循如下规则：
-
-1. 尽可能多的添加注释，文档注释为三斜线"///"
-2. 添加一个新的Widget后，请在Demo目录添加使用示例，示例应该纯净无干扰，如果一个widget需要多个示例，可以创建一个二级页面，可以参照水印组件 WaterMark 的示例。
-3. 如果可以，请尽可能在doc 目录下为widget添加使用文档，文档必须是markdown格式，文档名应与widget文件名同名
-
-## Widgets
+## 组件列表
 
 | Widget                                     | Description                                                  |
 | ------------------------------------------ | ------------------------------------------------------------ |
@@ -89,4 +52,40 @@ flutter run
 <img src="./docs/images/swiper.gif" width="320"/>
 <img src="./docs/images/photoview.gif" width="320"/>
 <img src="./docs/images/raised_button.png" width="320"/>
+
+
+## 贡献代码须知
+
+### 工程目录
+
+```
+flukit
+	--lib           //示例目录
+	--package_src
+	  --lib
+	   --example
+	   --src  //widget库目录
+	--docs //文档目录，文档必须是markdown格式
+      --images //文档用到的图片都放在这里，如截图
+      --chs //中文文档目录
+      --en //英文文档目录
+```
+
+### 运行Demo
+
+[示例目录](https://github.com/flutterchina/flukit/tree/main/package_src/lib/example).
+
+```
+flutter run
+```
+
+### **提交代码须知**
+
+如果你添加了一个组件，请遵循如下规则：
+
+1. 尽可能多的添加注释，文档注释为三斜线"///"
+2. 添加一个新的Widget后，请在Demo目录添加使用示例，示例应该纯净无干扰，如果一个widget需要多个示例，可以创建一个二级页面，可以参照水印组件 WaterMark 的示例。
+3. 如果可以，请尽可能在doc 目录下为widget添加使用文档，文档必须是markdown格式，文档名应与widget文件名同名
+
+
 
