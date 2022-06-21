@@ -3,37 +3,6 @@
 
 *flukit* is a **Flutter UI Kit**。
 
-## Notice
-
-**This project is in development now and  there is no release or stable version。 We do not recommend that you use it in production .**  
-
-## Contribution&Run demo
-
-### **Project dirs**
-
-```
-flukit
-
-	--lib           //demo dir
-	--package_src
-		--lib
-			--src  //widget dir
-```
-
-### **Run demo**
-
-```
-flutter run
-```
-[Demo is here](https://github.com/flutterchina/flukit/tree/main/lib/routes).
-
-### **Notice of submission**
-
-If you add a new widget，please follow these rules:
-
-1. Add more details as possible in comments.
-2. Add demo in demo dir.
-
 ## Widgets
 
 | Widget                                     | Description                                                  |
@@ -71,4 +40,32 @@ If you add a new widget，please follow these rules:
 | ExtraInfoBoxConstraints    | A box constraints with extra information.                    |
 | SafeValueNotifier          | Make sure notifying is safe during build/layout/paint phase. |
 | RenderObjectAnimationMixin | Animation scheduling helper for RenderObject.                |
+
+
+## Contribution&Run demo
+
+### **Project dirs**
+
+```
+flukit
+
+	--lib           //demo dir
+	--package_src
+		--lib
+			--src  //widget dir
+```
+
+### **Run demo**
+
+```
+flutter run
+```
+[Demo is here](https://github.com/flutterchina/flukit/tree/main/lib/routes).
+
+### **Notice of submission**
+
+If you add a new widget，please follow these rules:
+
+1. Add more details as possible in comments.
+2. Add demo in demo dir.
 
