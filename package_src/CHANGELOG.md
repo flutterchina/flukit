@@ -1,3 +1,7 @@
+## [2.0.1]
+- ScaleView：support PC
+- Swiper: support PC mouse events
+
 ## [2.0.0 stable]
 - 2.0 first stable version
 ## [2.0.0-beta5]

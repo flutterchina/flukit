@@ -507,7 +507,11 @@ class _SwiperState extends State<Swiper>
       onPointerDown: (event) => _timer?.cancel(),
       onPointerCancel: (event) => _start(),
       onPointerUp: (event) => _start(),
-      child: Stack(alignment: widget.indicatorAlignment, children: children),
+      child: MouseRegion(
+        onEnter: (event) => _timer?.cancel(),
+        onExit: (event) => _start(),
+        child: Stack(alignment: widget.indicatorAlignment, children: children),
+      ),
     );
   }
 }
