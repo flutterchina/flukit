@@ -22,7 +22,7 @@
 | VerticalLogPanel                           | 显示`print`输出的log。它会将显示区域分为上下两部分，子组件显示在上面，日志面板显示在下面。 |
 | LogPanel                                   | 显示`print`输出的log.                                        |
 | PullRefreshScope                           | 下拉刷新（和flutter自带的有两点不同：PullRefreshScope 是手指抬起后才刷新，另外刷新完成后返回时会执行动画） |
-| SliverPullRefreshIndicator                 | 下拉舒新指示器，配合PullRefreshScope 使用。                  |
+| SliverPullRefreshIndicator                 | 下拉刷新指示器，配合PullRefreshScope 使用。                  |
 | QuickScrollbar                             | 可拖动的滚动条                                               |
 | Swiper                                     | 一个轮播组件                                                 |
 | ScaleView                                  | 可以对子组件进行缩放（支持双指伸缩、双击）                   |
