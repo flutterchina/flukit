@@ -55,10 +55,14 @@ class _QuickScrollBarState extends State<QuickScrollbar>
   late AnimationController _animationController;
   late Animation<double> _animation;
   Timer? _timer;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+
+    _scrollController = widget.controller!;
+
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
@@ -70,16 +74,13 @@ class _QuickScrollBarState extends State<QuickScrollbar>
   @override
   void dispose() {
     _animationController.dispose();
+    _scrollController.dispose();
     _timer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    ScrollController scrollController = widget.controller ??
-        PrimaryScrollController.of(context) ??
-        ScrollController();
-
     Widget stack = Stack(
       children: <Widget>[
         RepaintBoundary(
@@ -110,13 +111,13 @@ class _QuickScrollBarState extends State<QuickScrollbar>
               ),
               onVerticalDragStart: (details) => _timer?.cancel(),
               onVerticalDragUpdate: (DragUpdateDetails details) {
-                final position = scrollController.position;
+                final position = _scrollController.position;
 
                 double pixels = (position.extentBefore + position.extentAfter) *
                     details.delta.dy /
                     (position.extentInside - _barHeight);
                 pixels += position.pixels;
-                scrollController.jumpTo(pixels.clamp(
+                _scrollController.jumpTo(pixels.clamp(
                   0.0,
                   position.maxScrollExtent,
                 ));
