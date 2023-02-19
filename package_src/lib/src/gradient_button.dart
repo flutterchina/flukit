@@ -60,7 +60,7 @@ class GradientButton extends StatelessWidget {
                 style: const TextStyle(fontWeight: FontWeight.bold),
                 child: Center(
                   child: DefaultTextStyle(
-                    style: theme.textTheme.button!.copyWith(
+                    style: theme.textTheme.labelLarge!.copyWith(
                       color: disabled
                           ? disabledTextColor ?? Colors.black38
                           : textColor ?? Colors.white,

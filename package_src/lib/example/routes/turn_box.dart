@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flukit/flukit.dart';
 
 class TurnBoxRoute extends StatefulWidget {
+  const TurnBoxRoute({Key? key}) : super(key: key);
+
   @override
-  _TurnBoxRouteState createState() => new _TurnBoxRouteState();
+  _TurnBoxRouteState createState() => _TurnBoxRouteState();
 }
 
 class _TurnBoxRouteState extends State<TurnBoxRoute> {

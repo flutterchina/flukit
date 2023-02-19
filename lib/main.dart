@@ -103,7 +103,7 @@ List<Page> getRoutes(){
     ),
     Page("PullRefresh", const PullRefreshRoute(), padding: false),
 
-    Page("Quick Scrollbar", const QuickScrollbarRoute(),padding: false),
+    Page("Quick Scrollbar",  QuickScrollbarRoute(),padding: false),
     Page("Swiper", const SwiperRoute()),
     Page("Swiper Style", const SwiperStyleRoute()),
     Page("ScaleView", const ScaleViewRoute(), padding: false),

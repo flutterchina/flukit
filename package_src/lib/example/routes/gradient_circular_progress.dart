@@ -19,7 +19,7 @@ class GradientCircularProgressRouteState
   void initState() {
     super.initState();
     _animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 3));
+        AnimationController(vsync: this, duration: const Duration(seconds: 3));
     _animationController.forward();
   }
 
