@@ -32,6 +32,6 @@ class ExtraInfoBoxConstraints<T> extends BoxConstraints {
 
   @override
   int get hashCode {
-    return hashValues(super.hashCode, extra);
+    return Object.hash(super.hashCode, extra);
   }
 }

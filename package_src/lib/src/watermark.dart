@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:ui' as ui;
 import 'dart:math' as math;
@@ -79,7 +77,7 @@ class _WaterMarkState extends State<WaterMark> {
     // 绘制单元水印并获取其大小
     final size = widget.painter.paintUnit(
       canvas,
-      MediaQueryData.fromWindow(ui.window).devicePixelRatio,
+      MediaQueryData.fromView(ui.window).devicePixelRatio,
     );
     final picture = recorder.endRecording();
     //将单元水印导为图片并缓存起来
